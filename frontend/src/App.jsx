@@ -28,6 +28,8 @@ import PerfilPuestosView from './views/PerfilPuestosView';
 import AreasView from './views/AreasView';
 import PuestosView from './views/PuestosView';
 import ColaboradoresView from './views/ColaboradoresView';
+import GuiasView from './views/GuiasView';
+import NewGuiaView from './views/NewGuiaView';
 
 function ProtectedRoute({ children, auth }) {
   if (!auth) return <Navigate to="/login" replace />;
@@ -73,6 +75,7 @@ function MainLayout({ setAuth }) {
             <Link to="/sell-payments" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-cyan-400">Ventas Pagos</Link>
             <Link to="/orders" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-amber-400">Pedidos</Link>
             <Link to="/cotizations" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-indigo-400">Cotizaciones</Link>
+            <Link to="/guias" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-rose-400">Guías de Remisión</Link>
           </div>
           <div className="mt-6">
             <span className="block px-4 py-2 text-gray-500 uppercase text-[10px] font-black tracking-widest">SIG</span>
@@ -142,6 +145,8 @@ function MainLayout({ setAuth }) {
             <Route path="/sig/puestos" element={<PuestosView />} />
             <Route path="/sig/colaboradores" element={<ColaboradoresView />} />
             <Route path="/sig/documents" element={<DocumentsView />} />
+            <Route path="/guias" element={<GuiasView />} />
+            <Route path="/guias/new" element={<NewGuiaView />} />
             <Route path="/insumos" element={<InsumosView />} />
             <Route path="/unidades" element={<UnidadesView />} />
             <Route path="/fam-class" element={<FamClassView />} />

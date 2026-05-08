@@ -25,6 +25,7 @@ use App\Http\Controllers\PerfilPuestoController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorController;
+use App\Http\Controllers\GuiaController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -42,6 +43,17 @@ Route::apiResource('sig/areas', AreaController::class);
 Route::apiResource('sig/puestos-crud', PuestoController::class); // Named crud to avoid conflict with existing sig/puestos if needed
 Route::get('sig/colaboradores/metadata', [ColaboradorController::class, 'getMetadata']);
 Route::apiResource('sig/colaboradores', ColaboradorController::class);
+
+// Guías de Remisión
+Route::get('guias/next-num', [GuiaController::class, 'nextNumGuia']);
+Route::get('guias/search-products', [GuiaController::class, 'searchProducts']);
+Route::get('guias/departamentos', [GuiaController::class, 'getDepartamentos']);
+Route::get('guias/provincias', [GuiaController::class, 'getProvincias']);
+Route::get('guias/distritos', [GuiaController::class, 'getDistritos']);
+Route::get('guias/{id}/detalle', [GuiaController::class, 'show']);
+Route::delete('guias/{id}', [GuiaController::class, 'destroy']);
+Route::get('guias', [GuiaController::class, 'index']);
+Route::post('guias', [GuiaController::class, 'store']);
 
 // Library / Documents
 Route::get('/library', [DocumentController::class, 'index']);
