@@ -1,0 +1,953 @@
+[27-Sep-2020 16:14:49 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 01:01:12 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 01:01:12 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 01:01:12 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 01:01:12 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 01:01:12 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:35:14 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 12:35:14 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 12:35:14 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 12:35:14 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 12:35:15 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:36:00 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:36:09 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:36:22 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:36:31 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:43:43 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Style/AbstractStyle.php on line 20
+[30-Nov-2020 12:47:16 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 12:47:16 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 12:47:16 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 12:47:16 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 12:47:16 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php on line 20
+[30-Nov-2020 12:49:37 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 12:49:37 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 12:49:37 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 12:49:37 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 12:49:37 UTC] PHP Fatal error:  Cannot use PhpOffice\PhpWord\Shared\String as String because 'String' is a special class name in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php on line 20
+[30-Nov-2020 12:50:15 UTC] PHP Fatal error:  Uncaught Error: Class 'PhpOffice\PhpWord\Element\String' not found in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php:139
+Stack trace:
+#0 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php(59): PhpOffice\PhpWord\Element\Text->setText('PROVEEDORES')
+#1 [internal function]: PhpOffice\PhpWord\Element\Text->__construct('PROVEEDORES', Array)
+#2 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/AbstractContainer.php(145): ReflectionClass->newInstanceArgs(Array)
+#3 [internal function]: PhpOffice\PhpWord\Element\AbstractContainer->addElement('Text', 'PROVEEDORES', Array)
+#4 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/AbstractContainer.php(112): call_user_func_array(Array, Array)
+#5 /home/peruvian/public_html/sistema/report/providers-word.php(16): PhpOffice\PhpWord\Element\AbstractContainer->__call('addtext', Array)
+#6 {main}
+  thrown in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php on line 139
+[30-Nov-2020 12:50:40 UTC] PHP Fatal error:  Uncaught Error: Class 'PhpOffice\PhpWord\Shared\String_s' not found in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php:139
+Stack trace:
+#0 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php(59): PhpOffice\PhpWord\Element\Text->setText('PROVEEDORES')
+#1 [internal function]: PhpOffice\PhpWord\Element\Text->__construct('PROVEEDORES', Array)
+#2 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/AbstractContainer.php(145): ReflectionClass->newInstanceArgs(Array)
+#3 [internal function]: PhpOffice\PhpWord\Element\AbstractContainer->addElement('Text', 'PROVEEDORES', Array)
+#4 /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/AbstractContainer.php(112): call_user_func_array(Array, Array)
+#5 /home/peruvian/public_html/sistema/report/providers-word.php(16): PhpOffice\PhpWord\Element\AbstractContainer->__call('addtext', Array)
+#6 {main}
+  thrown in /home/peruvian/public_html/sistema/core/controller/PhpWord/Element/Text.php on line 139
+[30-Nov-2020 13:00:17 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 13:00:17 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 13:00:17 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 13:00:17 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 13:00:17 UTC] PHP Fatal error:  Uncaught Error: Class 'PhpOffice\PhpWord\Autoloader' not found in /home/peruvian/public_html/sistema/report/providers-word.php:10
+Stack trace:
+#0 {main}
+  thrown in /home/peruvian/public_html/sistema/report/providers-word.php on line 10
+[30-Nov-2020 13:07:55 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[30-Nov-2020 13:07:55 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[30-Nov-2020 13:07:55 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[30-Nov-2020 13:07:55 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[30-Nov-2020 13:07:55 UTC] PHP Fatal error:  Uncaught Error: Class 'InsumosData' not found in /home/peruvian/public_html/sistema/report/providers-word.php:37
+Stack trace:
+#0 {main}
+  thrown in /home/peruvian/public_html/sistema/report/providers-word.php on line 37
+[30-Nov-2020 13:08:21 UTC] PHP Warning:  include(../core/app/model/InsumoData.php): failed to open stream: No such file or directory in /home/peruvian/public_html/sistema/report/providers-word.php on line 4
+[30-Nov-2020 13:08:21 UTC] PHP Warning:  include(): Failed opening '../core/app/model/InsumoData.php' for inclusion (include_path='.:/opt/alt/php74/usr/share/pear') in /home/peruvian/public_html/sistema/report/providers-word.php on line 4
+[30-Nov-2020 13:08:21 UTC] PHP Fatal error:  Uncaught Error: Class 'InsumosData' not found in /home/peruvian/public_html/sistema/report/providers-word.php:38
+Stack trace:
+#0 {main}
+  thrown in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; InsumosData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/InsumosData.php on line 2
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:04 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:09:59 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined variable: user in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'id_insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 38
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$address in /home/peruvian/public_html/sistema/report/providers-word.php on line 43
+[30-Nov-2020 13:11:40 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:12:32 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:06 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:13:55 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:15:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:10 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:16:48 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:17:13 UTC] PHP Notice:  Undefined property: PersonData::$phone in /home/peruvian/public_html/sistema/report/providers-word.php on line 47
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:18:20 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 13:19:28 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[30-Nov-2020 15:25:32 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[14-Sep-2021 20:32:18 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Database has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Database.php on line 2
+[14-Sep-2021 20:32:18 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; Lb has a deprecated constructor in /home/peruvian/public_html/sistema/core/controller/Lb.php on line 8
+[14-Sep-2021 20:32:19 UTC] PHP Deprecated:  Array and string offset access syntax with curly braces is deprecated in /home/peruvian/public_html/sistema/core/controller/class.upload.php on line 2662
+[14-Sep-2021 20:32:19 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; PersonData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/PersonData.php on line 2
+[14-Sep-2021 20:32:19 UTC] PHP Deprecated:  Methods with the same name as their class will not be constructors in a future version of PHP; InsumosData has a deprecated constructor in /home/peruvian/public_html/sistema/core/app/model/InsumosData.php on line 2
+[14-Sep-2021 20:32:19 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
+[14-Sep-2021 20:32:19 UTC] PHP Notice:  Trying to get property 'insumo' of non-object in /home/peruvian/public_html/sistema/report/providers-word.php on line 40
