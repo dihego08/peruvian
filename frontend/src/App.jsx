@@ -22,6 +22,12 @@ import PermissionsView from './views/PermissionsView';
 import MaquinasView from './views/MaquinasView';
 import MachineMaintenanceView from './views/MachineMaintenanceView';
 import DocumentsView from './views/DocumentsView';
+import PurchasesView from './views/PurchasesView';
+import NewPurchaseView from './views/NewPurchaseView';
+import PerfilPuestosView from './views/PerfilPuestosView';
+import AreasView from './views/AreasView';
+import PuestosView from './views/PuestosView';
+import ColaboradoresView from './views/ColaboradoresView';
 
 function ProtectedRoute({ children, auth }) {
   if (!auth) return <Navigate to="/login" replace />;
@@ -57,8 +63,8 @@ function MainLayout({ setAuth }) {
           <Link to="/brands" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Marcas</Link>
           <Link to="/tech-sheets" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-blue-400">Fichas Técnicas</Link>
           <Link to="/machines" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Maquinaria</Link>
-          <Link to="/documents" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Documentos</Link>
           <Link to="/insumos" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Insumos</Link>
+          <Link to="/purchases" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Compras</Link>
           <Link to="/unidades" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Unidades</Link>
           <Link to="/fam-class" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Familias y Clases</Link>
           <div className="mt-6">
@@ -68,9 +74,17 @@ function MainLayout({ setAuth }) {
             <Link to="/orders" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-amber-400">Pedidos</Link>
             <Link to="/cotizations" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-indigo-400">Cotizaciones</Link>
           </div>
+          <div className="mt-6">
+            <span className="block px-4 py-2 text-gray-500 uppercase text-[10px] font-black tracking-widest">SIG</span>
+            <Link to="/sig/perfil-puesto" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-purple-400">Perfil de Puesto</Link>
+            <Link to="/sig/areas" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-emerald-400">Áreas</Link>
+            <Link to="/sig/puestos" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-orange-400">Puestos</Link>
+            <Link to="/sig/colaboradores" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-blue-400">Personal</Link>
+            <Link to="/sig/documents" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Documentos</Link>
+          </div>
         </nav>
         <div className="p-4 border-t border-gray-800 bg-gray-950/50">
-          <button 
+          <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-colors font-bold"
           >
@@ -114,7 +128,8 @@ function MainLayout({ setAuth }) {
             <Route path="/tech-sheets" element={<TechSheetView />} />
             <Route path="/machines" element={<MaquinasView />} />
             <Route path="/machines/:mid/maintenance" element={<MachineMaintenanceView />} />
-            <Route path="/documents" element={<DocumentsView />} />
+            <Route path="/purchases" element={<PurchasesView />} />
+            <Route path="/purchases/new" element={<NewPurchaseView />} />
             <Route path="/sells" element={<SellsView />} />
             <Route path="/sells/new" element={<NewSellView />} />
             <Route path="/sell-payments" element={<SellPaymentsView />} />
@@ -122,6 +137,11 @@ function MainLayout({ setAuth }) {
             <Route path="/orders/new" element={<NewOrderView />} />
             <Route path="/cotizations" element={<CotizationsView />} />
             <Route path="/cotizations/new" element={<NewCotizationView />} />
+            <Route path="/sig/perfil-puesto" element={<PerfilPuestosView />} />
+            <Route path="/sig/areas" element={<AreasView />} />
+            <Route path="/sig/puestos" element={<PuestosView />} />
+            <Route path="/sig/colaboradores" element={<ColaboradoresView />} />
+            <Route path="/sig/documents" element={<DocumentsView />} />
             <Route path="/insumos" element={<InsumosView />} />
             <Route path="/unidades" element={<UnidadesView />} />
             <Route path="/fam-class" element={<FamClassView />} />

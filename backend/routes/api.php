@@ -20,9 +20,28 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\MaquinaController;
 use App\Http\Controllers\MaquinaMantenimientoController;
 use App\Http\Controllers\DocumentController;
+use App\Http\Controllers\CompraController;
+use App\Http\Controllers\PerfilPuestoController;
+use App\Http\Controllers\AreaController;
+use App\Http\Controllers\PuestoController;
+use App\Http\Controllers\ColaboradorController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
+
+// Purchases (Compras)
+Route::get('purchases/tipos-documento', [CompraController::class, 'getTiposDocumento']);
+Route::apiResource('purchases', CompraController::class);
+
+// SIG Routes
+Route::get('sig/puestos', [PerfilPuestoController::class, 'getPuestos']);
+Route::get('sig/perfil/{id}', [PerfilPuestoController::class, 'show']);
+Route::post('sig/perfil', [PerfilPuestoController::class, 'store']);
+
+Route::apiResource('sig/areas', AreaController::class);
+Route::apiResource('sig/puestos-crud', PuestoController::class); // Named crud to avoid conflict with existing sig/puestos if needed
+Route::get('sig/colaboradores/metadata', [ColaboradorController::class, 'getMetadata']);
+Route::apiResource('sig/colaboradores', ColaboradorController::class);
 
 // Library / Documents
 Route::get('/library', [DocumentController::class, 'index']);

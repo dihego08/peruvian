@@ -15,9 +15,17 @@ use Exception;
 
 class InsumoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $insumos = Insumo::all();
+        $q = $request->query('q');
+        $query = Insumo::query();
+
+        if ($q) {
+            $query->where('insumo', 'like', "%$q%")
+                  ->orWhere('codigo', 'like', "%$q%");
+        }
+
+        $insumos = $query->get();
         $records = [];
 
         foreach ($insumos as $insumo) {
