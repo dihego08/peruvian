@@ -1,0 +1,79 @@
+# Compilación
+bin/
+obj/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Configuraciones de compilación
+Debug/
+Release/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Archivos temporales de usuario
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Archivos de build
+*.cache
+*.pdb
+*.mdb
+*.log
+*.tlog
+
+# Archivos de publicación
+publish/
+out/
+
+# Archivos de prueba
+TestResult*/
+*.trx
+*.coverage
+*.coveragexml
+
+# Archivos generados por VS
+.vs/
+.vscode/
+*.dbmdl
+*.bak
+*.tmp
+*.swp
+
+# Configuración de Rider o JetBrains
+.idea/
+
+# Archivos del sistema
+Thumbs.db
+Desktop.ini
+
+*.zip
+*.rar
+*.7z
+*.tar
+*.gz
+*.bz2
+*.exe
+*.dll
+*.lib
+*.obj
+*.pdb
+*.log
+*.txt
+*.jpg
+*.jpeg
+*.png
+*.gif
+*.bmp
+*.tiff
+*.ico
+*.webp
+*.svg
+*.eps
+*.pdf
+*.doc
