@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'http://localhost:8080/peruvian/backend/public/api',
+  baseURL: 'https://apiperuvian.dbusinessaqp.com/api',
   headers: {
     'Content-Type': 'application/json',
     'Accept': 'application/json'

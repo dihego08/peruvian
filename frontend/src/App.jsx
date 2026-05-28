@@ -30,6 +30,7 @@ import PuestosView from './views/PuestosView';
 import ColaboradoresView from './views/ColaboradoresView';
 import GuiasView from './views/GuiasView';
 import NewGuiaView from './views/NewGuiaView';
+import logo from './assets/logo.png';
 
 function ProtectedRoute({ children, auth }) {
   if (!auth) return <Navigate to="/login" replace />;
@@ -52,7 +53,9 @@ function MainLayout({ setAuth }) {
       {/* Sidebar */}
       <div className="w-64 bg-gray-900 text-white shadow-xl flex flex-col">
         <div className="p-6 border-b border-gray-800">
-          <h1 className="text-2xl font-bold text-blue-400">Maxcorp ERP</h1>
+          <h1 className="text-2xl font-bold text-blue-400">
+            <img src={logo} alt="Logo" className="w-100" />
+          </h1>
           <p className="text-sm text-gray-400 mt-1 italic">Gestión Empresarial</p>
         </div>
         <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
