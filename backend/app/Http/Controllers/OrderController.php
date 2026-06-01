@@ -44,6 +44,8 @@ class OrderController extends Controller
                 'det.producto',
                 'det.imagen',
                 'det.totalp',
+                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT g.num_guia SEPARATOR \' - \') FROM guia_detalle gd JOIN guia_cabecera g ON g.id = gd.id_guia WHERE gd.pedido LIKE CONCAT(\'%\', oc.codigo, \'%\')), oc.guia_remision) AS guia_remision'),
+                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%\', oc.codigo, \'%\')), \'\') AS codigo_venta'),
             ])
             ->orderByRaw('CAST(oc.codigo AS UNSIGNED) DESC')
             ->limit(200)
@@ -95,36 +97,7 @@ class OrderController extends Controller
             $order->imagen_alt      = $request->input('imagen_alt');
             $order->save();
 
-            $totalGeneral = 0;
-
-            // ===== Insertar cada fila de la matriz =====
-            foreach ($request->input('rows') as $row) {
-                $sizes   = $row['sizes'];   // array de 13 valores numéricos
-                $headers = $row['headers']; // array de 13 etiquetas personalizadas (N1-N13)
-                $rowTotal = array_sum(array_map('intval', $sizes));
-
-                $detail = new OrderDetail();
-                $detail->codigo_cabecera = $codigo;
-                $detail->modelo  = $row['modelo'];
-                $detail->color   = $row['color'] ?? null;
-                $detail->total   = $rowTotal;
-
-                // Mapeo dinámico de las 13 columnas de talla
-                $colNames = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
-                for ($i = 0; $i < 13; $i++) {
-                    $col = $colNames[$i];
-                    $detail->$col = isset($sizes[$i]) && $sizes[$i] !== '' ? (int)$sizes[$i] : null;
-                }
-
-                // Guardar etiquetas personalizadas n1-n13
-                for ($i = 1; $i <= 13; $i++) {
-                    $nkey = 'n' . $i;
-                    $detail->$nkey = $headers[$i - 1] ?? null;
-                }
-
-                $detail->save();
-                $totalGeneral += $rowTotal;
-            }
+            $totalGeneral = $this->insertOrderDetails($codigo, $request->input('rows'));
 
             // Actualizar total en cabecera
             DB::table('order_cabecera')
@@ -197,6 +170,206 @@ class OrderController extends Controller
             DB::rollBack();
             return response()->json(['Result' => 'ERROR', 'error' => $e->getMessage()], 500);
         }
+    }
+
+    /** Editar pedido (legacy: edit_order_pedido / edit_order). */
+    public function updateOrder(Request $request, $codigo)
+    {
+        $cabecera = DB::table('order_cabecera')->where('codigo', $codigo)->first();
+        if (!$cabecera) {
+            return response()->json(['Result' => 'ERROR', 'message' => 'Orden no encontrada'], 404);
+        }
+
+        $request->validate([
+            'person_id'       => 'required|integer',
+            'fecha_desde'     => 'required|date',
+            'tiempo_entrega'  => 'required|integer|min:1',
+            'rows'            => 'required|array|min:1',
+            'rows.*.modelo'   => 'required|string',
+            'rows.*.color'    => 'nullable|string',
+            'rows.*.sizes'    => 'required|array',
+            'rows.*.headers'  => 'required|array',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            $fechaEntrega = $this->calcularFechaEntrega(
+                $request->input('fecha_desde'),
+                (int) $request->input('tiempo_entrega')
+            );
+
+            DB::table('order_cabecera')->where('codigo', $codigo)->update([
+                'num_contrato'   => $request->input('num_contrato'),
+                'tiempo_entrega' => $request->input('tiempo_entrega'),
+                'person_id'      => $request->input('person_id'),
+                'fecha_creacion' => $request->input('fecha_desde'),
+                'fecha_entrega'  => $fechaEntrega,
+                'comentario'     => $request->input('comentario'),
+                'imagen_alt'     => $request->input('imagen_alt'),
+                'nombre_modelo'  => $request->input('nombre_producto'),
+            ]);
+
+            DB::table('order_detalle_2')->where('codigo_cabecera', $codigo)->delete();
+
+            $totalGeneral = $this->insertOrderDetails($codigo, $request->input('rows'));
+
+            DB::table('order_cabecera')->where('codigo', $codigo)->update(['total' => $totalGeneral]);
+            DB::table('order_detalle_2')->whereNull('modelo')->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'Result'  => 'OK',
+                'codigo'  => $codigo,
+                'message' => 'Orden modificada correctamente',
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'Result'  => 'ERROR',
+                'message' => 'Error al modificar la orden',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    /** Detalle para avance de producción (legacy: lista_detalle_produccion). */
+    public function getProductionDetail($codigo)
+    {
+        $cabecera = DB::table('order_cabecera')->where('codigo', $codigo)->first();
+        if (!$cabecera) {
+            return response()->json(['Result' => 'ERROR', 'message' => 'Orden no encontrada'], 404);
+        }
+
+        $detalles = DB::table('order_detalle_2')
+            ->where('codigo_cabecera', $codigo)
+            ->get();
+
+        return response()->json([
+            'Result'             => 'OK',
+            'Records'            => $detalles,
+            'fecha_entrega'      => $cabecera->fecha_entrega,
+            'fecha_entrega_real' => $cabecera->fecha_entrega_real,
+            'guia_remision'      => $cabecera->guia_remision,
+            'num_contrato'       => $cabecera->num_contrato,
+            'nombre_modelo'      => $cabecera->nombre_modelo,
+            'fecha_creacion'     => $cabecera->fecha_creacion,
+        ]);
+    }
+
+    /** Guardar avance de producción (legacy: new_produccion_order_pedido / actualizar_order_produccion). */
+    public function updateProduction(Request $request, $codigo)
+    {
+        $cabecera = DB::table('order_cabecera')->where('codigo', $codigo)->first();
+        if (!$cabecera) {
+            return response()->json(['Result' => 'ERROR', 'message' => 'Orden no encontrada'], 404);
+        }
+
+        $request->validate([
+            'fecha_desde'    => 'nullable|date',
+            'fecha_estimada' => 'nullable|date',
+            'fecha_entrega'  => 'nullable|date',
+            'n_contrato'     => 'nullable|string',
+            'guia'           => 'nullable|string',
+            'nombre_modelo'  => 'nullable|string',
+            'rows'           => 'required|array|min:1',
+            'rows.*.id'      => 'required|integer',
+            'rows.*.produced' => 'required|array',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            DB::table('order_cabecera')->where('codigo', $codigo)->update([
+                'fecha_creacion'     => $request->input('fecha_desde'),
+                'num_contrato'       => $request->input('n_contrato'),
+                'fecha_entrega_real' => $request->input('fecha_entrega'),
+                'fecha_entrega'      => $request->input('fecha_estimada'),
+                'guia_remision'      => $request->input('guia'),
+                'nombre_modelo'      => $request->input('nombre_modelo'),
+            ]);
+
+            $prodCols = ['p2','p4','p6','p8','p10','p12','p14','p16','ps','pm','pl','pxl','pxxl'];
+
+            foreach ($request->input('rows') as $row) {
+                $produced = $row['produced'];
+                $ptotal = 0;
+                $update = [];
+                foreach ($prodCols as $i => $col) {
+                    $val = isset($produced[$i]) && $produced[$i] !== '' ? (int) $produced[$i] : 0;
+                    $update[$col] = $val;
+                    $ptotal += $val;
+                }
+                $update['ptotal'] = $ptotal;
+
+                DB::table('order_detalle_2')->where('id', $row['id'])->update($update);
+            }
+
+            DB::commit();
+
+            return response()->json(['Result' => 'OK', 'message' => 'Avance de producción guardado']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'Result'  => 'ERROR',
+                'message' => 'Error al guardar producción',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function deleteOrderDetail($id)
+    {
+        DB::beginTransaction();
+        try {
+            $detail = DB::table('order_detalle_2')->where('id', $id)->first();
+            if (!$detail) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'Detalle no encontrado'], 404);
+            }
+
+            DB::table('order_detalle_2')->where('id', $id)->delete();
+            DB::table('order_cabecera')
+                ->where('codigo', $detail->codigo_cabecera)
+                ->decrement('total', (int) ($detail->total ?? 0));
+
+            DB::commit();
+            return response()->json(['Result' => 'OK']);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['Result' => 'ERROR', 'error' => $e->getMessage()], 500);
+        }
+    }
+
+    private function insertOrderDetails(string $codigo, array $rows): int
+    {
+        $colNames = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
+        $totalGeneral = 0;
+
+        foreach ($rows as $row) {
+            $sizes   = $row['sizes'];
+            $headers = $row['headers'];
+            $rowTotal = array_sum(array_map(fn ($v) => (int) ($v ?: 0), $sizes));
+
+            $detail = new OrderDetail();
+            $detail->codigo_cabecera = $codigo;
+            $detail->modelo  = $row['modelo'];
+            $detail->color   = $row['color'] ?? null;
+            $detail->total   = $rowTotal;
+
+            for ($i = 0; $i < 13; $i++) {
+                $col = $colNames[$i];
+                $detail->$col = isset($sizes[$i]) && $sizes[$i] !== '' ? (int) $sizes[$i] : null;
+            }
+
+            for ($i = 1; $i <= 13; $i++) {
+                $nkey = 'n' . $i;
+                $detail->$nkey = $headers[$i - 1] ?? null;
+            }
+
+            $detail->save();
+            $totalGeneral += $rowTotal;
+        }
+
+        return $totalGeneral;
     }
 
     // ===== Helper: calcular fecha de entrega ignorando domingos y feriados peruanos =====

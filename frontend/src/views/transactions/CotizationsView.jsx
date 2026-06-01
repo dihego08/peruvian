@@ -19,7 +19,8 @@ const CotizationsView = () => {
     const [showDetailModal, setShowDetailModal] = useState(false);
     const [selectedCotization, setSelectedCotization] = useState(null);
     const [detailLoading, setDetailLoading] = useState(false);
-
+    // Modal Image State
+    const [expandedImage, setExpandedImage] = useState(null);
     useEffect(() => {
         fetchCotizations();
     }, []);
@@ -109,9 +110,10 @@ const CotizationsView = () => {
                                         <td className="px-6 py-4">
                                             {cot.imagen ? (
                                                 <img
-                                                    src={cot.imagen.includes('_') ? `${LOCAL_IMAGE_BASE_URL}/${cot.imagen}` : `${IMAGE_BASE_URL}/${cot.imagen}`}
+                                                    src={IMAGE_BASE_URL + "/" + cot.imagen}
                                                     alt="Thumbnail"
-                                                    className="w-12 h-12 object-cover rounded-md border border-gray-200"
+                                                    onClick={() => setExpandedImage(IMAGE_BASE_URL + "/" + cot.imagen)}
+                                                    className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
                                                 />
                                             ) : (
                                                 <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
@@ -298,6 +300,29 @@ const CotizationsView = () => {
                                 Cerrar
                             </button>
                         </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Imagen */}
+            {expandedImage && (
+                <div
+                    className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm cursor-pointer animate-in fade-in zoom-in duration-200"
+                    onClick={() => setExpandedImage(null)}
+                >
+                    <div className="relative max-w-4xl max-h-[90vh] flex flex-col">
+                        <button
+                            className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+                            onClick={() => setExpandedImage(null)}
+                        >
+                            <XMarkIcon className="h-8 w-8" />
+                        </button>
+                        <img
+                            src={expandedImage}
+                            alt="Vista ampliada"
+                            className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white"
+                            onClick={(e) => e.stopPropagation()}
+                        />
                     </div>
                 </div>
             )}

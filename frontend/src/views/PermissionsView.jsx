@@ -90,7 +90,7 @@ export default function PermissionsView() {
           <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-2">
             Control de Accesos
           </h1>
-          <p className="text-sm text-gray-500 mt-0.5">Gestión de permisos por usuario</p>
+          <p className="text-sm text-gray-500 mt-0.5">Permisos del menú del nuevo sistema (app_menus)</p>
         </div>
         {selectedUser && (
           <button

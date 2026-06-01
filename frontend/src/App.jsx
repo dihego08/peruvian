@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import UsersView from './views/UsersView';
 import ClientsView from './views/ClientsView';
 import ProductsView from './views/ProductsView';
@@ -10,6 +10,8 @@ import NewSellView from './views/transactions/NewSellView';
 import SellPaymentsView from './views/transactions/SellPaymentsView';
 import OrdersView from './views/transactions/OrdersView';
 import NewOrderView from './views/transactions/NewOrderView';
+import EditOrderView from './views/transactions/EditOrderView';
+import OrderProductionView from './views/transactions/OrderProductionView';
 import CotizationsView from './views/transactions/CotizationsView';
 import NewCotizationView from './views/transactions/NewCotizationView';
 import InsumosView from './views/InsumosView';
@@ -31,6 +33,10 @@ import ColaboradoresView from './views/ColaboradoresView';
 import GuiasView from './views/GuiasView';
 import NewGuiaView from './views/NewGuiaView';
 import logo from './assets/logo.png';
+import SidebarMenu from './components/SidebarMenu';
+
+/** Base de despliegue (VITE_BASE_PATH). Necesario para rutas en nueva pestaña. */
+const routerBasename = import.meta.env.BASE_URL.replace(/\/$/, '') || undefined;
 
 function ProtectedRoute({ children, auth }) {
   if (!auth) return <Navigate to="/login" replace />;
@@ -58,36 +64,8 @@ function MainLayout({ setAuth }) {
           </h1>
           <p className="text-sm text-gray-400 mt-1 italic">Gestión Empresarial</p>
         </div>
-        <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
-          <Link to="/users" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Usuarios</Link>
-          <Link to="/cargos" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Cargos</Link>
-          <Link to="/permissions" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Accesos</Link>
-          <Link to="/clients" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Clientes</Link>
-          <Link to="/products" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Productos</Link>
-          <Link to="/providers" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Proveedores</Link>
-          <Link to="/brands" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Marcas</Link>
-          <Link to="/tech-sheets" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-blue-400">Fichas Técnicas</Link>
-          <Link to="/machines" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Maquinaria</Link>
-          <Link to="/insumos" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Insumos</Link>
-          <Link to="/purchases" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Compras</Link>
-          <Link to="/unidades" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Unidades</Link>
-          <Link to="/fam-class" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Familias y Clases</Link>
-          <div className="mt-6">
-            <span className="block px-4 py-2 text-gray-500 uppercase text-[10px] font-black tracking-widest">Transacciones</span>
-            <Link to="/sells" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-green-400">Ventas</Link>
-            <Link to="/sell-payments" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-cyan-400">Ventas Pagos</Link>
-            <Link to="/orders" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-amber-400">Pedidos</Link>
-            <Link to="/cotizations" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-indigo-400">Cotizaciones</Link>
-            <Link to="/guias" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-rose-400">Guías de Remisión</Link>
-          </div>
-          <div className="mt-6">
-            <span className="block px-4 py-2 text-gray-500 uppercase text-[10px] font-black tracking-widest">SIG</span>
-            <Link to="/sig/perfil-puesto" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-purple-400">Perfil de Puesto</Link>
-            <Link to="/sig/areas" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-emerald-400">Áreas</Link>
-            <Link to="/sig/puestos" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-orange-400">Puestos</Link>
-            <Link to="/sig/colaboradores" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium text-blue-400">Personal</Link>
-            <Link to="/sig/documents" className="block px-4 py-2.5 rounded-lg hover:bg-gray-800 transition-colors duration-200 text-sm font-medium">Documentos</Link>
-          </div>
+        <nav className="flex-1 p-4 overflow-y-auto custom-scrollbar">
+          <SidebarMenu />
         </nav>
         <div className="p-4 border-t border-gray-800 bg-gray-950/50">
           <button
@@ -141,6 +119,8 @@ function MainLayout({ setAuth }) {
             <Route path="/sell-payments" element={<SellPaymentsView />} />
             <Route path="/orders" element={<OrdersView />} />
             <Route path="/orders/new" element={<NewOrderView />} />
+            <Route path="/orders/:codigo/edit" element={<EditOrderView />} />
+            <Route path="/orders/:codigo/production" element={<OrderProductionView />} />
             <Route path="/cotizations" element={<CotizationsView />} />
             <Route path="/cotizations/new" element={<NewCotizationView />} />
             <Route path="/sig/perfil-puesto" element={<PerfilPuestosView />} />
@@ -165,7 +145,7 @@ function App() {
   const [auth, setAuth] = useState(!!localStorage.getItem('token'));
 
   return (
-    <Router>
+    <Router basename={routerBasename}>
       <Routes>
         <Route path="/login" element={!auth ? <LoginView setAuth={setAuth} /> : <Navigate to="/" replace />} />
         <Route path="/*" element={

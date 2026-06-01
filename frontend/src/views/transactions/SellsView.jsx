@@ -211,7 +211,7 @@ export default function SellsView() {
                             <div className="flex items-center gap-2">
                               {item.producto_imagen && (
                                 <img
-                                  src={`http://localhost:8000/storage/products/${item.producto_imagen}`}
+                                  src={`https://peruvian.peruviandress.com/storage/products/${item.producto_imagen}`}
                                   className="w-7 h-7 object-cover rounded border border-gray-200"
                                   onError={e => { e.target.style.display = 'none'; }}
                                   alt=""

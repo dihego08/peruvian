@@ -1,9 +1,8 @@
 import axios from 'axios';
 
 const api = axios.create({
-  baseURL: 'https://apiperuvian.dbusinessaqp.com/api',
-  headers: {
-    'Content-Type': 'application/json',
+  baseURL: import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api',
+  headers: {    'Content-Type': 'application/json',
     'Accept': 'application/json'
   }
 });
@@ -26,7 +25,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      window.location.href = `${import.meta.env.BASE_URL}login`.replace(/\/+/g, '/');
     }
     return Promise.reject(error);
   }

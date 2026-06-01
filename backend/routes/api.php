@@ -26,6 +26,7 @@ use App\Http\Controllers\AreaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorController;
 use App\Http\Controllers\GuiaController;
+use App\Http\Controllers\MenuController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -69,6 +70,9 @@ Route::apiResource('machine-maintenance', MaquinaMantenimientoController::class)
 // Machines
 Route::post('/machines/{id}/restore', [MaquinaController::class, 'restore']);
 Route::apiResource('machines', MaquinaController::class);
+
+// Navigation (menú lateral por usuario, igual que layout.php)
+Route::get('/menu/navigation', [MenuController::class, 'navigation']);
 
 // Permissions
 Route::get('/permissions/menus', [PermissionController::class, 'getMenus']);
@@ -154,11 +158,15 @@ Route::get('cotizations/{codigo}', [CotizationController::class, 'show']);
 Route::post('cotizations', [CotizationController::class, 'store']);
 Route::delete('cotizations/{codigo}', [CotizationController::class, 'destroy']);
 
-// Orders (Pedidos)
+// Orders (Pedidos) — rutas específicas antes de {codigo}
 Route::get('transactions/orders', [OrderController::class, 'getOrders']);
 Route::post('transactions/orders', [OrderController::class, 'storeOrder']);
-Route::get('transactions/orders/{codigo}', [OrderController::class, 'getOrderDetail']);
+Route::delete('transactions/orders/detail/{id}', [OrderController::class, 'deleteOrderDetail']);
+Route::get('transactions/orders/{codigo}/production', [OrderController::class, 'getProductionDetail']);
+Route::put('transactions/orders/{codigo}/production', [OrderController::class, 'updateProduction']);
 Route::patch('transactions/orders/{codigo}/status', [OrderController::class, 'updateOrderStatus']);
+Route::get('transactions/orders/{codigo}', [OrderController::class, 'getOrderDetail']);
+Route::put('transactions/orders/{codigo}', [OrderController::class, 'updateOrder']);
 Route::delete('transactions/orders/{codigo}', [OrderController::class, 'deleteOrder']);
 
 // Insumos

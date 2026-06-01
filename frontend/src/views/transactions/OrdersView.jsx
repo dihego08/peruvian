@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
-import { EyeIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
-
+import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 const ESTADO_MAP = {
   0: { label: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
   1: { label: 'Completado', color: 'bg-green-100 text-green-800' },
@@ -21,6 +20,8 @@ export default function OrdersView() {
   const [orderDetail, setOrderDetail] = useState([]);
   const [loadingDetail, setLoadingDetail] = useState(false);
 
+  // Modal Image State
+  const [expandedImage, setExpandedImage] = useState(null);
   useEffect(() => { fetchOrders(); }, []);
 
   const fetchOrders = async () => {
@@ -113,10 +114,15 @@ export default function OrdersView() {
                 <th className="px-4 py-3">Código</th>
                 <th className="px-4 py-3">Contrato</th>
                 <th className="px-4 py-3">Cliente</th>
+                <th className="px-4 py-3">Descripción</th>
+                <th className="px-4 py-3">Cod. Modelo</th>
                 <th className="px-4 py-3">Modelo</th>
+                <th className="px-4 py-3">Guía Remisión</th>
+                <th className="px-4 py-3">Documento</th>
                 <th className="px-4 py-3 text-center">Total</th>
                 <th className="px-4 py-3">F. Creación</th>
-                <th className="px-4 py-3">F. Entrega</th>
+                <th className="px-4 py-3">Fec. Est. Entrega</th>
+                <th className="px-4 py-3">Fec. Entrega</th>
                 <th className="px-4 py-3 text-center">Días Rest.</th>
                 <th className="px-4 py-3 text-center">Estado</th>
                 <th className="px-4 py-3 text-center">Acciones</th>
@@ -124,10 +130,10 @@ export default function OrdersView() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading && (
-                <tr><td colSpan="10" className="px-4 py-8 text-center text-gray-400">Cargando pedidos...</td></tr>
+                <tr><td colSpan="15" className="px-4 py-8 text-center text-gray-400">Cargando pedidos...</td></tr>
               )}
               {!loading && filtered.length === 0 && (
-                <tr><td colSpan="10" className="px-4 py-8 text-center text-gray-400">No hay órdenes registradas</td></tr>
+                <tr><td colSpan="15" className="px-4 py-8 text-center text-gray-400">No hay órdenes registradas</td></tr>
               )}
               {filtered.map(order => {
                 const estado = ESTADO_MAP[order.estado] || ESTADO_MAP[0];
@@ -138,22 +144,31 @@ export default function OrdersView() {
                     <td className="px-4 py-3 font-mono font-bold text-gray-800">{order.codigo}</td>
                     <td className="px-4 py-3 text-gray-600">{order.num_contrato || '-'}</td>
                     <td className="px-4 py-3 font-medium">{order.name}</td>
+                    <td className="px-4 py-3 text-gray-700 truncate max-w-xs">{order.nombre_modelo || order.producto || '-'}</td>
+                    <td className="px-4 py-3 text-gray-700">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {order.imagen && (
+                        {order.imagen ? (
                           <img
-                            src={`http://localhost:8000/storage/products/${order.imagen}`}
+                            src={`https://peruvian.peruviandress.com/storage/products/${order.imagen}`}
                             alt={order.producto}
-                            className="w-8 h-8 object-cover rounded border border-gray-200"
+                            className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setExpandedImage(`https://peruvian.peruviandress.com/storage/products/${order.imagen}`)}
                             onError={e => { e.target.style.display = 'none'; }}
                           />
+                        ) : (
+                          <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs border border-gray-200">
+                            -
+                          </div>
                         )}
-                        <span className="text-gray-700 truncate max-w-xs">{order.codigo_modelo || order.nombre_modelo || '-'}</span>
                       </div>
                     </td>
+                    <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>') : '-' }} />
+                    <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.codigo_venta ? order.codigo_venta.split(' - ').join('<br>') : '-' }} />
                     <td className="px-4 py-3 text-center font-semibold">{order.totalp || order.total || 0}</td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_entrega ? new Date(order.fecha_entrega).toLocaleDateString('es-PE') : '-'}</td>
+                    <td className="px-4 py-3 text-gray-600">{order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-'}</td>
                     <td className={`px-4 py-3 text-center ${diasColor}`}>
                       {isNaN(diasRest) ? '-' : diasRest < 0 ? `${Math.abs(diasRest)}d tarde` : `${diasRest}d`}
                     </td>
@@ -169,17 +184,31 @@ export default function OrdersView() {
                       </select>
                     </td>
                     <td className="px-4 py-3">
-                      <div className="flex items-center justify-center gap-2">
-                        <button 
-                          onClick={() => handleViewDetail(order)} 
-                          title="Ver Detalle" 
+                      <div className="flex items-center justify-center gap-1">
+                        <button
+                          onClick={() => handleViewDetail(order)}
+                          title="Ver Detalle"
                           className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         >
                           <EyeIcon className="h-5 w-5" />
                         </button>
-                        <button 
-                          onClick={() => handleDelete(order.codigo)} 
-                          title="Eliminar" 
+                        <button
+                          onClick={() => navigate(`/orders/${order.codigo}/production`)}
+                          title="Completar pedido / Avance de producción"
+                          className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                        >
+                          <PlusIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => navigate(`/orders/${order.codigo}/edit`)}
+                          title="Editar pedido"
+                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                        >
+                          <PencilIcon className="h-5 w-5" />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(order.codigo)}
+                          title="Eliminar"
                           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <TrashIcon className="h-5 w-5" />
@@ -283,13 +312,35 @@ export default function OrdersView() {
             </div>
 
             <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end">
-              <button 
+              <button
                 onClick={() => setShowModalDetail(false)}
                 className="bg-white border border-gray-200 text-gray-700 px-6 py-2 rounded-xl hover:bg-gray-100 transition-all font-bold text-sm shadow-sm"
               >
                 Cerrar Detalle
               </button>
             </div>
+          </div>
+        </div>
+      )}
+      {/* Modal Imagen */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm cursor-pointer animate-in fade-in zoom-in duration-200"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] flex flex-col">
+            <button
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              onClick={() => setExpandedImage(null)}
+            >
+              <XMarkIcon className="h-8 w-8" />
+            </button>
+            <img
+              src={expandedImage}
+              alt="Vista ampliada"
+              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
       )}
