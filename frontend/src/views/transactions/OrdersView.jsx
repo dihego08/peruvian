@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 const ESTADO_MAP = {
   0: { label: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
@@ -150,11 +151,11 @@ export default function OrdersView() {
                       <div className="flex items-center gap-2">
                         {order.imagen ? (
                           <img
-                            src={`https://peruvian.peruviandress.com/storage/products/${order.imagen}`}
+                            src={getProductImageUrl(order.imagen)}
                             alt={order.producto}
                             className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
-                            onClick={() => setExpandedImage(`https://peruvian.peruviandress.com/storage/products/${order.imagen}`)}
-                            onError={e => { e.target.style.display = 'none'; }}
+                            onClick={(e) => setExpandedImage(e.target.src)}
+                            onError={e => handleProductImageError(e, order.imagen)}
                           />
                         ) : (
                           <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs border border-gray-200">

@@ -41,6 +41,14 @@ class ColaboradorController extends Controller
         
         $data = $request->all();
         
+        if ($request->hasFile('foto')) {
+            $file = $request->file('foto');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('storage/img-colaboradores');
+            $file->move($destinationPath, $filename);
+            $data['foto'] = $filename;
+        }
+        
         // Handle checkboxes/boolean
         $data['asegurado'] = $request->boolean('asegurado') ? 1 : 0;
         $data['estado'] = $request->boolean('estado') ? 1 : 0;

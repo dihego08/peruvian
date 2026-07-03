@@ -161,6 +161,7 @@ Route::delete('cotizations/{codigo}', [CotizationController::class, 'destroy']);
 // Orders (Pedidos) — rutas específicas antes de {codigo}
 Route::get('transactions/orders', [OrderController::class, 'getOrders']);
 Route::post('transactions/orders', [OrderController::class, 'storeOrder']);
+Route::post('transactions/orders/upload', [OrderController::class, 'uploadImage']);
 Route::delete('transactions/orders/detail/{id}', [OrderController::class, 'deleteOrderDetail']);
 Route::get('transactions/orders/{codigo}/production', [OrderController::class, 'getProductionDetail']);
 Route::put('transactions/orders/{codigo}/production', [OrderController::class, 'updateProduction']);

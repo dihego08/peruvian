@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import { getColaboradorFotoUrl, handleColaboradorFotoError } from '../utils/image';
 import {
   UserPlusIcon,
   PencilSquareIcon,
@@ -51,6 +52,7 @@ export default function ColaboradoresView() {
   const [formData, setFormData] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [activeTab, setActiveTab] = useState('personal');
+  const [fotoPreview, setFotoPreview] = useState(null);
 
   // Filters
   const [filterMonth, setFilterMonth] = useState('0');
@@ -82,6 +84,7 @@ export default function ColaboradoresView() {
   const openCreate = () => {
     setEditingId(null);
     setFormData(EMPTY);
+    setFotoPreview(null);
     setActiveTab('personal');
     setShowModal(true);
   };
@@ -93,6 +96,7 @@ export default function ColaboradoresView() {
       asegurado: !!c.asegurado,
       estado: !!c.estado
     });
+    setFotoPreview(getColaboradorFotoUrl(c.foto));
     setActiveTab('personal');
     setShowModal(true);
   };
@@ -101,13 +105,33 @@ export default function ColaboradoresView() {
     setShowModal(false);
     setEditingId(null);
     setFormData(EMPTY);
+    setFotoPreview(null);
+  };
+
+  const handleFotoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(f => ({ ...f, foto: file }));
+      setFotoPreview(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
     try {
-      await api.post('/sig/colaboradores', { ...formData, id: editingId });
+      const data = new FormData();
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== null && formData[key] !== undefined) {
+          data.append(key, formData[key]);
+        }
+      });
+      if (editingId) {
+        data.append('id', editingId);
+      }
+      await api.post('/sig/colaboradores', data, {
+        headers: { 'Content-Type': 'multipart/form-data' }
+      });
       closeModal();
       fetchColaboradores();
     } catch (err) {
@@ -309,13 +333,31 @@ export default function ColaboradoresView() {
 
                   <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-200 rounded-2xl gap-4">
                     <div className="w-40 h-40 bg-gray-100 rounded-2xl flex items-center justify-center border border-gray-200 overflow-hidden shadow-inner">
-                      {formData.foto ? (
-                        <img src={"https://peruvian.peruviandress.com/core/app/view/img-colaboradores/" + formData.foto} className="w-full h-full object-cover" alt="Foto" />
+                      {fotoPreview ? (
+                        <img
+                          src={fotoPreview}
+                          className="w-full h-full object-cover"
+                          alt="Foto"
+                          onError={(e) => {
+                            if (typeof formData.foto === 'string') {
+                              handleColaboradorFotoError(e, formData.foto);
+                            }
+                          }}
+                        />
                       ) : (
                         <CameraIcon className="h-12 w-12 text-gray-300" />
                       )}
                     </div>
-                    <button type="button" className="text-xs font-bold text-blue-600 hover:underline">CARGAR FOTOGRAFÍA</button>
+                    <label htmlFor="foto-upload" className="cursor-pointer text-xs font-bold text-blue-600 hover:underline">
+                      CARGAR FOTOGRAFÍA
+                    </label>
+                    <input
+                      id="foto-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFotoChange}
+                    />
                     <p className="text-[10px] text-gray-400 text-center uppercase tracking-widest px-4">Formato sugerido: 400x400px (JPG/PNG)</p>
                   </div>
 

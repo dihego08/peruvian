@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
+import { getProductImageUrl, handleProductImageError } from '../utils/image';
 import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
 
 const EMPTY_PRODUCT = {
   kind: '1', cliente_id: '', code: '', barcode: '', name: '', brand_id: '',
   description: '', price_in: '', price_in_2: '', price_out: '', unit: '',
   presentation: '', large: '', width: '', height: '', weight: '',
-  inventary_min: '', q: '', pre_bor_in: '', pre_bor_out: '', fecact: '', image: null
+  inventary_min: '', q: '', pre_bor_in: '', pre_bor_out: '', fecact: '', image: null,
+  imgbordado: null, secuencia: null
 };
 
 export default function ProductsView() {
@@ -51,7 +53,7 @@ export default function ProductsView() {
       large: p.large || '', width: p.width || '', height: p.height || '',
       weight: p.weight || '', inventary_min: p.inventary_min || '',
       q: p.q || '', pre_bor_in: p.pre_bor_in || '', pre_bor_out: p.pre_bor_out || '',
-      fecact: p.fecact || '', image: null  // no pre-cargamos el archivo, imagen existente se mantiene
+      fecact: p.fecact || '', image: null, imgbordado: null, secuencia: null
     });
     setShowModal(true);
   };
@@ -124,7 +126,12 @@ export default function ProductsView() {
                   <tr key={product.id} className="hover:bg-gray-50 transition-colors">
                     <td className="p-4">
                       {product.image ? (
-                        <img src={`https://peruvian.peruviandress.com/storage/products/${product.image}`} alt={product.name} className="w-12 h-12 object-cover rounded-md border border-gray-200" />
+                        <img
+                          src={getProductImageUrl(product.image)}
+                          alt={product.name}
+                          className="w-12 h-12 object-cover rounded-md border border-gray-200"
+                          onError={(e) => handleProductImageError(e, product.image)}
+                        />
                       ) : (
                         <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
                       )}
@@ -178,9 +185,17 @@ export default function ProductsView() {
                       <option value="2">Servicio</option>
                     </select>
                   </div>
-                  <div className="col-span-2">
-                    <label className="block text-sm font-medium text-gray-700">Imagen</label>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Imagen Principal</label>
                     <input name="image" type="file" accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" onChange={handleInputChange} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Imagen Bordado</label>
+                    <input name="imgbordado" type="file" accept="image/*" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" onChange={handleInputChange} />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700">Hoja de Secuencia</label>
+                    <input name="secuencia" type="file" accept="image/*,application/pdf" className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100" onChange={handleInputChange} />
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700">Nombre *</label>

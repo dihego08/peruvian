@@ -57,12 +57,36 @@ class OrderController extends Controller
         ]);
     }
 
+    public function uploadImage(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|max:4096'
+        ]);
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $destinationPath = public_path('storage/products');
+            $file->move($destinationPath, $filename);
+            return response()->json([
+                'Result' => 'OK',
+                'filename' => $filename
+            ]);
+        }
+
+        return response()->json([
+            'Result' => 'ERROR',
+            'message' => 'No se pudo cargar la imagen'
+        ], 400);
+    }
+
     public function storeOrder(Request $request)
     {
         $request->validate([
             'person_id'       => 'required|integer',
             'fecha_desde'     => 'required|date',
             'tiempo_entrega'  => 'required|integer|min:1',
+            'imagen_alt'      => 'nullable|string',
             'rows'            => 'required|array|min:1',
             'rows.*.modelo'   => 'required|string',
             'rows.*.color'    => 'nullable|string',
@@ -184,6 +208,7 @@ class OrderController extends Controller
             'person_id'       => 'required|integer',
             'fecha_desde'     => 'required|date',
             'tiempo_entrega'  => 'required|integer|min:1',
+            'imagen_alt'      => 'nullable|string',
             'rows'            => 'required|array|min:1',
             'rows.*.modelo'   => 'required|string',
             'rows.*.color'    => 'nullable|string',

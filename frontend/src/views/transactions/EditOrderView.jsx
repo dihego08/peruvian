@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
+import { handleProductImageError } from '../../utils/image';
 
 const SIZE_COLS = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
 const DEFAULT_HEADERS = ['2','4','6','8','10','12','14','16','S','M','L','XL','XXL'];
@@ -28,6 +29,8 @@ export default function EditOrderView() {
   const [headers, setHeaders] = useState([...DEFAULT_HEADERS]);
   const [inputRow, setInputRow] = useState(emptyRow());
   const [rows, setRows] = useState([]);
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
   const [formData, setFormData] = useState({
     person_id: '',
     fecha_desde: '',
@@ -83,6 +86,11 @@ export default function EditOrderView() {
           name: cabecera.nombre_modelo || modelo,
           image: cabecera.imagen_alt,
         });
+        if (cabecera.imagen_alt) {
+          setImagePreview(`https://peruvian.peruviandress.com/storage/products/${cabecera.imagen_alt}`);
+        } else {
+          setImagePreview(null);
+        }
       }
     } catch (e) {
       console.error(e);
@@ -107,10 +115,26 @@ export default function EditOrderView() {
     setFormData((f) => ({
       ...f,
       nombre_producto: product.name,
-      imagen_alt: product.image || f.imagen_alt,
+      imagen_alt: product.image || '',
     }));
+    setImagePreview(product.image ? `https://peruvian.peruviandress.com/storage/products/${product.image}` : null);
+    setImageFile(null);
     setSearchResults([]);
     setSearchQuery('');
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleRemoveImage = () => {
+    setImageFile(null);
+    setImagePreview(null);
+    setFormData((f) => ({ ...f, imagen_alt: '' }));
   };
 
   const handleHeaderChange = (idx, val) => {
@@ -159,8 +183,21 @@ export default function EditOrderView() {
 
     setSaving(true);
     try {
+      let uploadedFilename = formData.imagen_alt;
+      if (imageFile) {
+        const uploadData = new FormData();
+        uploadData.append('image', imageFile);
+        const uploadRes = await api.post('/transactions/orders/upload', uploadData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        if (uploadRes.data && uploadRes.data.filename) {
+          uploadedFilename = uploadRes.data.filename;
+        }
+      }
+
       const payload = {
         ...formData,
+        imagen_alt: uploadedFilename,
         tiempo_entrega: parseInt(formData.tiempo_entrega, 10),
         rows: rows.map((r) => ({
           modelo: selectedModel.code || selectedModel.name,
@@ -254,11 +291,89 @@ export default function EditOrderView() {
           </div>
         )}
         {selectedModel && (
-          <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg">
-            {formData.imagen_alt && (
-              <img src={`https://peruvian.peruviandress.com/storage/products/${formData.imagen_alt}`} alt="" className="w-12 h-12 object-cover rounded border" onError={(e) => { e.target.style.display = 'none'; }} />
-            )}
-            <p className="text-sm font-semibold text-green-900">{selectedModel.code} — {selectedModel.name}</p>
+          <div className="p-4 bg-gray-50 border border-gray-200 rounded-xl flex flex-col md:flex-row gap-4 items-center">
+            <div className="relative w-32 h-32 bg-white rounded-lg border border-gray-200 overflow-hidden flex items-center justify-center group shadow-sm shrink-0">
+              {imagePreview ? (
+                <img
+                  src={imagePreview}
+                  alt="Modelo preview"
+                  className="w-full h-full object-cover transition-transform duration-200 group-hover:scale-105"
+                  onError={(e) => {
+                    if (formData.imagen_alt) {
+                      handleProductImageError(e, formData.imagen_alt);
+                    } else {
+                      e.target.style.display = 'none';
+                    }
+                  }}
+                />
+              ) : (
+                <div className="text-gray-400 text-xs flex flex-col items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                  </svg>
+                  Sin Imagen
+                </div>
+              )}
+            </div>
+            
+            <div className="flex-1 flex flex-col gap-2 w-full text-left">
+              <div>
+                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                  Modelo Seleccionado
+                </span>
+                {imageFile && (
+                  <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 animate-pulse">
+                    Nueva imagen cargada
+                  </span>
+                )}
+                <h3 className="text-base font-semibold text-gray-900 mt-1">
+                  {selectedModel.code} — {selectedModel.name}
+                </h3>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  La imagen asociada a esta orden se puede modificar de forma independiente del catálogo.
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2 mt-2">
+                <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold rounded-md shadow-sm transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+                  </svg>
+                  Seleccionar otra
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    onChange={handleImageChange}
+                  />
+                </label>
+
+                {imagePreview && (
+                  <button
+                    type="button"
+                    onClick={handleRemoveImage}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-red-100 hover:bg-red-200 text-red-700 text-xs font-semibold rounded-md transition-colors"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                    </svg>
+                    Quitar
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSelectedModel(null);
+                    setImagePreview(null);
+                    setImageFile(null);
+                  }}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-md transition-colors"
+                >
+                  Cambiar Modelo
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </div>
