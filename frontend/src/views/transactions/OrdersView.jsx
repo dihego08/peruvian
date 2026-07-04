@@ -3,6 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import * as XLSX from 'xlsx';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 const ESTADO_MAP = {
   0: { label: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
   1: { label: 'Completado', color: 'bg-green-100 text-green-800' },
@@ -78,6 +81,76 @@ export default function OrdersView() {
     (o.num_contrato || '').toLowerCase().includes(search.toLowerCase())
   );
 
+  let pedidosTiempo = 0;
+  let pedidosFuera = 0;
+
+  filtered.forEach(o => {
+    if (o.fecha_entrega_real) {
+      if (o.fecha_entrega_real <= o.fecha_entrega) pedidosTiempo++;
+      else pedidosFuera++;
+    } else {
+      if (parseInt(o.dias_restantes) >= 0) pedidosTiempo++;
+      else pedidosFuera++;
+    }
+  });
+
+  const exportToExcel = () => {
+    const dataToExport = filtered.map(order => ({
+      'Pedido': order.codigo,
+      'F. Creación': order.fecha_creacion,
+      'Cliente': order.name,
+      'Descripción': order.nombre_modelo || order.producto,
+      'Cod. Modelo': order.codigo_unitario || order.codigo_modelo,
+      'Modelo': order.nombre_modelo,
+      'N° Contrato': order.num_contrato,
+      'Cant. Pedido': order.total,
+      'Cant. Producción': order.totalp,
+      'Guía Remisión': order.guia_remision,
+      'Documento': order.codigo_venta,
+      'Fec. Est. Entrega': order.fecha_entrega,
+      'Fec. Entrega': order.fecha_entrega_real
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Pedidos");
+    XLSX.writeFile(workbook, "pedidos_export.xlsx");
+  };
+
+  const exportToPDF = () => {
+    const doc = new jsPDF('landscape');
+    doc.text("Reporte de Pedidos", 14, 15);
+
+    const tableColumn = ["Código", "Fecha", "Cliente", "Modelo", "Contrato", "Cant", "Prod", "F. Estimada", "F. Real", "Guías"];
+    const tableRows = [];
+
+    filtered.forEach(order => {
+      const rowData = [
+        order.codigo,
+        order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-',
+        order.name,
+        order.nombre_modelo || order.producto || '-',
+        order.num_contrato || '-',
+        order.total || 0,
+        order.totalp || 0,
+        order.fecha_entrega ? new Date(order.fecha_entrega).toLocaleDateString('es-PE') : '-',
+        order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-',
+        (order.guia_remision || '').split(' - ').join(', ')
+      ];
+      tableRows.push(rowData);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [31, 41, 55] }
+    });
+
+    doc.save("pedidos_export.pdf");
+  };
+
   const SIZE_COLS = ['_2', '_4', '_6', '_8', '_10', '_12', '_14', '_16', 's', 'm', 'l', 'xl', 'xxl'];
   const PROD_COLS = ['p2', 'p4', 'p6', 'p8', 'p10', 'p12', 'p14', 'p16', 'ps', 'pm', 'pl', 'pxl', 'pxxl'];
 
@@ -88,45 +161,77 @@ export default function OrdersView() {
           <h1 className="text-2xl font-bold text-gray-900">Órdenes de Pedido</h1>
           <p className="text-sm text-gray-500 mt-0.5">Gestión de producción de prendas</p>
         </div>
-        <button
-          onClick={() => navigate('/orders/new')}
-          className="bg-gray-800 text-white px-5 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors flex items-center gap-2"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          Nuevo Pedido
-        </button>
+        <div className="flex items-center gap-3">
+          <button
+            onClick={exportToExcel}
+            title="Exportar a Excel"
+            className="bg-green-600 text-white px-4 py-2.5 rounded-md hover:bg-green-700 shadow-sm font-medium transition-colors flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="8" y1="13" x2="16" y2="17" /><line x1="16" y1="13" x2="8" y2="17" /></svg>
+            Excel
+          </button>
+          <button
+            onClick={exportToPDF}
+            title="Exportar a PDF"
+            className="bg-red-600 text-white px-4 py-2.5 rounded-md hover:bg-red-700 shadow-sm font-medium transition-colors flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><path d="M16 13H8" /><path d="M16 17H8" /><path d="M10 9H8" /></svg>
+            PDF
+          </button>
+          <button
+            onClick={() => navigate('/orders/new')}
+            className="bg-gray-800 text-white px-5 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors flex items-center gap-2"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            Nuevo Pedido
+          </button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 flex flex-col justify-center items-center shadow-sm hover:scale-[1.02] transition-transform duration-300">
+          <span className="text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Total Pedidos</span>
+          <span className="text-3xl font-black text-blue-600 drop-shadow-sm">{filtered.length}</span>
+        </div>
+        <div className="bg-emerald-50 border border-emerald-100 rounded-xl p-4 flex flex-col justify-center items-center shadow-sm hover:scale-[1.02] transition-transform duration-300">
+          <span className="text-xs font-bold text-emerald-800 uppercase tracking-wider mb-1">Entregados / En Tiempo</span>
+          <span className="text-3xl font-black text-emerald-600 drop-shadow-sm">{pedidosTiempo}</span>
+        </div>
+        <div className="bg-rose-50 border border-rose-100 rounded-xl p-4 flex flex-col justify-center items-center shadow-sm hover:scale-[1.02] transition-transform duration-300">
+          <span className="text-xs font-bold text-rose-800 uppercase tracking-wider mb-1">Fuera de Tiempo</span>
+          <span className="text-3xl font-black text-rose-600 drop-shadow-sm">{pedidosFuera}</span>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
         <input
           type="text"
-          className="w-full p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
+          className="w-full p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
           placeholder="Buscar por código, cliente, modelo o contrato..."
           value={search}
           onChange={e => setSearch(e.target.value)}
         />
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-200">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 290px)' }}>
+        <div className="overflow-auto relative">
+          <table className="w-full text-left text-sm whitespace-nowrap">
+            <thead className="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-200 sticky top-0 z-10 shadow-sm">
               <tr>
-                <th className="px-4 py-3">Código</th>
-                <th className="px-4 py-3">Contrato</th>
+                <th className="px-4 py-3">Pedido</th>
+                <th className="px-4 py-3">F. Creación</th>
                 <th className="px-4 py-3">Cliente</th>
                 <th className="px-4 py-3">Descripción</th>
                 <th className="px-4 py-3">Cod. Modelo</th>
                 <th className="px-4 py-3">Modelo</th>
+                <th className="px-4 py-3">N° Contrato</th>
+                <th className="px-4 py-3">Cant. Pedido</th>
+                <th className="px-4 py-3">Cant. Producción</th>
                 <th className="px-4 py-3">Guía Remisión</th>
                 <th className="px-4 py-3">Documento</th>
-                <th className="px-4 py-3 text-center">Total</th>
-                <th className="px-4 py-3">F. Creación</th>
                 <th className="px-4 py-3">Fec. Est. Entrega</th>
                 <th className="px-4 py-3">Fec. Entrega</th>
-                <th className="px-4 py-3 text-center">Días Rest.</th>
-                <th className="px-4 py-3 text-center">Estado</th>
-                <th className="px-4 py-3 text-center">Acciones</th>
+                <th className="px-4 py-3 text-center sticky right-0 bg-gray-50 z-20 border-l border-gray-200 shadow-[-1px_0_0_#f3f4f6]">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -140,10 +245,18 @@ export default function OrdersView() {
                 const estado = ESTADO_MAP[order.estado] || ESTADO_MAP[0];
                 const diasRest = parseInt(order.dias_restantes);
                 const diasColor = diasRest < 0 ? 'text-red-600 font-bold' : diasRest <= 3 ? 'text-orange-500 font-semibold' : 'text-gray-700';
+
+                const isDanger = !order.codigo_venta ||
+                  order.codigo_venta === 'null' ||
+                  order.codigo_venta === 'NULL' ||
+                  parseFloat(order.total || 0) > parseFloat(order.totalp || 0);
+
+                const rowClass = isDanger ? 'bg-red-50 hover:bg-red-100 transition-colors' : 'bg-white hover:bg-gray-50 transition-colors';
+
                 return (
-                  <tr key={order.codigo} className="hover:bg-gray-50 transition-colors">
+                  <tr key={order.codigo} className={rowClass}>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800">{order.codigo}</td>
-                    <td className="px-4 py-3 text-gray-600">{order.num_contrato || '-'}</td>
+                    <td className="px-4 py-3 text-gray-600">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
                     <td className="px-4 py-3 font-medium">{order.name}</td>
                     <td className="px-4 py-3 text-gray-700 truncate max-w-xs">{order.nombre_modelo || order.producto || '-'}</td>
                     <td className="px-4 py-3 text-gray-700">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
@@ -164,27 +277,14 @@ export default function OrdersView() {
                         )}
                       </div>
                     </td>
+                    <td className="px-4 py-3 text-gray-600">{order.num_contrato || '-'}</td>
+                    <td className="px-4 py-3 text-gray-600">{order.total || '-'}</td>
+                    <td className="px-4 py-3 text-gray-600">{order.totalp || '-'}</td>
                     <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>') : '-' }} />
                     <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.codigo_venta ? order.codigo_venta.split(' - ').join('<br>') : '-' }} />
-                    <td className="px-4 py-3 text-center font-semibold">{order.totalp || order.total || 0}</td>
-                    <td className="px-4 py-3 text-gray-600">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_entrega ? new Date(order.fecha_entrega).toLocaleDateString('es-PE') : '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-'}</td>
-                    <td className={`px-4 py-3 text-center ${diasColor}`}>
-                      {isNaN(diasRest) ? '-' : diasRest < 0 ? `${Math.abs(diasRest)}d tarde` : `${diasRest}d`}
-                    </td>
-                    <td className="px-4 py-3 text-center">
-                      <select
-                        value={order.estado}
-                        onChange={e => handleStatusChange(order.codigo, parseInt(e.target.value))}
-                        className={`text-xs px-2 py-1 rounded-full font-semibold cursor-pointer border-0 ${estado.color}`}
-                      >
-                        <option value={0}>En Proceso</option>
-                        <option value={1}>Completado</option>
-                        <option value={2}>Cancelado</option>
-                      </select>
-                    </td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 sticky right-0 bg-inherit z-10 border-l border-gray-100 shadow-[-1px_0_0_#f3f4f6]">
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleViewDetail(order)}

@@ -103,21 +103,23 @@ export default function ProductsView() {
         </button>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 290px)' }}>
 
         {loading ? (
           <div className="p-8 text-center text-gray-500">Cargando productos...</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-600 text-sm uppercase tracking-wider">
+          <div className="overflow-auto relative">
+            <table className="w-full text-left border-collapse whitespace-nowrap">
+              <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                <tr className="text-gray-600 text-sm uppercase tracking-wider">
                   <th className="p-4 border-b">Imagen</th>
                   <th className="p-4 border-b">Código</th>
-                  <th className="p-4 border-b">Nombre</th>
-                  <th className="p-4 border-b">Costo</th>
-                  <th className="p-4 border-b">Precio Venta</th>
-                  <th className="p-4 border-b">Cliente Rel.</th>
+                  <th className="p-4 border-b">Descripción</th>
+                  <th className="p-4 border-b">Precio Min.</th>
+                  <th className="p-4 border-b">Precio Max.</th>
+                  <th className="p-4 border-b">Precio Bordado Salida</th>
+                  <th className="p-4 border-b">Bordado</th>
+                  <th className="p-4 border-b">Cliente</th>
                   <th className="p-4 border-b">Acciones</th>
                 </tr>
               </thead>
@@ -138,8 +140,21 @@ export default function ProductsView() {
                     </td>
                     <td className="p-4 text-gray-500 font-mono">{product.code || '-'}</td>
                     <td className="p-4 font-medium text-gray-800">{product.name}</td>
-                    <td className="p-4 text-gray-600">S/ {product.price_in || '0.00'}</td>
-                    <td className="p-4 text-gray-600 font-bold text-green-600">S/ {product.price_out || '0.00'}</td>
+                    <td className="p-4 font-medium text-gray-800">S/ {product.price_in || '0.00'}</td>
+                    <td className="p-4 font-medium text-gray-800">S/ {product.price_in_2 || '0.00'}</td>
+                    <td className="p-4 text-gray-600 font-bold text-green-600">S/ {product.prebor_out || '0.00'}</td>
+                    <td className="p-4 text-gray-600 font-bold text-green-600">
+                      {product.imgbordado ? (
+                        <img
+                          src={getProductImageUrl(product.imgbordado)}
+                          alt={product.name}
+                          className="w-12 h-12 object-cover rounded-md border border-gray-200"
+                          onError={(e) => handleProductImageError(e, product.imgbordado)}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
+                      )}
+                    </td>
                     <td className="p-4 text-gray-500 text-sm">{product.client ? product.client.name : '-'}</td>
                     <td className="p-4">
                       <div className="flex items-center gap-2">

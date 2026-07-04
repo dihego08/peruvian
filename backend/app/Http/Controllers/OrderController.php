@@ -18,7 +18,7 @@ class OrderController extends Controller
             ->leftJoin(DB::raw('(
                 SELECT
                     d.codigo_cabecera,
-                    SUM(d.total) AS totalp,
+                    SUM(d.ptotal) AS totalp,
                     SUBSTRING_INDEX(GROUP_CONCAT(d.modelo ORDER BY d.id ASC), \',\', 1) AS modelo,
                     SUBSTRING_INDEX(GROUP_CONCAT(prod.image ORDER BY d.id ASC), \',\', 1) AS imagen,
                     SUBSTRING_INDEX(GROUP_CONCAT(prod.name ORDER BY d.id ASC), \',\', 1) AS producto
@@ -48,7 +48,7 @@ class OrderController extends Controller
                 DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%\', oc.codigo, \'%\')), \'\') AS codigo_venta'),
             ])
             ->orderByRaw('CAST(oc.codigo AS UNSIGNED) DESC')
-            ->limit(200)
+            //->limit(200)
             ->get();
 
         return response()->json([
