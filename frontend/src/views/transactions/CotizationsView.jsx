@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
+import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import {
     EyeIcon,
     TrashIcon,
@@ -10,8 +11,8 @@ import {
     XMarkIcon
 } from '@heroicons/react/24/outline';
 
-const IMAGE_BASE_URL = 'https://peruvian.peruviandress.com/storage/products';
-const LOCAL_IMAGE_BASE_URL = 'http://localhost/peruvian/storage/products';
+//const IMAGE_BASE_URL = 'https://peruvian.peruviandress.com/storage/products';
+//const LOCAL_IMAGE_BASE_URL = 'http://localhost/peruvian/storage/products';
 
 const CotizationsView = () => {
     const [cotizations, setCotizations] = useState([]);
@@ -110,10 +111,10 @@ const CotizationsView = () => {
                                         <td className="px-6 py-4">
                                             {cot.imagen ? (
                                                 <img
-                                                    src={IMAGE_BASE_URL + "/" + cot.imagen}
+                                                    src={getProductImageUrl(cot.imagen)}
                                                     alt="Thumbnail"
-                                                    onClick={() => setExpandedImage(IMAGE_BASE_URL + "/" + cot.imagen)}
-                                                    className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                                                    onClick={() => setExpandedImage(getProductImageUrl(cot.imagen))}
+                                                    className="w-15 h-15 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
                                                 />
                                             ) : (
                                                 <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
@@ -130,23 +131,23 @@ const CotizationsView = () => {
                                         <td className="px-6 py-4 text-right space-x-2">
                                             <button
                                                 onClick={() => handleViewDetail(cot.codigo)}
-                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                                                className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors cursor-pointer"
                                                 title="Ver Detalle"
                                             >
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
                                             <a
-                                                href={`http://localhost/peruvian/core/app/view/pdf-cotizacion.php?codigo=${cot.codigo}`}
+                                                href={`${import.meta.env.BASE_URL}pdf-cotizacion.php?codigo=${cot.codigo}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="inline-block p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                                                className="inline-block p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
                                                 title="Generar PDF"
                                             >
                                                 <DocumentTextIcon className="w-5 h-5" />
                                             </a>
                                             <button
                                                 onClick={() => handleDelete(cot.codigo)}
-                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                                className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors cursor-pointer"
                                                 title="Eliminar"
                                             >
                                                 <TrashIcon className="w-5 h-5" />
@@ -234,14 +235,14 @@ const CotizationsView = () => {
                                                             <div className="flex space-x-2">
                                                                 {item.imagen && (
                                                                     <img
-                                                                        src={item.imagen.includes('_') ? `${LOCAL_IMAGE_BASE_URL}/${item.imagen}` : `${IMAGE_BASE_URL}/${item.imagen}`}
+                                                                        src={getProductImageUrl(item.imagen)}
                                                                         className="w-16 h-16 object-cover rounded border"
                                                                         alt="Modelo"
                                                                     />
                                                                 )}
                                                                 {item.imagen_2 && (
                                                                     <img
-                                                                        src={item.imagen_2.includes('_') ? `${LOCAL_IMAGE_BASE_URL}/${item.imagen_2}` : `${IMAGE_BASE_URL}/${item.imagen_2}`}
+                                                                        src={getProductImageUrl(item.imagen_2)}
                                                                         className="w-16 h-16 object-cover rounded border"
                                                                         alt="Bordado"
                                                                     />

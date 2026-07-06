@@ -229,7 +229,7 @@ export default function OrdersView() {
                 <th className="px-4 py-3">Cant. Producción</th>
                 <th className="px-4 py-3">Guía Remisión</th>
                 <th className="px-4 py-3">Documento</th>
-                <th className="px-4 py-3">Fec. Est. Entrega</th>
+                <th className="px-4 py-3">Días para Entrega</th>
                 <th className="px-4 py-3">Fec. Entrega</th>
                 <th className="px-4 py-3 text-center sticky right-0 bg-gray-50 z-20 border-l border-gray-200 shadow-[-1px_0_0_#f3f4f6]">Acciones</th>
               </tr>
@@ -262,13 +262,13 @@ export default function OrdersView() {
                     <td className="px-4 py-3 text-gray-700">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-2">
-                        {order.imagen ? (
+                        {(order.imagen_alt || order.imagen) ? (
                           <img
-                            src={getProductImageUrl(order.imagen)}
+                            src={getProductImageUrl(order.imagen_alt || order.imagen)}
                             alt={order.producto}
                             className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
                             onClick={(e) => setExpandedImage(e.target.src)}
-                            onError={e => handleProductImageError(e, order.imagen)}
+                            onError={e => handleProductImageError(e, order.imagen_alt || order.imagen)}
                           />
                         ) : (
                           <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs border border-gray-200">
@@ -282,37 +282,39 @@ export default function OrdersView() {
                     <td className="px-4 py-3 text-gray-600">{order.totalp || '-'}</td>
                     <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>') : '-' }} />
                     <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.codigo_venta ? order.codigo_venta.split(' - ').join('<br>') : '-' }} />
-                    <td className="px-4 py-3 text-gray-600">{order.fecha_entrega ? new Date(order.fecha_entrega).toLocaleDateString('es-PE') : '-'}</td>
+                    <td className={`px-4 py-3 text-center ${diasColor}`}>
+                      {parseFloat(order.total || 0) > parseFloat(order.totalp || 0) ? isNaN(diasRest) ? '-' : diasRest < 0 ? `${Math.abs(diasRest)}d tarde` : `${diasRest}d` : ''}
+                    </td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-'}</td>
                     <td className="px-4 py-3 sticky right-0 bg-inherit z-10 border-l border-gray-100 shadow-[-1px_0_0_#f3f4f6]">
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleViewDetail(order)}
                           title="Ver Detalle"
-                          className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                         >
-                          <EyeIcon className="h-5 w-5" />
+                          <EyeIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                         <button
                           onClick={() => navigate(`/orders/${order.codigo}/production`)}
                           title="Completar pedido / Avance de producción"
-                          className="p-2 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
+                          className="p-1 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors border border-gray-200"
                         >
-                          <PlusIcon className="h-5 w-5" />
+                          <PlusIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                         <button
                           onClick={() => navigate(`/orders/${order.codigo}/edit`)}
                           title="Editar pedido"
-                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                          className="p-1 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                         >
-                          <PencilIcon className="h-5 w-5" />
+                          <PencilIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                         <button
                           onClick={() => handleDelete(order.codigo)}
                           title="Eliminar"
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
-                          <TrashIcon className="h-5 w-5" />
+                          <TrashIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                       </div>
                     </td>

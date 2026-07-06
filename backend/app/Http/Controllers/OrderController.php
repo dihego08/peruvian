@@ -154,7 +154,9 @@ class OrderController extends Controller
         $cabecera = DB::table('order_cabecera as oc')
             ->join('person as p', 'p.id', '=', 'oc.person_id')
             ->where('oc.codigo', $codigo)
-            ->select('oc.*', 'p.name as cliente')
+            ->select('oc.*', 'p.name as cliente',
+                DB::raw('(SELECT p.image FROM order_detalle_2 d JOIN product p ON p.code = d.modelo WHERE d.codigo_cabecera = oc.codigo ORDER BY d.id ASC LIMIT 1) as product_image')
+            )
             ->first();
 
         if (!$cabecera) {

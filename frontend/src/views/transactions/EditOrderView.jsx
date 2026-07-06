@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
-import { handleProductImageError } from '../../utils/image';
+import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 
 const SIZE_COLS = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
 const DEFAULT_HEADERS = ['2','4','6','8','10','12','14','16','S','M','L','XL','XXL'];
@@ -65,6 +65,8 @@ export default function EditOrderView() {
         return;
       }
 
+      const currentImage = cabecera.imagen_alt || cabecera.product_image || '';
+
       setFormData({
         person_id: String(cabecera.person_id || ''),
         fecha_desde: cabecera.fecha_creacion ? cabecera.fecha_creacion.slice(0, 10) : '',
@@ -72,7 +74,7 @@ export default function EditOrderView() {
         num_contrato: cabecera.num_contrato || '',
         nombre_producto: cabecera.nombre_modelo || '',
         comentario: cabecera.comentario || '',
-        imagen_alt: cabecera.imagen_alt || '',
+        imagen_alt: currentImage,
       });
 
       const mapped = (detalles || []).map(detailToRow);
@@ -84,10 +86,10 @@ export default function EditOrderView() {
         setSelectedModel({
           code: modelo,
           name: cabecera.nombre_modelo || modelo,
-          image: cabecera.imagen_alt,
+          image: currentImage,
         });
-        if (cabecera.imagen_alt) {
-          setImagePreview(`https://peruvian.peruviandress.com/storage/products/${cabecera.imagen_alt}`);
+        if (currentImage) {
+          setImagePreview(getProductImageUrl(currentImage));
         } else {
           setImagePreview(null);
         }
@@ -117,7 +119,7 @@ export default function EditOrderView() {
       nombre_producto: product.name,
       imagen_alt: product.image || '',
     }));
-    setImagePreview(product.image ? `https://peruvian.peruviandress.com/storage/products/${product.image}` : null);
+    setImagePreview(product.image ? getProductImageUrl(product.image) : null);
     setImageFile(null);
     setSearchResults([]);
     setSearchQuery('');
