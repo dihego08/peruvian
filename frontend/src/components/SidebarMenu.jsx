@@ -32,7 +32,7 @@ function NavLink({ to, children, className = '' }) {
 }
 
 function MenuGroup({ item }) {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const hasChildren = item.hijos?.length > 0;
 
   if (!hasChildren) {

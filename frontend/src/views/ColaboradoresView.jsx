@@ -438,7 +438,7 @@ export default function ColaboradoresView() {
                   </div>
                   <div>
                     <label className={labelClasses}>Sist. de Pensiones</label>
-                    <select className={inputClasses} value={formData.id_sistema_pension} onChange={e => setFormData({ ...formData, id_sistema_pension: e.target.value })}>
+                    <select className={inputClasses} value={formData.id_sistema_pension} onChange={e => setFormData({ ...formData, id_sistema_pension: e.target.value, id_entidad_pension: '' })}>
                       <option value="">SELECCIONA...</option>
                       {metadata.sistema_pensiones.map(sp => <option key={sp.id} value={sp.id}>{sp.sistema_pension}</option>)}
                     </select>
@@ -447,7 +447,7 @@ export default function ColaboradoresView() {
                     <label className={labelClasses}>Entidad de Pensiones</label>
                     <select className={inputClasses} value={formData.id_entidad_pension} onChange={e => setFormData({ ...formData, id_entidad_pension: e.target.value })}>
                       <option value="">SELECCIONA...</option>
-                      {metadata.afps.filter(a => String(a.id_sistema_pension) === String(formData.id_sistema_pension)).map(afp => <option key={afp.id} value={afp.id}>{afp.afp}</option>)}
+                      {metadata.afps.filter(a => String(a.id_sistema_pensiones) === String(formData.id_sistema_pension)).map(afp => <option key={afp.id} value={afp.id}>{afp.afp}</option>)}
                     </select>
                   </div>
                   <div>
