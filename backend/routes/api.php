@@ -25,6 +25,16 @@ use App\Http\Controllers\PerfilPuestoController;
 use App\Http\Controllers\AreaController;
 use App\Http\Controllers\PuestoController;
 use App\Http\Controllers\ColaboradorController;
+use App\Http\Controllers\ColaboradorFamiliarController;
+use App\Http\Controllers\ColaboradorFormacionController;
+use App\Http\Controllers\ColaboradorExperienciaLaboralController;
+use App\Http\Controllers\ColaboradorHabilidadController;
+use App\Http\Controllers\ColaboradorCapacitacionController;
+use App\Http\Controllers\ColaboradorVacacionController;
+use App\Http\Controllers\ColaboradorContratoController;
+use App\Http\Controllers\ColaboradorExamenMedicoController;
+use App\Http\Controllers\ColaboradorRecomendacionSstController;
+use App\Http\Controllers\ColaboradorVerificacionCompetenciaController;
 use App\Http\Controllers\GuiaController;
 use App\Http\Controllers\MenuController;
 
@@ -45,6 +55,55 @@ Route::apiResource('sig/puestos-crud', PuestoController::class); // Named crud t
 Route::get('sig/colaboradores/metadata', [ColaboradorController::class, 'getMetadata']);
 Route::apiResource('sig/colaboradores', ColaboradorController::class);
 
+Route::get('sig/colaboradores/{colaborador}/familiares', [ColaboradorFamiliarController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/familiares', [ColaboradorFamiliarController::class, 'store']);
+Route::put('sig/colaboradores/{colaborador}/familiares/{id}', [ColaboradorFamiliarController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/familiares/{id}', [ColaboradorFamiliarController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/formacion', [ColaboradorFormacionController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/formacion', [ColaboradorFormacionController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/formacion/{id}', [ColaboradorFormacionController::class, 'update']); // POST to handle file uploads
+Route::delete('sig/colaboradores/{colaborador}/formacion/{id}', [ColaboradorFormacionController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/experiencia', [ColaboradorExperienciaLaboralController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/experiencia', [ColaboradorExperienciaLaboralController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/experiencia/{id}', [ColaboradorExperienciaLaboralController::class, 'update']); // POST to handle file uploads
+Route::delete('sig/colaboradores/{colaborador}/experiencia/{id}', [ColaboradorExperienciaLaboralController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/habilidades', [ColaboradorHabilidadController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/habilidades', [ColaboradorHabilidadController::class, 'store']);
+Route::put('sig/colaboradores/{colaborador}/habilidades/{id}', [ColaboradorHabilidadController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/habilidades/{id}', [ColaboradorHabilidadController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/capacitaciones', [ColaboradorCapacitacionController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/capacitaciones', [ColaboradorCapacitacionController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/capacitaciones/{id}', [ColaboradorCapacitacionController::class, 'update']); // POST to handle file uploads
+Route::delete('sig/colaboradores/{colaborador}/capacitaciones/{id}', [ColaboradorCapacitacionController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/vacaciones', [ColaboradorVacacionController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/vacaciones', [ColaboradorVacacionController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/vacaciones/{id}', [ColaboradorVacacionController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/vacaciones/{id}', [ColaboradorVacacionController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/contratos', [ColaboradorContratoController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/contratos', [ColaboradorContratoController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/contratos/{id}', [ColaboradorContratoController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/contratos/{id}', [ColaboradorContratoController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/examenes_medicos', [ColaboradorExamenMedicoController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/examenes_medicos', [ColaboradorExamenMedicoController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/examenes_medicos/{id}', [ColaboradorExamenMedicoController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/examenes_medicos/{id}', [ColaboradorExamenMedicoController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/recomendaciones_sst', [ColaboradorRecomendacionSstController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/recomendaciones_sst', [ColaboradorRecomendacionSstController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/recomendaciones_sst/{id}', [ColaboradorRecomendacionSstController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/recomendaciones_sst/{id}', [ColaboradorRecomendacionSstController::class, 'destroy']);
+
+Route::get('sig/colaboradores/{colaborador}/verificacion_competencias', [ColaboradorVerificacionCompetenciaController::class, 'index']);
+Route::post('sig/colaboradores/{colaborador}/verificacion_competencias', [ColaboradorVerificacionCompetenciaController::class, 'store']);
+Route::post('sig/colaboradores/{colaborador}/verificacion_competencias/{id}', [ColaboradorVerificacionCompetenciaController::class, 'update']);
+Route::delete('sig/colaboradores/{colaborador}/verificacion_competencias/{id}', [ColaboradorVerificacionCompetenciaController::class, 'destroy']);
 // Guías de Remisión
 Route::get('guias/next-num', [GuiaController::class, 'nextNumGuia']);
 Route::get('guias/search-products', [GuiaController::class, 'searchProducts']);
