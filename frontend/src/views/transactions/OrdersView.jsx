@@ -17,7 +17,8 @@ export default function OrdersView() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
   // Modal Detail State
   const [showModalDetail, setShowModalDetail] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
@@ -74,12 +75,25 @@ export default function OrdersView() {
     }
   };
 
-  const filtered = orders.filter(o =>
-    (o.codigo || '').toLowerCase().includes(search.toLowerCase()) ||
-    (o.name || '').toLowerCase().includes(search.toLowerCase()) ||
-    (o.nombre_modelo || '').toLowerCase().includes(search.toLowerCase()) ||
-    (o.num_contrato || '').toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = orders.filter(o => {
+    const textMatch = (o.codigo || '').toLowerCase().includes(search.toLowerCase()) ||
+      (o.name || '').toLowerCase().includes(search.toLowerCase()) ||
+      (o.producto || '').toLowerCase().includes(search.toLowerCase()) ||
+      (o.nombre_modelo || '').toLowerCase().includes(search.toLowerCase());
+
+    let dateMatch = true;
+    if (dateFrom || dateTo) {
+      if (o.fecha_creacion) {
+        const orderDateStr = o.fecha_creacion.split(' ')[0];
+        if (dateFrom && orderDateStr < dateFrom) dateMatch = false;
+        if (dateTo && orderDateStr > dateTo) dateMatch = false;
+      } else {
+        dateMatch = false;
+      }
+    }
+
+    return textMatch && dateMatch;
+  });
 
   let pedidosTiempo = 0;
   let pedidosFuera = 0;
@@ -204,17 +218,33 @@ export default function OrdersView() {
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <input
-          type="text"
-          className="w-full p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
-          placeholder="Buscar por código, cliente, modelo o contrato..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
-      </div>
+        <div className="flex flex-col md:flex-row gap-4 mb-4">
+          <input
+            type="text"
+            className="flex-1 p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+            placeholder="Buscar por código, cliente, modelo o contrato..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <div className="flex gap-2 items-center">
+            <span className="text-sm text-gray-500 font-medium">Desde:</span>
+            <input
+              type="date"
+              className="p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+              value={dateFrom}
+              onChange={(e) => setDateFrom(e.target.value)}
+            />
+            <span className="text-sm text-gray-500 font-medium ml-2">Hasta:</span>
+            <input
+              type="date"
+              className="p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+              value={dateTo}
+              onChange={(e) => setDateTo(e.target.value)}
+            />
+          </div>
+        </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 290px)' }}>
-        <div className="overflow-auto relative">
+        <div className="overflow-x-auto relative min-h-[400px]">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-200 sticky top-0 z-10 shadow-sm">
               <tr>
@@ -226,8 +256,8 @@ export default function OrdersView() {
                 <th className="px-4 py-3">Modelo</th>
                 <th className="px-4 py-3">N° <br />Contrato</th>
                 <th className="px-4 py-3">Cant. <br />Pedido</th>
-                <th className="px-4 py-3">Cant. <br />Producción</th>
-                <th className="px-4 py-3">Guía <br />Remisión</th>
+                <th className="px-4 py-3">Cant. <br />Prod.</th>
+                <th className="px-4 py-3 text-center">Guía</th>
                 <th className="px-4 py-3">Documento</th>
                 <th className="px-4 py-3">Días para <br />Entrega</th>
                 <th className="px-4 py-3">Fec. <br />Entrega</th>
@@ -256,7 +286,7 @@ export default function OrdersView() {
                 return (
                   <tr key={order.codigo} className={rowClass}>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800 text-wrap">{order.codigo}</td>
-                    <td className="px-4 py-3 text-gray-600 text-wrap">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
+                    <td className="px-4 py-3 text-gray-600 text-wrap">{order.fecha_creacion ? order.fecha_creacion /*new Date(order.fecha_creacion).toLocaleDateString('es-PE')*/ : '-'}</td>
                     <td className="px-4 py-3 font-medium text-wrap">{order.name}</td>
                     <td className="px-4 py-3 text-gray-700 truncate max-w-xs text-wrap">{order.nombre_modelo || order.producto || '-'}</td>
                     <td className="px-4 py-3 text-gray-700 text-wrap">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
@@ -266,18 +296,18 @@ export default function OrdersView() {
                           <img
                             src={getProductImageUrl(order.imagen_alt || order.imagen)}
                             alt={order.producto}
-                            className="w-8 h-8 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                            className="w-11 h-11 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
                             onClick={(e) => setExpandedImage(e.target.src)}
                             onError={e => handleProductImageError(e, order.imagen_alt || order.imagen)}
                           />
                         ) : (
-                          <div className="w-8 h-8 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs border border-gray-200">
+                          <div className="w-11 h-11 bg-gray-100 rounded flex items-center justify-center text-gray-400 text-xs border border-gray-200">
                             -
                           </div>
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.num_contrato?.split('-').join('<br>') || '-' }} />
+                    <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.num_contrato?.split('-').join('<br>').split(',').join('<br>') || '-' }} />
                     <td className="px-4 py-3 text-gray-600">{order.total || '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{order.totalp || '-'}</td>
                     <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>').split(',').join('<br>') : '-' }} />
