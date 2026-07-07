@@ -219,19 +219,19 @@ export default function OrdersView() {
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-200 sticky top-0 z-10 shadow-sm">
               <tr>
                 <th className="px-4 py-3">Pedido</th>
-                <th className="px-4 py-3">F. Creación</th>
+                <th className="px-4 py-3">Fec. <br />Creación</th>
                 <th className="px-4 py-3">Cliente</th>
                 <th className="px-4 py-3">Descripción</th>
-                <th className="px-4 py-3">Cod. Modelo</th>
+                <th className="px-4 py-3">Cod. <br />Modelo</th>
                 <th className="px-4 py-3">Modelo</th>
-                <th className="px-4 py-3">N° Contrato</th>
-                <th className="px-4 py-3">Cant. Pedido</th>
-                <th className="px-4 py-3">Cant. Producción</th>
-                <th className="px-4 py-3">Guía Remisión</th>
+                <th className="px-4 py-3">N° <br />Contrato</th>
+                <th className="px-4 py-3">Cant. <br />Pedido</th>
+                <th className="px-4 py-3">Cant. <br />Producción</th>
+                <th className="px-4 py-3">Guía <br />Remisión</th>
                 <th className="px-4 py-3">Documento</th>
-                <th className="px-4 py-3">Días para Entrega</th>
-                <th className="px-4 py-3">Fec. Entrega</th>
-                <th className="px-4 py-3 text-center sticky right-0 bg-gray-50 z-20 border-l border-gray-200 shadow-[-1px_0_0_#f3f4f6]">Acciones</th>
+                <th className="px-4 py-3">Días para <br />Entrega</th>
+                <th className="px-4 py-3">Fec. <br />Entrega</th>
+                <th className="px-4 py-3 text-center">Acciones</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
@@ -255,12 +255,12 @@ export default function OrdersView() {
 
                 return (
                   <tr key={order.codigo} className={rowClass}>
-                    <td className="px-4 py-3 font-mono font-bold text-gray-800">{order.codigo}</td>
-                    <td className="px-4 py-3 text-gray-600">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
-                    <td className="px-4 py-3 font-medium">{order.name}</td>
-                    <td className="px-4 py-3 text-gray-700 truncate max-w-xs">{order.nombre_modelo || order.producto || '-'}</td>
-                    <td className="px-4 py-3 text-gray-700">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
-                    <td className="px-4 py-3">
+                    <td className="px-4 py-3 font-mono font-bold text-gray-800 text-wrap">{order.codigo}</td>
+                    <td className="px-4 py-3 text-gray-600 text-wrap">{order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-'}</td>
+                    <td className="px-4 py-3 font-medium text-wrap">{order.name}</td>
+                    <td className="px-4 py-3 text-gray-700 truncate max-w-xs text-wrap">{order.nombre_modelo || order.producto || '-'}</td>
+                    <td className="px-4 py-3 text-gray-700 text-wrap">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
+                    <td className="px-4 py-3 text-wrap">
                       <div className="flex items-center gap-2">
                         {(order.imagen_alt || order.imagen) ? (
                           <img
@@ -277,16 +277,16 @@ export default function OrdersView() {
                         )}
                       </div>
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{order.num_contrato || '-'}</td>
+                    <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.num_contrato?.split('-').join('<br>') || '-' }} />
                     <td className="px-4 py-3 text-gray-600">{order.total || '-'}</td>
                     <td className="px-4 py-3 text-gray-600">{order.totalp || '-'}</td>
-                    <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>') : '-' }} />
-                    <td className="px-4 py-3 text-gray-600" dangerouslySetInnerHTML={{ __html: order.codigo_venta ? order.codigo_venta.split(' - ').join('<br>') : '-' }} />
+                    <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.guia_remision ? order.guia_remision.split(' - ').join('<br>').split(',').join('<br>') : '-' }} />
+                    <td className="px-4 py-3 text-gray-600 text-wrap" dangerouslySetInnerHTML={{ __html: order.codigo_venta ? order.codigo_venta.split(' - ').join('<br>').split(',').join('<br>') : '-' }} />
                     <td className={`px-4 py-3 text-center ${diasColor}`}>
                       {parseFloat(order.total || 0) > parseFloat(order.totalp || 0) ? isNaN(diasRest) ? '-' : diasRest < 0 ? `${Math.abs(diasRest)}d tarde` : `${diasRest}d` : ''}
                     </td>
                     <td className="px-4 py-3 text-gray-600">{order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-'}</td>
-                    <td className="px-4 py-3 sticky right-0 bg-inherit z-10 border-l border-gray-100 shadow-[-1px_0_0_#f3f4f6]">
+                    <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleViewDetail(order)}
