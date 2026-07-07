@@ -243,8 +243,10 @@ export default function OrdersView() {
             />
           </div>
         </div>
+      </div>
 
-        <div className="overflow-x-auto relative min-h-[400px]">
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 290px)' }}>
+        <div className="overflow-auto relative">
           <table className="w-full text-left text-sm whitespace-nowrap">
             <thead className="bg-gray-50 text-gray-600 uppercase text-xs border-b border-gray-200 sticky top-0 z-10 shadow-sm">
               <tr>
