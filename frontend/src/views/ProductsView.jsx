@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
 import { getProductImageUrl, handleProductImageError } from '../utils/image';
-import { PencilSquareIcon, TrashIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 const EMPTY_PRODUCT = {
   kind: '1', cliente_id: '', code: '', barcode: '', name: '', brand_id: '',
@@ -20,6 +20,8 @@ export default function ProductsView() {
   const [saving, setSaving] = useState(false);
   const [brands, setBrands] = useState([]);
   const [clients, setClients] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [expandedImage, setExpandedImage] = useState(null);
 
   useEffect(() => {
     fetchProducts();
@@ -97,10 +99,13 @@ export default function ProductsView() {
           <h1 className="text-2xl font-bold text-gray-900">Catálogo de Productos</h1>
           <p className="text-sm text-gray-500 mt-0.5">Administración de inventario y precios</p>
         </div>
-        <button onClick={openCreate} className="bg-gray-800 text-white px-5 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors flex items-center gap-2">
-          <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
-          Nuevo Producto
-        </button>
+        <div className="flex gap-3">
+
+          <button onClick={openCreate} className="bg-gray-800 text-white px-5 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors flex items-center gap-2">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" /></svg>
+            Nuevo Producto
+          </button>
+        </div>
       </div>
 
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 flex flex-col" style={{ maxHeight: 'calc(100vh - 290px)' }}>
@@ -108,81 +113,94 @@ export default function ProductsView() {
         {loading ? (
           <div className="p-8 text-center text-gray-500">Cargando productos...</div>
         ) : (
-          <div className="overflow-auto relative">
-            <table className="w-full text-left border-collapse whitespace-nowrap">
-              <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
-                <tr className="text-gray-600 text-sm uppercase tracking-wider">
-                  <th className="p-4 border-b">Imagen</th>
-                  <th className="p-4 border-b">Código</th>
-                  <th className="p-4 border-b">Descripción</th>
-                  <th className="p-4 border-b">Precio Min.</th>
-                  <th className="p-4 border-b">Precio Max.</th>
-                  <th className="p-4 border-b">Precio Bordado Salida</th>
-                  <th className="p-4 border-b">Bordado</th>
-                  <th className="p-4 border-b">Cliente</th>
-                  <th className="p-4 border-b">Acciones</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="p-4">
-                      {product.image ? (
-                        <img
-                          src={getProductImageUrl(product.image)}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded-md border border-gray-200"
-                          onError={(e) => handleProductImageError(e, product.image)}
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
-                      )}
-                    </td>
-                    <td className="p-4 text-gray-500 font-mono">{product.code || '-'}</td>
-                    <td className="p-4 font-medium text-gray-800">{product.name}</td>
-                    <td className="p-4 font-medium text-gray-800">S/ {product.price_in || '0.00'}</td>
-                    <td className="p-4 font-medium text-gray-800">S/ {product.price_in_2 || '0.00'}</td>
-                    <td className="p-4 text-gray-600 font-bold text-green-600">S/ {product.prebor_out || '0.00'}</td>
-                    <td className="p-4 text-gray-600 font-bold text-green-600">
-                      {product.imgbordado ? (
-                        <img
-                          src={getProductImageUrl(product.imgbordado)}
-                          alt={product.name}
-                          className="w-12 h-12 object-cover rounded-md border border-gray-200"
-                          onError={(e) => handleProductImageError(e, product.imgbordado)}
-                        />
-                      ) : (
-                        <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
-                      )}
-                    </td>
-                    <td className="p-4 text-gray-500 text-sm">{product.client ? product.client.name : '-'}</td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                        <button
-                          title="Editar"
-                          onClick={() => openEdit(product)}
-                          className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
-                        >
-                          <PencilSquareIcon className="h-5 w-5" />
-                        </button>
-                        <button
-                          title="Eliminar"
-                          onClick={() => handleDelete(product.id)}
-                          className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        >
-                          <TrashIcon className="h-5 w-5" />
-                        </button>
-                      </div>
-                    </td>
+          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+            <div className="flex flex-col md:flex-row gap-4 mb-4">
+              <input
+                type="text"
+                placeholder="Buscar por código o nombre..."
+                className="flex-1 p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            <div className="overflow-auto relative">
+              <table className="w-full text-left border-collapse whitespace-nowrap">
+                <thead className="bg-gray-50 sticky top-0 z-10 shadow-sm">
+                  <tr className="text-gray-600 text-sm uppercase tracking-wider">
+                    <th className="p-4 border-b">Imagen</th>
+                    <th className="p-4 border-b">Código</th>
+                    <th className="p-4 border-b">Descripción</th>
+                    <th className="p-4 border-b">Precio Min.</th>
+                    <th className="p-4 border-b">Precio Max.</th>
+                    <th className="p-4 border-b">Precio Bordado Salida</th>
+                    <th className="p-4 border-b">Bordado</th>
+                    <th className="p-4 border-b">Cliente</th>
+                    <th className="p-4 border-b">Acciones</th>
                   </tr>
-                ))}
-                {products.length === 0 && (
-                  <tr>
-                    <td colSpan="6" className="p-8 text-center text-gray-500">No se encontraron productos.</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {products.filter(p => (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.code || '').toLowerCase().includes(searchQuery.toLowerCase())).map((product) => (
+                    <tr key={product.id} className="hover:bg-gray-50 transition-colors">
+                      <td className="p-4">
+                        {product.image ? (
+                          <img
+                            src={getProductImageUrl(product.image)}
+                            alt={product.name}
+                            className="w-12 h-12 object-cover rounded-md border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setExpandedImage(getProductImageUrl(product.image))}
+                            onError={(e) => handleProductImageError(e, product.image)}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
+                        )}
+                      </td>
+                      <td className="p-4 text-gray-500 font-mono text-wrap">{product.code || '-'}</td>
+                      <td className="p-4 font-medium text-gray-800 text-wrap">{product.name}</td>
+                      <td className="p-4 font-medium text-gray-800">S/ {product.price_in || '0.00'}</td>
+                      <td className="p-4 font-medium text-gray-800">S/ {product.price_in_2 || '0.00'}</td>
+                      <td className="p-4 text-gray-600 font-bold text-green-600">S/ {product.prebor_out || '0.00'}</td>
+                      <td className="p-4 text-gray-600 font-bold text-green-600">
+                        {product.imgbordado ? (
+                          <img
+                            src={getProductImageUrl(product.imgbordado)}
+                            alt={product.name}
+                            className="w-12 h-12 object-cover rounded-md border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                            onClick={() => setExpandedImage(getProductImageUrl(product.imgbordado))}
+                            onError={(e) => handleProductImageError(e, product.imgbordado)}
+                          />
+                        ) : (
+                          <div className="w-12 h-12 bg-gray-100 rounded-md flex items-center justify-center text-gray-400 text-xs">Sin img</div>
+                        )}
+                      </td>
+                      <td className="p-4 text-gray-500 text-sm text-wrap">{product.client ? product.client.name : '-'}</td>
+                      <td className="p-4">
+                        <div className="flex items-center gap-2">
+                          <button
+                            title="Editar"
+                            onClick={() => openEdit(product)}
+                            className="p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                          >
+                            <PencilSquareIcon className="h-5 w-5" />
+                          </button>
+                          <button
+                            title="Eliminar"
+                            onClick={() => handleDelete(product.id)}
+                            className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          >
+                            <TrashIcon className="h-5 w-5" />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                  {products.filter(p => (p.name || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.code || '').toLowerCase().includes(searchQuery.toLowerCase())).length === 0 && (
+                    <tr>
+                      <td colSpan="9" className="p-8 text-center text-gray-500">No se encontraron productos.</td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -301,6 +319,29 @@ export default function ProductsView() {
           </div>
         )}
       </div>
-    </div>
+
+      {/* Modal Imagen */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm cursor-pointer animate-in fade-in zoom-in duration-200"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] flex flex-col">
+            <button
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              onClick={() => setExpandedImage(null)}
+            >
+              <XMarkIcon className="h-8 w-8" />
+            </button>
+            <img
+              src={expandedImage}
+              alt="Vista ampliada"
+              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
+        </div>
+      )}
+    </div >
   );
 }

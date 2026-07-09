@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
-import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, TrashIcon, XMarkIcon, PencilSquareIcon, PlusIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -371,7 +371,7 @@ export default function OrdersView() {
                           title="Editar pedido"
                           className="p-1 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
                         >
-                          <PencilIcon className="h-4 w-4 cursor-pointer" />
+                          <PencilSquareIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                       </div>
                       <div className="flex items-center justify-center gap-1">
