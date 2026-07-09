@@ -166,12 +166,16 @@ export default function NewGuiaView() {
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [selProd, setSelProd] = useState(null);
+  const [unidadesSunat, setUnidadesSunat] = useState([]);
   const [tallas, setTallas] = useState(Array(13).fill(''));
   const [pesoBruto, setPesoBruto] = useState('');
   const [pesoNeto, setPesoNeto] = useState('');
   const [pedido, setPedido] = useState('');
+  const [editDescripcion, setEditDescripcion] = useState('');
+  const [editUnidad, setEditUnidad] = useState('');
 
   useEffect(() => {
+    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
     api.get('/guias/next-num').then(r => setHead(h => ({ ...h, num_guia: r.data.num_guia }))).catch(() => { });
   }, []);
 
@@ -195,6 +199,8 @@ export default function NewGuiaView() {
     setPesoBruto('');
     setPesoNeto('');
     setPedido('');
+    setEditDescripcion(p.name);
+    setEditUnidad(p.unit || '');
   };
 
   const addItem = () => {
@@ -205,9 +211,9 @@ export default function NewGuiaView() {
     const tallaStr = TALLAS.map((t, i) => tallas[i] ? `${t}:${tallas[i]}` : null).filter(Boolean).join(', ');
     setItems(p => [...p, {
       id_producto: selProd.id,
-      descripcion_producto: selProd.name + (tallaStr ? ` [${tallaStr}]` : ''),
+      descripcion_producto: editDescripcion + (tallaStr ? ` [${tallaStr}]` : ''),
       cantidad: cant,
-      unidad: selProd.code,
+      unidad: editUnidad,
       pedido, t_neto: neto, t_bruto: bruto,
     }]);
     setSelProd(null);
@@ -375,7 +381,11 @@ export default function NewGuiaView() {
                       <td className="px-4 py-2.5 font-semibold text-gray-800">{p.name}</td>
                       <td className="px-4 py-2.5 text-gray-500 font-mono text-xs">{p.code}</td>
                       <td className="px-4 py-2.5 text-gray-500">{p.unit}</td>
-                      <td className="px-4 py-2.5 text-center">{selProd?.id === p.id && <CheckIcon className="h-4 w-4 text-blue-600 mx-auto" />}</td>
+                      <td className="px-4 py-2.5 text-center">
+                        <button type="button" onClick={(e) => { e.stopPropagation(); selectProd(p); }} className="text-white bg-green-600 hover:bg-green-700 transition-colors rounded-md p-1.5 flex items-center justify-center mx-auto shadow-sm">
+                          <PlusIcon className="h-4 w-4" />
+                        </button>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -385,7 +395,19 @@ export default function NewGuiaView() {
 
           {selProd && (
             <div className="mt-4 p-4 bg-blue-50 rounded-xl border border-blue-200 space-y-4">
-              <p className="font-bold text-blue-800 text-sm">{selProd.name}</p>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-500 uppercase">Descripción del Producto</label>
+                <input className="w-full p-2 border border-gray-300 rounded-lg text-sm font-bold text-blue-800 focus:border-blue-500 outline-none" value={editDescripcion} onChange={e => setEditDescripcion(e.target.value)} />
+              </div>
+              <div className="space-y-1">
+                <label className="text-xs font-bold text-gray-500 uppercase">Unidad (SUNAT)</label>
+                <select className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none bg-white" value={editUnidad} onChange={e => setEditUnidad(e.target.value)}>
+                  <option value="">Unidades</option>
+                  {unidadesSunat.map(u => (
+                    <option key={u.id} value={u.codigo}>{u.unidad}</option>
+                  ))}
+                </select>
+              </div>
               <div className="space-y-2">
                 <p className="text-xs font-bold text-gray-600 uppercase">Cantidades por Talla</p>
                 <div className="flex flex-wrap gap-2">
