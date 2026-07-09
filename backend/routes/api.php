@@ -200,6 +200,7 @@ Route::get('forma-pago', function () {
     return response()->json(\Illuminate\Support\Facades\DB::table('f')->get());
 });
 
+Route::get('transactions/sells/correlativo', [TransactionController::class, 'getCorrelativo']);
 Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);

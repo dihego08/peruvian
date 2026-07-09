@@ -19,7 +19,7 @@ function UbigeoSelects({ prefix, value, onChange }) {
   const [distritos, setDistritos] = useState([]);
 
   useEffect(() => {
-    api.get('/guias/departamentos').then(r => setDepartamentos(r.data)).catch(() => {});
+    api.get('/guias/departamentos').then(r => setDepartamentos(r.data)).catch(() => { });
   }, []);
 
   const handleDpto = async (e) => {
@@ -141,12 +141,12 @@ const MOTIVOS = [
   { value: '17', label: 'TPT | Traslado para transformación' },
 ];
 
-const TALLAS = ['2','4','6','8','10','12','14','XS','S','M','L','XL','XXL'];
+const TALLAS = ['2', '4', '6', '8', '10', '12', '14', 'XS', 'S', 'M', 'L', 'XL', 'XXL'];
 
 const INIT = {
   num_guia: '', fecha_emision: today, fecha_traslado: today,
   motivo_traslado: '01', descripcion_motivo: '',
-  origen: 'CAL.BELEN MZA. B LOTE. 8 JERUSALEN - MARIANO - MELGAR - AREQUIPA',
+  origen: 'CAL.BELEN MZA. B LOTE. 8 JERUSALEN - MARIANO MELGAR - AREQUIPA - AREQUIPA',
   ruc_destinatario: '', destino: '',
   ubigeo_origen: { departamento: '', provincia: '', distrito: '' },
   ubigeo_destino: { departamento: '', provincia: '', distrito: '' },
@@ -172,20 +172,20 @@ export default function NewGuiaView() {
   const [pedido, setPedido] = useState('');
 
   useEffect(() => {
-    api.get('/guias/next-num').then(r => setHead(h => ({ ...h, num_guia: r.data.num_guia }))).catch(() => {});
+    api.get('/guias/next-num').then(r => setHead(h => ({ ...h, num_guia: r.data.num_guia }))).catch(() => { });
   }, []);
 
   const set = useCallback((field, value) => setHead(h => ({ ...h, [field]: value })), []);
 
   const handleSearch = async (e) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     if (!searchNombre && !searchCodigo) return;
     setSearching(true);
     try {
       const r = await api.get('/guias/search-products', { params: { nombre: searchNombre, codigo: searchCodigo } });
       setSearchResults(r.data);
       setSelProd(null);
-    } catch {}
+    } catch { }
     finally { setSearching(false); }
   };
 
@@ -207,7 +207,7 @@ export default function NewGuiaView() {
       id_producto: selProd.id,
       descripcion_producto: selProd.name + (tallaStr ? ` [${tallaStr}]` : ''),
       cantidad: cant,
-      unidad: selProd.unit || 'NIU',
+      unidad: selProd.code,
       pedido, t_neto: neto, t_bruto: bruto,
     }]);
     setSelProd(null);
@@ -217,7 +217,7 @@ export default function NewGuiaView() {
   };
 
   const totalBruto = items.reduce((s, i) => s + (parseFloat(i.t_bruto) || 0), 0).toFixed(2);
-  const totalNeto  = items.reduce((s, i) => s + (parseFloat(i.t_neto)  || 0), 0).toFixed(2);
+  const totalNeto = items.reduce((s, i) => s + (parseFloat(i.t_neto) || 0), 0).toFixed(2);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -343,20 +343,20 @@ export default function NewGuiaView() {
         {/* Buscar Productos */}
         <section className="bg-white rounded-xl border border-gray-200 shadow-sm p-6">
           <h2 className="text-xs font-black text-gray-500 uppercase tracking-widest mb-4 pb-2 border-b border-gray-100">Agregar Productos</h2>
-          <form onSubmit={handleSearch} className="flex gap-3 flex-wrap items-end">
+          <div className="flex gap-3 flex-wrap items-end">
             <div className="flex-1 min-w-[180px] space-y-1">
               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Nombre</label>
-              <input className={inp} placeholder="Nombre del producto..." value={searchNombre} onChange={e => setSearchNombre(e.target.value)} />
+              <input className={inp} placeholder="Nombre del producto..." value={searchNombre} onChange={e => setSearchNombre(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleSearch())} />
             </div>
             <div className="flex-1 min-w-[120px] space-y-1">
               <label className="text-xs font-bold text-gray-500 uppercase tracking-wider">Código</label>
-              <input className={inp} placeholder="Código..." value={searchCodigo} onChange={e => setSearchCodigo(e.target.value)} />
+              <input className={inp} placeholder="Código..." value={searchCodigo} onChange={e => setSearchCodigo(e.target.value)} onKeyDown={e => e.key === 'Enter' && (e.preventDefault(), handleSearch())} />
             </div>
-            <button type="submit" className="px-5 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 text-sm font-bold flex items-center gap-2 transition-colors">
+            <button type="button" onClick={handleSearch} className="px-5 py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 text-sm font-bold flex items-center gap-2 transition-colors">
               <MagnifyingGlassIcon className="h-4 w-4" />
               {searching ? 'Buscando...' : 'Buscar'}
             </button>
-          </form>
+          </div>
 
           {searchResults.length > 0 && (
             <div className="mt-4 rounded-xl border border-gray-200 overflow-hidden">

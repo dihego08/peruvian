@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import api from '../../services/api';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
-import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, TrashIcon, XMarkIcon, PencilIcon, PlusIcon, DocumentTextIcon } from '@heroicons/react/24/outline';
 import * as XLSX from 'xlsx';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import { generateOrderPDF } from '../../utils/pdf/orderPdf';
 const ESTADO_MAP = {
   0: { label: 'En Proceso', color: 'bg-yellow-100 text-yellow-800' },
   1: { label: 'Completado', color: 'bg-green-100 text-green-800' },
@@ -14,6 +15,8 @@ const ESTADO_MAP = {
 
 export default function OrdersView() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const highlightOrder = location.state?.highlightOrder;
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -28,6 +31,21 @@ export default function OrdersView() {
   // Modal Image State
   const [expandedImage, setExpandedImage] = useState(null);
   useEffect(() => { fetchOrders(); }, []);
+
+  useEffect(() => {
+    if (!loading && highlightOrder && orders.length > 0) {
+      setTimeout(() => {
+        const el = document.getElementById(`order-row-${highlightOrder}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.classList.add('bg-yellow-100', 'transition-colors', 'duration-1000');
+          setTimeout(() => {
+            el.classList.remove('bg-yellow-100');
+          }, 3000);
+        }
+      }, 100);
+    }
+  }, [loading, highlightOrder, orders]);
 
   const fetchOrders = async () => {
     try {
@@ -165,6 +183,18 @@ export default function OrdersView() {
     doc.save("pedidos_export.pdf");
   };
 
+  const printOrderPDF = async (order) => {
+    try {
+      const res = await api.get(`/transactions/orders/${order.codigo}`);
+      const details = res.data.detalles || [];
+      await generateOrderPDF(order, details);
+    } catch (e) {
+      console.error(e);
+      alert('Error al generar el PDF del pedido');
+    }
+  };
+
+
   const SIZE_COLS = ['_2', '_4', '_6', '_8', '_10', '_12', '_14', '_16', 's', 'm', 'l', 'xl', 'xxl'];
   const PROD_COLS = ['p2', 'p4', 'p6', 'p8', 'p10', 'p12', 'p14', 'p16', 'ps', 'pm', 'pl', 'pxl', 'pxxl'];
 
@@ -286,7 +316,7 @@ export default function OrdersView() {
                 const rowClass = isDanger ? 'bg-red-50 hover:bg-red-100 transition-colors' : 'bg-white hover:bg-gray-50 transition-colors';
 
                 return (
-                  <tr key={order.codigo} className={rowClass}>
+                  <tr key={order.codigo} id={`order-row-${order.codigo}`} className={rowClass}>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800 text-wrap">{order.codigo}</td>
                     <td className="px-4 py-3 text-gray-600 text-wrap">{order.fecha_creacion ? order.fecha_creacion /*new Date(order.fecha_creacion).toLocaleDateString('es-PE')*/ : '-'}</td>
                     <td className="px-4 py-3 font-medium text-wrap">{order.name}</td>
@@ -341,12 +371,22 @@ export default function OrdersView() {
                         >
                           <PencilIcon className="h-4 w-4 cursor-pointer" />
                         </button>
+                      </div>
+                      <div className="flex items-center justify-center gap-1">
                         <button
                           onClick={() => handleDelete(order.codigo)}
                           title="Eliminar"
                           className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <TrashIcon className="h-4 w-4 cursor-pointer" />
+                        </button>
+
+                        <button
+                          onClick={() => printOrderPDF(order)}
+                          title="Imprimir pedido"
+                          className="p-1 text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                        >
+                          <DocumentTextIcon className="h-4 w-4 cursor-pointer" />
                         </button>
                       </div>
                     </td>

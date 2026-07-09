@@ -110,9 +110,16 @@ export default function OrderProductionView() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">Avance de Producción</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Pedido <span className="font-mono font-bold text-blue-600">{codigo}</span></p>
+          <p className="text-sm text-gray-500 mt-0.5">
+            Pedido <span 
+              className="font-mono font-bold text-blue-600 cursor-pointer hover:underline"
+              onClick={() => navigate('/orders', { state: { highlightOrder: codigo } })}
+            >
+              {codigo}
+            </span>
+          </p>
         </div>
-        <button onClick={() => navigate('/orders')} className="text-sm text-gray-500 hover:text-gray-800">← Volver a pedidos</button>
+        <button onClick={() => navigate('/orders', { state: { highlightOrder: codigo } })} className="text-sm text-gray-500 hover:text-gray-800">← Volver a pedidos</button>
       </div>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-6">

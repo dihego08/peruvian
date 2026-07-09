@@ -9,6 +9,33 @@ class TransactionController extends Controller
 {
     // ====== VENTAS (SALES) ====== //
 
+    public function getCorrelativo(Request $request)
+    {
+        $tipo = $request->query('tipo_documento');
+        $prefix = '';
+        $tabla = '';
+
+        if ($tipo == '1') {
+            $tabla = 'boleta';
+            $prefix = 'B001-';
+        } elseif ($tipo == '2') {
+            $tabla = 'factura';
+            $prefix = 'F001-';
+        } elseif ($tipo == '3') {
+            $tabla = 'nota_pedido';
+            $prefix = 'NP001-';
+        } else {
+            return response()->json(['correlativo' => '']);
+        }
+
+        $aux = DB::table('aux')->where('tabla', $tabla)->first();
+        $nextId = $aux ? ((int)$aux->id + 1) : 1;
+
+        return response()->json([
+            'correlativo' => $prefix . $nextId
+        ]);
+    }
+
     public function getSells()
     {
         // Consulta la tabla legacy ventas_cabecera con los mismos joins que clsVenta.php lista_ventas()
@@ -99,6 +126,10 @@ class TransactionController extends Controller
             'operations.*.product_id' => 'required|integer',
             'operations.*.q' => 'required|numeric',
             'operations.*.price_out' => 'required|numeric',
+            'operations.*.pedido' => 'nullable|string',
+            'operations.*.tipo' => 'nullable|string',
+            'operations.*.codigo_producto' => 'nullable|string',
+            'operations.*.unidad' => 'nullable|string',
         ]);
 
         DB::beginTransaction();
@@ -144,11 +175,20 @@ class TransactionController extends Controller
             $a_cuenta = $valor_pagar - $pagado;
 
             // ===== Insertar en ventas_cabecera =====
+            // Recopilar todos los pedidos para la cabecera (legacy behaviour)
+            $pedidos = [];
+            foreach ($request->input('operations') as $op) {
+                if (!empty($op['pedido'])) {
+                    $pedidos[] = $op['pedido'];
+                }
+            }
+            $pedido_cod_cabecera = !empty($pedidos) ? '0--' . implode('--', $pedidos) : '0';
+
             DB::table('ventas_cabecera')->insert([
                 'codigo_venta' => $request->input('invoice_code'),
                 'tipo_documento' => (int) $request->input('tipo_documento', 2),
                 'id_person' => $person_id,
-                'id_forma_pago' => (int) $request->input('tipos_pago', 2),
+                'id_forma_pago' => (int) $request->input('forma_pago', 2),
                 'id_estado_pago' => (int) $request->input('tipos_pago', 2),
                 'id_estado_entrega' => (int) $request->input('tipos_entrega', 1),
                 'almacen' => 1,
@@ -169,7 +209,7 @@ class TransactionController extends Controller
                 'guia' => $request->input('guia', ''),
                 'fecha_emision' => $request->input('fecha_emision', now()->toDateString()),
                 'fecha_vencimiento' => $request->input('fecha_vencimiento'),
-                'pedido_cod' => '',
+                'pedido_cod' => $pedido_cod_cabecera,
                 'ruc_add' => $nuevo_ruc,
                 'incluye_igv' => (int) $request->input('incluye_igv', 1),
                 'fecha_creacion' => now(),
@@ -191,12 +231,23 @@ class TransactionController extends Controller
                     'id_producto' => (int) $op['product_id'],
                     'cantidad' => (float) $op['q'],
                     'pedido_cod' => $op['pedido'] ?? '',
-                    'codigo_unidad' => $op['unidad'] ?? '',
-                    'unidad' => $op['unidad_label'] ?? '',
+                    'codigo_unidad' => $op['codigo_producto'] ?? '',
+                    'unidad' => $op['unidad'] ?? '',
                     'precio_unitario' => $precio_unit,
                     'precio_bordado' => (float) ($op['price_bordado'] ?? 0),
                     'tipo' => $op['tipo'] ?? 'Producto',
                 ]);
+            }
+
+            // ===== Incrementar correlativo =====
+            $tipo = (int) $request->input('tipo_documento', 2);
+            $tabla = '';
+            if ($tipo == 1) $tabla = 'boleta';
+            elseif ($tipo == 2) $tabla = 'factura';
+            elseif ($tipo == 3) $tabla = 'nota_pedido';
+            
+            if ($tabla) {
+                DB::table('aux')->where('tabla', $tabla)->increment('id');
             }
 
             DB::commit();
