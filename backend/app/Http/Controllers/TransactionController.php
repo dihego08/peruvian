@@ -95,14 +95,22 @@ class TransactionController extends Controller
             $sendResult = $sunatService->sendInvoice($invoice, $see);
 
             if ($sendResult['success']) {
-                DB::table('ventas_cabecera')->where('codigo_venta', $codigo)->update(['envio_sunat' => 1]);
-                return response()->json(['Result' => 'SUCCESS']);
+                $code = $sendResult['code'];
+                if ($code === 0) {
+                    DB::table('ventas_cabecera')->where('codigo_venta', $codigo)->update(['envio_sunat' => 1]);
+                    return response()->json(['Result' => 'SUCCESS']);
+                } else if ($code >= 2000 && $code <= 3999) {
+                    return response()->json([
+                        'Result' => 'ERROR',
+                        'message' => 'Comprobante rechazado: ' . ($sendResult['message'] ?? 'Sin mensaje')
+                    ]);
+                }
             }
 
             return response()->json([
                 'Result' => 'ERROR',
-                'code' => $sendResult['code'],
-                'message' => $sendResult['message']
+                'code' => $sendResult['code'] ?? null,
+                'message' => $sendResult['message'] ?? 'Error de conexión'
             ]);
 
         } catch (\Exception $e) {

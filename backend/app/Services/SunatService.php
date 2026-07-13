@@ -20,9 +20,9 @@ class SunatService
     public function createSee(): See
     {
         $see = new See();
-        $see->setCertificate(file_get_contents(base_path('../facturador_v3/certificate_pv_2024.pem')));
+        $see->setCertificate(file_get_contents(storage_path('app/certs/certificate_pv_2024.pem')));
         $see->setService(SunatEndpoints::FE_PRODUCCION);
-        $see->setClaveSOL('20455175781', 'PERUVI11', 'Omcipier11');
+        $see->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'));
 
         return $see;
     }
@@ -47,8 +47,8 @@ class SunatService
             ->setCodLocal('0000');
 
         return (new Company())
-            ->setRuc('20455175781')
-            ->setRazonSocial('PERUVIAN DRESS TPX S.A.C.')
+            ->setRuc(env('SUNAT_RUC', '20455175781'))
+            ->setRazonSocial(env('SUNAT_RAZON_SOCIAL', 'PERUVIAN DRESS TPX S.A.C.'))
             ->setNombreComercial('PERUVIAN DRESS TPX S.A.C.')
             ->setAddress($address);
     }
@@ -102,8 +102,19 @@ class SunatService
             ->setValorVenta($cabecera['subtotal'])
             ->setSubTotal($cabecera['total'])
             ->setMtoImpVenta($cabecera['total'])
-            ->setFormaPago(new FormaPagoContado())
-            ->setDetails($items)
+            ->setFormaPago(new FormaPagoContado());
+
+        if (isset($cabecera['descuento']) && $cabecera['descuento'] > 0) {
+            $invoice->setDescuentos([
+                (new Charge())
+                    ->setCodTipo('02')
+                    ->setMontoBase($cabecera['descuento'])
+                    ->setFactor(1)
+                    ->setMonto($cabecera['descuento'])
+            ]);
+        }
+
+        $invoice->setDetails($items)
             ->setLegends([
                 (new Legend())
                     ->setCode('1000')
@@ -123,7 +134,6 @@ class SunatService
     public function sendInvoice(Invoice $invoice, See $see): array
     {
         $result = $see->send($invoice);
-        $cdr = $result->getCdrResponse();
 
         $sunatPath = storage_path('app/sunat');
         $xmlPath = $sunatPath . DIRECTORY_SEPARATOR . 'xml';
@@ -138,10 +148,20 @@ class SunatService
         }
 
         file_put_contents($xmlPath . DIRECTORY_SEPARATOR . $invoice->getName() . '.xml', $see->getFactory()->getLastXml());
+
+        if (!$result->isSuccess()) {
+            return [
+                'success' => false,
+                'code' => $result->getError()->getCode(),
+                'message' => $result->getError()->getMessage(),
+            ];
+        }
+
+        $cdr = $result->getCdrResponse();
         file_put_contents($cdrPath . DIRECTORY_SEPARATOR . 'R-' . $invoice->getName() . '.zip', $result->getCdrZip());
 
         return [
-            'success' => $result->isSuccess(),
+            'success' => true,
             'code' => (int)$cdr->getCode(),
             'message' => $cdr->getDescription() ?? null,
         ];

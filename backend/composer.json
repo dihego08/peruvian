@@ -7,7 +7,10 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "greenter/data": "^5.3",
+        "greenter/htmltopdf": "^5.3",
         "greenter/lite": "^5.3",
+        "greenter/report": "^5.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1"
     },

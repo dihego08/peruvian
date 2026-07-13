@@ -1,13 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
-import { EyeIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, ArrowUpTrayIcon, DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 
 export default function SellsView() {
   const [sells, setSells] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [sendSunatLoading, setSendSunatLoading] = useState(false);
+  const [sendingSunatId, setSendingSunatId] = useState(null);
 
   // Modal state
   const [modalSell, setModalSell] = useState(null);   // cabecera
@@ -45,21 +46,30 @@ export default function SellsView() {
 
   const closeModal = () => { setModalSell(null); setModalItems([]); };
 
-  const handleSendSunat = async () => {
-    if (!modalSell?.codigo_venta) return;
+  const handleSendSunat = async (codigo = null) => {
+    const targetCodigo = typeof codigo === 'string' ? codigo : modalSell?.codigo_venta;
+    if (!targetCodigo) return;
     if (!window.confirm('¿Enviar este comprobante a SUNAT?')) return;
 
     setSendSunatLoading(true);
+    setSendingSunatId(targetCodigo);
     try {
-      const response = await api.post(`/transactions/sells/${encodeURIComponent(modalSell.codigo_venta)}/send-sunat`);
-      alert(response.data.message || 'Comprobante enviado a SUNAT.');
-      fetchSells();
-      openModal(modalSell.codigo_venta);
+      const response = await api.post(`/transactions/sells/${encodeURIComponent(targetCodigo)}/send-sunat`);
+      if (response.data.Result === 'ERROR') {
+        alert(`Error de SUNAT:\n${response.data.message || 'Error desconocido.'}`);
+      } else {
+        alert(response.data.message || 'Comprobante enviado a SUNAT exitosamente.');
+        fetchSells();
+        if (modalSell && modalSell.codigo_venta === targetCodigo) {
+          openModal(targetCodigo);
+        }
+      }
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || 'Error enviando el comprobante a SUNAT.');
+      alert(error.response?.data?.message || 'Error de red o servidor enviando el comprobante a SUNAT.');
     } finally {
       setSendSunatLoading(false);
+      setSendingSunatId(null);
     }
   };
 
@@ -141,15 +151,38 @@ export default function SellsView() {
                   <td className="px-4 py-3 text-center">
                     <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full">{sell.entrega || '-'}</span>
                   </td>
-                    <td className="px-4 py-3 text-center">
+                  <td className="px-4 py-3 text-center">
+                    <div className="flex items-center justify-center gap-1">
                       <button
                         title="Ver Detalle"
                         onClick={() => openModal(sell.codigo_venta)}
-                        className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                        className="p-1 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                       >
                         <EyeIcon className="h-5 w-5" />
                       </button>
-                    </td>
+
+                      {sell.envio_sunat != 1 && (
+                        <button
+                          onClick={() => handleSendSunat(sell.codigo_venta)}
+                          disabled={sendingSunatId === sell.codigo_venta}
+                          className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                          title="Enviar a SUNAT"
+                        >
+                          <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
+                        </button>
+                      )}
+
+                      <a
+                        href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-venta.php?codigo_venta=${sell.codigo_venta}`}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Ver PDF"
+                      >
+                        <DocumentTextIcon className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -161,6 +194,19 @@ export default function SellsView() {
           </div>
         )}
       </div>
+
+      {/* Sending Modal */}
+      {sendingSunatId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-in zoom-in-95 duration-300">
+            <div className="mx-auto w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Enviando a SUNAT</h3>
+            <p className="text-sm text-gray-500">
+              Por favor, espere. Este proceso demora aproximadamente 60 segundos debido a la generación del ticket y respuesta de SUNAT.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* ===== MODAL DETALLE ===== */}
       {(modalSell || modalLoading) && (
@@ -179,14 +225,6 @@ export default function SellsView() {
                 <p className="text-xs text-gray-500 mt-0.5">{modalSell?.tipo_doc_nombre} · {modalSell?.fecha_emision_fmt}</p>
               </div>
               <div className="flex items-center gap-2">
-                <button
-                  onClick={handleSendSunat}
-                  disabled={sendSunatLoading}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
-                >
-                  <ArrowUpTrayIcon className="h-4 w-4" />
-                  {sendSunatLoading ? 'Enviando...' : 'Enviar SUNAT'}
-                </button>
                 <button onClick={closeModal} className="text-gray-400 hover:text-gray-700 transition-colors p-1.5 rounded-lg hover:bg-gray-200">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>

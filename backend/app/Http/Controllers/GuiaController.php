@@ -168,37 +168,13 @@ class GuiaController extends Controller
 
     public function sendToSunat($id, GuiaRemisionService $service)
     {
-        $guia = DB::table('guia_cabecera')->where('id', $id)->first();
-        if (!$guia) {
-            return response()->json(['Result' => 'ERROR', 'Message' => 'Guía no encontrada'], 404);
+        $resultado = $service->procesarGuia($id);
+
+        if (isset($resultado['Result']) && $resultado['Result'] === 'OK') {
+            return response()->json($resultado);
         }
 
-        $detalles = DB::table('guia_detalle as g')
-            ->leftJoin('product as p', 'p.id', '=', 'g.id_producto')
-            ->select('g.*', 'p.code', 'p.description')
-            ->where('g.id_guia', $id)
-            ->get();
-
-        $destinatario = DB::table('person')->where('no', $guia->ruc_destinatario)->first();
-        $transportista = null;
-        $conductor = null;
-
-        if (!empty($guia->ruc_transportista)) {
-            $transportista = DB::table('transportistas')->where('ruc', $guia->ruc_transportista)->first();
-        }
-
-        if (!empty($guia->ruc_conductor)) {
-            $conductor = DB::table('conductores')->where('ruc', $guia->ruc_conductor)->first();
-        }
-
-        $response = $service->procesarGuia((array)$guia, $detalles->toArray(), (array)$destinatario, (array)$transportista, (array)$conductor);
-
-        if ($response['success']) {
-            DB::table('guia_cabecera')->where('id', $id)->update(['estado' => 1]);
-            return response()->json(['Result' => 'SUCCESS', 'Message' => $response['message']]);
-        }
-
-        return response()->json(['Result' => 'ERROR', 'Message' => $response['message'], 'code' => $response['code'] ?? null], 500);
+        return response()->json($resultado, 500);
     }
 
     public function destroy($id)

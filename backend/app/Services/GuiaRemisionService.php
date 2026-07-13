@@ -3,6 +3,8 @@
 namespace App\Services;
 
 use DateTime;
+use DOMDocument;
+use Illuminate\Support\Facades\DB;
 use Greenter\Model\Client\Client;
 use Greenter\Model\Company\Company;
 use Greenter\Model\Despatch\Despatch;
@@ -15,83 +17,125 @@ use Greenter\Model\Despatch\Vehicle;
 use Greenter\See;
 use Greenter\Ws\Services\SunatEndpoints;
 
-// Load legacy Greenter autoload if present (keeps global classes available)
-
 class GuiaRemisionService
 {
     private const RUC_EMPRESA = '20455175781';
     private const RAZON_SOCIAL_EMPRESA = 'PERUVIAN DRESS TPX S.A.C.';
     private const SLEEP_TIME = 60;
 
-
-    public function createSee(): See
+    public function createSee(): \Greenter\Api
     {
-        $see = new See();
-        $see->setService(SunatEndpoints::FE_PRODUCCION);
-        $see->setCertificate(file_get_contents(base_path('../guias/resources/certificate_pv_2024.pem')));
-        $see->setClaveSOL('20455175781', 'PERUVI11', 'Omcipier11');
-        return $see;
+        $api = new \Greenter\Api([
+            'auth' => 'https://api-seguridad.sunat.gob.pe/v1',
+            'cpe' => 'https://api-cpe.sunat.gob.pe/v1',
+        ]);
+
+        $certificate = file_get_contents(storage_path('app/certs/certificate_pv_2024.pem'));
+
+        $api->setBuilderOptions([
+            'strict_variables' => true,
+            'optimizations' => 0,
+            'debug' => true,
+            'cache' => false,
+        ])
+        ->setApiCredentials(env('SUNAT_CLIENT_ID', '54833fd6-ef25-49a2-95bd-5ffc6f95a97a'), env('SUNAT_CLIENT_SECRET', 'Ff68EQcyDY9K2Q3Ox2TlyA=='))
+        ->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'))
+        ->setCertificate($certificate);
+
+        return $api;
     }
 
-    
-
-    public function procesarGuia(array $guia, array $detalles, array $destinatario, array $transportista = null, array $conductor = null): array
+    public function procesarGuia(int $idGuia): array
     {
-        $despatch = $this->construirDespatch($guia, $detalles, $destinatario, $transportista, $conductor);
+        try {
+            DB::statement("SET SESSION wait_timeout = 120");
+            DB::statement("SET SESSION interactive_timeout = 120");
+            
+            DB::beginTransaction();
 
-        $see = $this->createSee();
-        $res = $see->send($despatch);
-        $this->saveXml($despatch, $see->getFactory()->getLastXml());
-
-        if (!$res->isSuccess()) {
-            return ['success' => false, 'message' => $res->getError()->getMessage()];
-        }
-
-        $ticket = $res->getTicket();
-        sleep(self::SLEEP_TIME);
-
-        $res = $see->getStatus($ticket);
-        if (!$res->isSuccess()) {
-            return ['success' => false, 'message' => $res->getError()->getMessage()];
-        }
-
-        $cdr = $res->getCdrResponse();
-        $this->saveCdr($despatch, $res->getCdrZip());
-
-        return [
-            'success' => $cdr->isAccepted(),
-            'code' => $cdr->getCode(),
-            'message' => $cdr->getDescription(),
-            'accepted' => $cdr->isAccepted(),
-        ];
-    }
-
-    private function construirDespatch(array $guia, array $detalles, array $destinatario, ?array $transportista, ?array $conductor): Despatch
-    {
-        // Normalize inputs: allow stdClass or arrays
-        if (is_object($guia)) {
-            $guia = json_decode(json_encode($guia), true);
-        }
-        if (is_object($destinatario)) {
-            $destinatario = (array) $destinatario;
-        }
-        foreach ($detalles as $k => $row) {
-            if (is_object($row)) {
-                $detalles[$k] = (array) $row;
+            $guia = $this->obtenerGuia($idGuia);
+            if (!$guia) {
+                DB::rollBack();
+                return ['Result' => 'ERROR', 'Message' => 'Guía no encontrada'];
             }
-        }
-        if (is_object($transportista)) {
-            $transportista = (array) $transportista;
-        }
-        if (is_object($conductor)) {
-            $conductor = (array) $conductor;
-        }
 
-        [$serie, $correlativo] = explode('-', $guia['num_guia']);
+            $despatch = $this->construirDespatch($guia, $idGuia);
 
+            $api = $this->createSee();
+            $res = $api->send($despatch);
+            $this->saveXml($despatch, $api->getLastXml());
+
+            if (!$res->isSuccess()) {
+                $errorMsg = $res->getError()->getMessage();
+                $this->guardarRespuestaSunat($idGuia, $errorMsg);
+                DB::commit();
+                return ['Result' => 'ERROR', 'Message' => $errorMsg];
+            }
+
+            $ticket = $res->getTicket();
+
+            sleep(self::SLEEP_TIME);
+            $res = $api->getStatus($ticket);
+
+            if (!$res->isSuccess()) {
+                $errorMsg = $res->getError()->getMessage();
+                $this->guardarRespuestaSunat($idGuia, $errorMsg);
+                DB::commit();
+                return ['Result' => 'ERROR', 'Message' => $errorMsg];
+            }
+
+            $cdr = $res->getCdrResponse();
+            $this->saveCdr($despatch, $res->getCdrZip());
+
+            if ($cdr->isAccepted()) {
+                $this->actualizarGuiaAceptada($idGuia, $ticket);
+                $respuesta = $this->formatearRespuestaCdr($cdr);
+                $this->guardarRespuestaSunat($idGuia, $respuesta);
+
+                DB::commit();
+
+                return ['Result' => 'OK', 'Message' => $cdr->getDescription()];
+            } else {
+                $errorMsg = $this->formatearRespuestaCdr($cdr);
+                $this->guardarRespuestaSunat($idGuia, $errorMsg);
+
+                DB::commit();
+
+                return ['Result' => 'ERROR', 'Message' => $errorMsg];
+            }
+        } catch (\Exception $e) {
+            if (DB::transactionLevel() > 0) {
+                DB::rollBack();
+            }
+
+            $errorMsg = "Excepción: " . $e->getMessage() . " | Línea: " . $e->getLine();
+
+            try {
+                $this->guardarRespuestaSunat($idGuia, $errorMsg);
+            } catch (\Exception $saveException) {
+                \Illuminate\Support\Facades\Log::error("No se pudo guardar error en BD: " . $saveException->getMessage());
+            }
+
+            return ['Result' => 'ERROR', 'Message' => $errorMsg];
+        }
+    }
+
+    private function obtenerGuia(int $idGuia): ?array
+    {
+        $guia = DB::table('guia_cabecera')->where('id', $idGuia)->first();
+        return $guia ? (array) $guia : null;
+    }
+
+    private function construirDespatch(array $guia, int $idGuia): Despatch
+    {
         $company = (new Company())
             ->setRuc(self::RUC_EMPRESA)
             ->setRazonSocial(self::RAZON_SOCIAL_EMPRESA);
+
+        $envio = $this->construirShipment($guia);
+
+        [$serie, $correlativo] = explode('-', $guia['num_guia']);
+        $destinatario = $this->obtenerDestinatario($guia['ruc_destinatario']);
 
         $despatch = (new Despatch())
             ->setVersion('2022')
@@ -104,62 +148,179 @@ class GuiaRemisionService
                 ->setTipoDoc('6')
                 ->setNumDoc($guia['ruc_destinatario'])
                 ->setRznSocial($destinatario['name'] ?? '-'))
-            ->setEnvio($this->construirShipment($guia, $transportista, $conductor));
+            ->setEnvio($envio);
 
-        $items = [];
-        foreach ($detalles as $row) {
-            $items[] = (new DespatchDetail())
-                ->setCantidad(floatval($row['cantidad']))
-                ->setUnidad($row['unidad'] ?? 'NIU')
-                ->setDescripcion(trim(strip_tags(str_replace('<br>', ' ', $row['descripcion_producto'] ?? $row['description'] ?? ''))))
-                ->setCodigo($row['code'] ?? '');
-        }
-
+        $items = $this->obtenerDetallesGuia($idGuia);
         $despatch->setDetails($items);
+
         return $despatch;
     }
 
-    private function construirShipment(array $guia, ?array $transportista, ?array $conductor): Shipment
+    private function construirShipment(array $guia): Shipment
     {
         $totalPeso = $guia['total_neto'] > 0 ? $guia['total_neto'] : $guia['total_bruto'];
 
-        $shipment = (new Shipment())
+        $envio = (new Shipment())
             ->setCodTraslado($guia['motivo_traslado'])
             ->setModTraslado($guia['modalidad_trasnporte'])
             ->setFecTraslado(new DateTime($guia['fecha_traslado']))
             ->setPesoTotal(floatval($totalPeso))
-            ->setUndPesoTotal('KGM')
-            ->setLlegada(new Direction($guia['ubigeo_destino'], $guia['destino']))
-            ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
+            ->setUndPesoTotal('KGM');
 
-        if ($guia['motivo_traslado'] === '13') {
-            $shipment->setDesTraslado($guia['descripcion_motivo'] ?? '');
+        if ($guia['motivo_traslado'] == 13) {
+            $envio->setDesTraslado($guia['descripcion_motivo'] ?? '');
         }
 
-        if (!empty($transportista)) {
-            $shipment->setTransportista((new Transportist())
-                ->setTipoDoc($transportista['tipoDocumento'] ?? '6')
-                ->setNumDoc($transportista['ruc'] ?? '')
-                ->setRznSocial($transportista['razon_social'] ?? '-')
-                ->setNroMtc($transportista['nro_mtc'] ?? '0001'));
+        $envio->setLlegada(new Direction($guia['ubigeo_destino'], $guia['destino']))
+              ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
+
+        if (!empty($guia['ruc_transportista'])) {
+            $transportista = $this->obtenerTransportista($guia['ruc_transportista']);
+            if ($transportista) {
+                $transp = (new Transportist())
+                    ->setTipoDoc($transportista['tipoDocumento'] ?? '6')
+                    ->setNumDoc($transportista['ruc'] ?? '')
+                    ->setRznSocial($transportista['razon_social'] ?? '')
+                    ->setNroMtc($transportista['nro_mtc'] ?? '0001');
+                
+                $envio->setTransportista($transp);
+            }
         }
 
-        if (!empty($conductor)) {
-            $driver = (new Driver())
-                ->setTipo('Principal')
-                ->setTipoDoc('1')
-                ->setNroDoc($conductor['ruc'] ?? '')
-                ->setLicencia($conductor['licencia'] ?? '')
-                ->setNombres($conductor['nombres'] ?? '')
-                ->setApellidos($conductor['apellidos'] ?? '');
-            $shipment->setChoferes([$driver]);
+        if (!empty($guia['ruc_conductor'])) {
+            $conductor = $this->obtenerConductor($guia['ruc_conductor']);
+            if ($conductor) {
+                $chofer = (new Driver())
+                    ->setTipo('Principal')
+                    ->setTipoDoc('1')
+                    ->setNroDoc($conductor['ruc'] ?? '')
+                    ->setLicencia($conductor['licencia'] ?? '')
+                    ->setNombres($conductor['nombres'] ?? '')
+                    ->setApellidos($conductor['apellidos'] ?? '');
+
+                $envio->setChoferes([$chofer]);
+
+                if (!empty($guia['placa'])) {
+                    $vehiculo = (new Vehicle())->setPlaca($guia['placa']);
+                    $envio->setVehiculo($vehiculo);
+                }
+            }
         }
 
-        if (!empty($guia['placa'])) {
-            $shipment->setVehiculo((new Vehicle())->setPlaca($guia['placa']));
+        return $envio;
+    }
+
+    private function obtenerDetallesGuia(int $idGuia): array
+    {
+        $detalles = DB::table('guia_detalle as g')
+            ->leftJoin('product as p', 'g.id_producto', '=', 'p.id')
+            ->select('g.*', 'p.code', 'p.description')
+            ->where('g.id_guia', $idGuia)
+            ->get();
+
+        $items = [];
+        foreach ($detalles as $row) {
+            $row = (array) $row;
+            $descripcion = !empty($row['descripcion_producto']) 
+                ? $row['descripcion_producto'] 
+                : $row['description'];
+
+            $item = (new DespatchDetail())
+                ->setCantidad(floatval($row['cantidad']))
+                ->setUnidad($row['unidad'] ?? 'NIU')
+                ->setDescripcion($this->sanitizarTexto($descripcion))
+                ->setCodigo($row['code'] ?? '');
+
+            $items[] = $item;
         }
 
-        return $shipment;
+        return $items;
+    }
+
+    private function obtenerDestinatario(string $ruc): array
+    {
+        $dest = DB::table('person')->select('no', 'email1', 'phone1', 'address1', 'name')->where('no', $ruc)->first();
+        return $dest ? (array) $dest : [];
+    }
+
+    private function obtenerTransportista(string $ruc): ?array
+    {
+        $transp = DB::table('transportistas')->where('ruc', $ruc)->first();
+        return $transp ? (array) $transp : null;
+    }
+
+    private function obtenerConductor(string $ruc): ?array
+    {
+        $cond = DB::table('conductores')->where('ruc', $ruc)->first();
+        return $cond ? (array) $cond : null;
+    }
+
+    private function actualizarGuiaAceptada(int $idGuia, string $ticket): void
+    {
+        DB::table('guia_cabecera')
+            ->where('id', $idGuia)
+            ->update([
+                'estado' => 1,
+                'ticket' => $ticket
+            ]);
+    }
+
+    private function guardarRespuestaSunat(int $idGuia, string $respuesta): void
+    {
+        try {
+            DB::table('respuesta_sunat_guias')->insert([
+                'id_guia' => $idGuia,
+                'respuesta' => $respuesta
+            ]);
+        } catch (\Throwable $e) {
+            \Illuminate\Support\Facades\Log::error("guardarRespuestaSunat error: " . $e->getMessage());
+        }
+    }
+
+    private function formatearRespuestaCdr($cdr): string
+    {
+        return sprintf(
+            "ID: %s | Código: %s | Descripción: %s",
+            $cdr->getId(),
+            $cdr->getCode(),
+            $cdr->getDescription()
+        );
+    }
+
+    private function sanitizarTexto(string $texto): string
+    {
+        if (strpos($texto, '<table') === false) {
+            return trim(strip_tags(str_replace('<br>', ' ', $texto)));
+        }
+
+        $partes = explode('<table', $texto, 2);
+        $encabezado = trim(strip_tags(str_replace('<br>', ' ', $partes[0])));
+
+        libxml_use_internal_errors(true);
+        $dom = new DOMDocument();
+        @$dom->loadHTML('<table' . $partes[1], LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        libxml_clear_errors();
+
+        $rows = $dom->getElementsByTagName('tr');
+
+        if ($rows->length < 2) {
+            return $encabezado;
+        }
+
+        $cantidadFila = $rows->item(0)->getElementsByTagName('td');
+        $tallaFila = $rows->item(1)->getElementsByTagName('td');
+        $pares = [];
+
+        $maxColumnas = min($cantidadFila->length, $tallaFila->length);
+        for ($i = 0; $i < $maxColumnas; $i++) {
+            $cantidad = trim($cantidadFila->item($i)->nodeValue);
+            $talla = trim($tallaFila->item($i)->nodeValue);
+            if (!empty($cantidad) && !empty($talla)) {
+                $pares[] = "$talla/$cantidad";
+            }
+        }
+
+        return trim("$encabezado " . implode(' ', $pares));
     }
 
     private function saveXml(Despatch $despatch, ?string $xml): void

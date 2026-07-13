@@ -77,14 +77,18 @@ export default function GuiasView() {
     setSendingSunatId(id);
     try {
       const response = await api.post(`/guias/${id}/send-sunat`);
-      alert(response.data.message || 'Guía enviada a SUNAT.');
-      fetchGuias();
-      if (detailData?.cabecera?.id === id) {
-        handleViewDetail(id, detailData.numGuia);
+      if (response.data.Result === 'ERROR') {
+        alert(`Error de SUNAT:\n${response.data.Message || 'Error desconocido.'}`);
+      } else {
+        alert(response.data.Message || 'Guía enviada a SUNAT exitosamente.');
+        fetchGuias();
+        if (detailData?.cabecera?.id === id) {
+          handleViewDetail(id, detailData.numGuia);
+        }
       }
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || 'Error enviando la guía a SUNAT.');
+      alert(error.response?.data?.Message || 'Error de red o servidor enviando la guía.');
     } finally {
       setSendingSunatId(null);
     }
@@ -228,17 +232,15 @@ export default function GuiasView() {
                     >
                       <EyeIcon className="h-4 w-4" />
                     </button>
-                    {g.estado == 1 ? (
-                      <a
-                        href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-guia.php?id=${g.id}`}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Ver PDF"
-                      >
-                        <DocumentTextIcon className="h-4 w-4" />
-                      </a>
-                    ) : null}
+                    <a
+                      href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-guia.php?id=${g.id}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="p-1.5 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                      title="Ver PDF"
+                    >
+                      <DocumentTextIcon className="h-4 w-4" />
+                    </a>
                     {g.estado != 1 && (
                       <button
                         onClick={() => handleSendSunat(g.id)}
@@ -269,6 +271,19 @@ export default function GuiasView() {
         <p className="text-xs text-gray-400 text-right">
           {guias.length} guía{guias.length !== 1 ? 's' : ''} encontrada{guias.length !== 1 ? 's' : ''}
         </p>
+      )}
+
+      {/* Sending Modal */}
+      {sendingSunatId && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center animate-in zoom-in-95 duration-300">
+            <div className="mx-auto w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
+            <h3 className="text-lg font-bold text-gray-900 mb-2">Enviando a SUNAT</h3>
+            <p className="text-sm text-gray-500">
+              Por favor, espere. Este proceso demora aproximadamente 60 segundos debido a la generación del ticket y respuesta de SUNAT.
+            </p>
+          </div>
+        </div>
       )}
 
       {/* Detail Modal */}
@@ -380,16 +395,7 @@ export default function GuiasView() {
             </div>
 
             <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
-              {detailData?.cabecera?.estado != 1 && (
-                <button
-                  onClick={() => handleSendSunat(detailData.cabecera.id)}
-                  disabled={sendingSunatId === detailData.cabecera.id}
-                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-bold text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
-                  {sendingSunatId === detailData.cabecera.id ? 'Enviando...' : 'Enviar SUNAT'}
-                </button>
-              )}
+
               {detailData?.cabecera?.estado == 1 && (
                 <a
                   href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-guia.php?id=${detailData.cabecera.id}`}
