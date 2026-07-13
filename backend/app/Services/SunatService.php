@@ -1,0 +1,149 @@
+<?php
+
+namespace App\Services;
+
+use Greenter\Model\Company\Address;
+use Greenter\Model\Company\Company;
+use Greenter\Model\Client\Client;
+use Greenter\Model\Sale\Charge;
+use Greenter\Model\Sale\FormaPagos\FormaPagoContado;
+use Greenter\Model\Sale\Invoice;
+use Greenter\Model\Sale\Legend;
+use Greenter\Model\Sale\SaleDetail;
+use Greenter\See;
+use Greenter\Ws\Services\SunatEndpoints;
+
+// Load legacy Greenter autoload if present (keeps global classes available)
+
+class SunatService
+{
+    public function createSee(): See
+    {
+        $see = new See();
+        $see->setCertificate(file_get_contents(base_path('../facturador_v3/certificate_pv_2024.pem')));
+        $see->setService(SunatEndpoints::FE_PRODUCCION);
+        $see->setClaveSOL('20455175781', 'PERUVI11', 'Omcipier11');
+
+        return $see;
+    }
+
+    public function buildClient(array $customer): Client
+    {
+        return (new Client())
+            ->setTipoDoc('6')
+            ->setNumDoc(str_replace(' ', '', $customer['ruc'] ?? ''))
+            ->setRznSocial($customer['razon_social'] ?? '-');
+    }
+
+    public function buildCompany(): Company
+    {
+        $address = (new Address())
+            ->setUbigueo('040109')
+            ->setDepartamento('AREQUIPA')
+            ->setProvincia('AREQUIPA')
+            ->setDistrito('MARIANO MELGAR')
+            ->setUrbanizacion('-')
+            ->setDireccion('CAL.BELEN MZA. B LOTE. 8 AREQUIPA - AREQUIPA - MARIANO MELGAR')
+            ->setCodLocal('0000');
+
+        return (new Company())
+            ->setRuc('20455175781')
+            ->setRazonSocial('PERUVIAN DRESS TPX S.A.C.')
+            ->setNombreComercial('PERUVIAN DRESS TPX S.A.C.')
+            ->setAddress($address);
+    }
+
+    public function buildItems($detalle): array
+    {
+        $items = [];
+        foreach ($detalle as $res) {
+            $monto_valor_venta = number_format($res->precio_unitario * $res->cantidad, 2, '.', '');
+            $precio_bordado = empty($res->precio_bordado) ? 0 : $res->precio_bordado;
+
+            $item = new SaleDetail();
+            $item->setCodProducto($res->id_producto)
+                ->setUnidad('NIU')
+                ->setDescripcion($res->tipo ?? ($res->producto_nombre ?? ''))
+                ->setCantidad($res->cantidad)
+                ->setMtoValorUnitario($res->precio_unitario)
+                ->setMtoValorVenta($monto_valor_venta + $precio_bordado)
+                ->setMtoBaseIgv(($monto_valor_venta + $precio_bordado))
+                ->setPorcentajeIgv(18)
+                ->setIgv(number_format(($monto_valor_venta + $precio_bordado) * 0.18, 2, '.', ''))
+                ->setTipAfeIgv('10')
+                ->setTotalImpuestos(number_format(($monto_valor_venta + $precio_bordado) * 0.18, 2, '.', ''))
+                ->setMtoPrecioUnitario(number_format((($monto_valor_venta + $precio_bordado) * 0.18) + ($monto_valor_venta + $precio_bordado), 2, '.', ''));
+
+            $items[] = $item;
+        }
+
+        return $items;
+    }
+
+    public function buildInvoice(array $cabecera, array $items, Client $client, Company $company): Invoice
+    {
+        $num_factura = explode('-', $cabecera['codigo_venta']);
+
+        $invoice = (new Invoice())
+            ->setUblVersion('2.1')
+            ->setFecVencimiento(new \DateTime($cabecera['fecha_vencimiento']))
+            ->setTipoOperacion('0101')
+            ->setTipoDoc('01')
+            ->setSerie($num_factura[0])
+            ->setCorrelativo($num_factura[1])
+            ->setFechaEmision(new \DateTime($cabecera['fecha_creacion']))
+            ->setTipoMoneda('PEN')
+            ->setCompany($company)
+            ->setClient($client)
+            ->setMtoOperExoneradas(0)
+            ->setMtoIGV($cabecera['igv'])
+            ->setMtoOperGravadas($cabecera['subtotal'])
+            ->setTotalImpuestos($cabecera['igv'])
+            ->setValorVenta($cabecera['subtotal'])
+            ->setSubTotal($cabecera['total'])
+            ->setMtoImpVenta($cabecera['total'])
+            ->setFormaPago(new FormaPagoContado())
+            ->setDetails($items)
+            ->setLegends([
+                (new Legend())
+                    ->setCode('1000')
+                    ->setValue($this->getTotalEnLetras($cabecera['total']))
+            ]);
+
+        return $invoice;
+    }
+
+    protected function getTotalEnLetras($total): string
+    {
+        $total_letras = @file_get_contents('https://dbusinessaqp.com/numero_2_letras/conversor.php?total=' . $total);
+        $data = json_decode($total_letras);
+        return $data->letras ?? '';
+    }
+
+    public function sendInvoice(Invoice $invoice, See $see): array
+    {
+        $result = $see->send($invoice);
+        $cdr = $result->getCdrResponse();
+
+        $sunatPath = storage_path('app/sunat');
+        $xmlPath = $sunatPath . DIRECTORY_SEPARATOR . 'xml';
+        $cdrPath = $sunatPath . DIRECTORY_SEPARATOR . 'cdr';
+
+        if (!file_exists($xmlPath)) {
+            mkdir($xmlPath, 0755, true);
+        }
+
+        if (!file_exists($cdrPath)) {
+            mkdir($cdrPath, 0755, true);
+        }
+
+        file_put_contents($xmlPath . DIRECTORY_SEPARATOR . $invoice->getName() . '.xml', $see->getFactory()->getLastXml());
+        file_put_contents($cdrPath . DIRECTORY_SEPARATOR . 'R-' . $invoice->getName() . '.zip', $result->getCdrZip());
+
+        return [
+            'success' => $result->isSuccess(),
+            'code' => (int)$cdr->getCode(),
+            'message' => $cdr->getDescription() ?? null,
+        ];
+    }
+}

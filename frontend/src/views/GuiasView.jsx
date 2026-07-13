@@ -18,6 +18,7 @@ export default function GuiasView() {
   const [search, setSearch] = useState('');
   const [desde, setDesde] = useState('');
   const [hasta, setHasta] = useState('');
+  const [sendingSunatId, setSendingSunatId] = useState(null);
 
   // Detail modal
   const [showDetail, setShowDetail] = useState(false);
@@ -68,6 +69,24 @@ export default function GuiasView() {
       fetchGuias();
     } catch (e) {
       alert('Error al eliminar la guía');
+    }
+  };
+
+  const handleSendSunat = async (id) => {
+    if (!window.confirm('¿Enviar esta guía a SUNAT?')) return;
+    setSendingSunatId(id);
+    try {
+      const response = await api.post(`/guias/${id}/send-sunat`);
+      alert(response.data.message || 'Guía enviada a SUNAT.');
+      fetchGuias();
+      if (detailData?.cabecera?.id === id) {
+        handleViewDetail(id, detailData.numGuia);
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || 'Error enviando la guía a SUNAT.');
+    } finally {
+      setSendingSunatId(null);
     }
   };
 
@@ -220,6 +239,16 @@ export default function GuiasView() {
                         <DocumentTextIcon className="h-4 w-4" />
                       </a>
                     ) : null}
+                    {g.estado != 1 && (
+                      <button
+                        onClick={() => handleSendSunat(g.id)}
+                        disabled={sendingSunatId === g.id}
+                        className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                        title="Enviar a SUNAT"
+                      >
+                        <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
+                      </button>
+                    )}
                     <button
                       onClick={() => handleDelete(g.id)}
                       className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
@@ -351,6 +380,16 @@ export default function GuiasView() {
             </div>
 
             <div className="flex justify-end gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50">
+              {detailData?.cabecera?.estado != 1 && (
+                <button
+                  onClick={() => handleSendSunat(detailData.cabecera.id)}
+                  disabled={sendingSunatId === detailData.cabecera.id}
+                  className="px-5 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 font-bold text-sm transition-colors flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
+                  {sendingSunatId === detailData.cabecera.id ? 'Enviando...' : 'Enviar SUNAT'}
+                </button>
+              )}
               {detailData?.cabecera?.estado == 1 && (
                 <a
                   href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-guia.php?id=${detailData.cabecera.id}`}

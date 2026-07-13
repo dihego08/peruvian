@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
-import { EyeIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, ArrowUpTrayIcon } from '@heroicons/react/24/outline';
 
 export default function SellsView() {
   const [sells, setSells] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
+  const [sendSunatLoading, setSendSunatLoading] = useState(false);
 
   // Modal state
   const [modalSell, setModalSell] = useState(null);   // cabecera
@@ -43,6 +44,24 @@ export default function SellsView() {
   };
 
   const closeModal = () => { setModalSell(null); setModalItems([]); };
+
+  const handleSendSunat = async () => {
+    if (!modalSell?.codigo_venta) return;
+    if (!window.confirm('¿Enviar este comprobante a SUNAT?')) return;
+
+    setSendSunatLoading(true);
+    try {
+      const response = await api.post(`/transactions/sells/${encodeURIComponent(modalSell.codigo_venta)}/send-sunat`);
+      alert(response.data.message || 'Comprobante enviado a SUNAT.');
+      fetchSells();
+      openModal(modalSell.codigo_venta);
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || 'Error enviando el comprobante a SUNAT.');
+    } finally {
+      setSendSunatLoading(false);
+    }
+  };
 
   const filtered = sells.filter(s =>
     (s.codigo_venta || '').toLowerCase().includes(search.toLowerCase()) ||
@@ -159,9 +178,19 @@ export default function SellsView() {
                 </h2>
                 <p className="text-xs text-gray-500 mt-0.5">{modalSell?.tipo_doc_nombre} · {modalSell?.fecha_emision_fmt}</p>
               </div>
-              <button onClick={closeModal} className="text-gray-400 hover:text-gray-700 transition-colors p-1.5 rounded-lg hover:bg-gray-200">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
-              </button>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleSendSunat}
+                  disabled={sendSunatLoading}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
+                >
+                  <ArrowUpTrayIcon className="h-4 w-4" />
+                  {sendSunatLoading ? 'Enviando...' : 'Enviar SUNAT'}
+                </button>
+                <button onClick={closeModal} className="text-gray-400 hover:text-gray-700 transition-colors p-1.5 rounded-lg hover:bg-gray-200">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                </button>
+              </div>
             </div>
 
             {modalLoading ? (

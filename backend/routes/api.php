@@ -115,6 +115,7 @@ Route::get('guias/departamentos', [GuiaController::class, 'getDepartamentos']);
 Route::get('guias/provincias', [GuiaController::class, 'getProvincias']);
 Route::get('guias/distritos', [GuiaController::class, 'getDistritos']);
 Route::get('guias/{id}/detalle', [GuiaController::class, 'show']);
+Route::post('guias/{id}/send-sunat', [GuiaController::class, 'sendToSunat']);
 Route::delete('guias/{id}', [GuiaController::class, 'destroy']);
 Route::get('guias', [GuiaController::class, 'index']);
 Route::post('guias', [GuiaController::class, 'store']);
@@ -208,6 +209,7 @@ Route::get('transactions/sells/correlativo', [TransactionController::class, 'get
 Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
+Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);
 
 // Sell Payments (Ventas Pagos) - migrated from sells-view.php / clsVenta::actualizar_pago
 Route::get('sell-payments', [SellPaymentController::class, 'index']);

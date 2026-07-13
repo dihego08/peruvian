@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Services\SunatService;
 
 class TransactionController extends Controller
 {
@@ -36,6 +38,78 @@ class TransactionController extends Controller
         ]);
     }
 
+    /**
+     * Enviar factura/venta a SUNAT usando Greenter (integra archivo legacy facturador_v3)
+     */
+    public function sendToSunat($codigo, SunatService $sunatService)
+    {
+        try {
+            $see = $sunatService->createSee();
+
+            $cabecera = DB::table('ventas_cabecera as vc')
+                ->leftJoin('person as pe', 'pe.id', '=', 'vc.id_person')
+                ->leftJoin('p', 'p.id', '=', 'vc.id_estado_pago')
+                ->leftJoin('d', 'd.id', '=', 'vc.id_estado_entrega')
+                ->leftJoin('f', 'f.id', '=', 'vc.id_forma_pago')
+                ->leftJoin('kind_doc as k', 'k.id', '=', 'vc.tipo_documento')
+                ->where('vc.codigo_venta', $codigo)
+                ->select([
+                    'vc.*',
+                    DB::raw("DATE_FORMAT(vc.fecha_emision, '%d-%m-%Y') as fecha_emision_fmt"),
+                    DB::raw("DATE_FORMAT(vc.fecha_vencimiento, '%d-%m-%Y') as fecha_vencimiento_fmt"),
+                    DB::raw("COALESCE(pe.name, vc.ruc_add) as person"),
+                    'pe.no as ruc',
+                    'pe.address1 as direccion',
+                    'p.name as pago',
+                    'd.name as entrega',
+                    'f.name as tipo_pago',
+                    'k.tipo_documento as tipo_doc_nombre',
+                ])
+                ->first();
+
+            if (!$cabecera) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'Venta no encontrada'], 404);
+            }
+
+            $detalle = DB::table('ventas_detalle as vd')
+                ->leftJoin('product as pr', 'pr.id', '=', 'vd.id_producto')
+                ->where('vd.codigo_venta_cabecera', $codigo)
+                ->select([
+                    'vd.*',
+                    'pr.name as producto_nombre',
+                    'pr.code as producto_codigo',
+                    'pr.image as producto_imagen'
+                ])
+                ->get();
+
+            $customerData = [
+                'ruc' => $cabecera->ruc ?? $cabecera->ruc_add ?? '',
+                'razon_social' => $cabecera->person ?? '-',
+            ];
+
+            $client = $sunatService->buildClient($customerData);
+            $company = $sunatService->buildCompany();
+            $items = $sunatService->buildItems($detalle->all());
+            $invoice = $sunatService->buildInvoice((array)$cabecera, $items, $client, $company);
+
+            $sendResult = $sunatService->sendInvoice($invoice, $see);
+
+            if ($sendResult['success']) {
+                DB::table('ventas_cabecera')->where('codigo_venta', $codigo)->update(['envio_sunat' => 1]);
+                return response()->json(['Result' => 'SUCCESS']);
+            }
+
+            return response()->json([
+                'Result' => 'ERROR',
+                'code' => $sendResult['code'],
+                'message' => $sendResult['message']
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('sendToSunat error: ' . $e->getMessage());
+            return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
+        }
+    }
     public function getSells()
     {
         // Consulta la tabla legacy ventas_cabecera con los mismos joins que clsVenta.php lista_ventas()
