@@ -81,4 +81,7 @@ Desktop.ini
 *.xls
 *.docx
 *.xlsx
-storage/*
+storage/
+plugins/
+report/
+res/
