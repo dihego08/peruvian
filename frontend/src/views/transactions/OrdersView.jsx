@@ -100,7 +100,8 @@ export default function OrdersView() {
       (o.nombre_modelo || '').toLowerCase().includes(search.toLowerCase()) ||
       (o.num_contrato || '').toLowerCase().includes(search.toLowerCase()) ||
       (o.codigo_modelo || '').toLowerCase().includes(search.toLowerCase()) ||
-      (o.codigo_venta || '').toLowerCase().includes(search.toLowerCase());
+      (o.codigo_venta || '').toLowerCase().includes(search.toLowerCase()) ||
+      (o.guia_remision || '').toLowerCase().includes(search.toLowerCase());
 
     let dateMatch = true;
     if (dateFrom || dateTo) {

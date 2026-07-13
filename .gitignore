@@ -1,5 +1,16 @@
 # Ignore storage sequences (Excel files generated at runtime)
 /storage/secuencias/
+/storage/products/
+/storage/
+/report/
+/plugins/
+/fpdf/
+/facturador_v3/*.xml
+/facturador_v3/vendor/
+/datatables/
+/core/
+/contingencia/
+/BIBLIOTECA/
 
 # Add additional patterns as needed, example:
 # /storage/tmp/
@@ -91,3 +102,7 @@ plugins/
 report/
 res/
 facturador_v3/
+*.sql
+*.pem
+*.xml
+*.pfx
