@@ -1,4 +1,9 @@
-# Compilación
+# Ignore storage sequences (Excel files generated at runtime)
+/storage/secuencias/
+
+# Add additional patterns as needed, example:
+# /storage/tmp/
+# /node_modules/# Compilación
 bin/
 obj/
 [Bb]in/
@@ -85,3 +90,4 @@ storage/
 plugins/
 report/
 res/
+facturador_v3/
