@@ -35,7 +35,11 @@ class Colaborador extends Model
         'fecha_salida',
         'id_cargo',
         'linea',
-        'estado'
+        'estado',
+        'archivo',
+        'contrato',
+        'sst',
+        'competencias'
     ];
 
     public function area()
@@ -51,5 +55,28 @@ class Colaborador extends Model
     public function estadoCivil()
     {
         return $this->belongsTo(EstadoCivil::class, 'id_estado_civil');
+    }
+    public function ultimoExamenMedico()
+    {
+        return $this->hasOne(ExamenMedico::class, 'id_colaborador')
+            ->latestOfMany();
+    }
+
+    public function ultimoContrato()
+    {
+        return $this->hasOne(Contrato::class, 'id_colaborador')
+            ->latestOfMany();
+    }
+
+    public function ultimaRecomendacionSst()
+    {
+        return $this->hasOne(RecomendacionSst::class, 'id_colaborador')
+            ->latestOfMany();
+    }
+
+    public function ultimaVerificacionCompetencias()
+    {
+        return $this->hasOne(VerificacionCompetencia::class, 'id_colaborador')
+            ->latestOfMany();
     }
 }

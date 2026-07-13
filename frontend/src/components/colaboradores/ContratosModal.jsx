@@ -18,10 +18,12 @@ export default function ContratosModal({ colaborador, onClose }) {
   const [formData, setFormData] = useState(EMPTY);
   const [isEditing, setIsEditing] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [tiposContratos, setTiposContratos] = useState([]);
 
   useEffect(() => {
     if (colaborador) {
       fetchContratos();
+      fetchTiposContratos();
     }
   }, [colaborador]);
 
@@ -36,7 +38,14 @@ export default function ContratosModal({ colaborador, onClose }) {
       setLoading(false);
     }
   };
-
+  const fetchTiposContratos = async () => {
+    try {
+      const r = await api.get(`/tipos_contratos`);
+      setTiposContratos(r.data);
+    } catch (e) {
+      console.error(e);
+    }
+  }
   const handleEdit = (c) => {
     setFormData({ ...c, archivo: null });
     setIsEditing(true);
@@ -61,7 +70,7 @@ export default function ContratosModal({ colaborador, onClose }) {
   const handleSave = async (e) => {
     e.preventDefault();
     setSaving(true);
-    
+
     const payload = new FormData();
     Object.keys(formData).forEach(key => {
       if (key !== 'archivo' && key !== 'archivo_actual' && formData[key] !== null && formData[key] !== undefined) {
@@ -124,21 +133,28 @@ export default function ContratosModal({ colaborador, onClose }) {
             <form onSubmit={handleSave} className="space-y-3">
               <div>
                 <label className={labelClasses}>Periodo</label>
-                <input type="text" className={inputClasses} value={formData.periodo || ''} onChange={e => setFormData({...formData, periodo: e.target.value})} placeholder="Ej. 2024-I" />
+                <input type="text" className={inputClasses} value={formData.periodo || ''} onChange={e => setFormData({ ...formData, periodo: e.target.value })} placeholder="Ej. 2024-I" />
               </div>
               <div className="flex gap-2">
                 <div className="flex-1">
                   <label className={labelClasses}>Fecha Inicio</label>
-                  <input type="date" className={inputClasses} value={formData.fecha_inicio || ''} onChange={e => setFormData({...formData, fecha_inicio: e.target.value})} />
+                  <input type="date" className={inputClasses} value={formData.fecha_inicio || ''} onChange={e => setFormData({ ...formData, fecha_inicio: e.target.value })} />
                 </div>
                 <div className="flex-1">
                   <label className={labelClasses}>Fecha Fin</label>
-                  <input type="date" className={inputClasses} value={formData.fecha_fin || ''} onChange={e => setFormData({...formData, fecha_fin: e.target.value})} />
+                  <input type="date" className={inputClasses} value={formData.fecha_fin || ''} onChange={e => setFormData({ ...formData, fecha_fin: e.target.value })} />
                 </div>
               </div>
               <div>
                 <label className={labelClasses}>Observaciones</label>
-                <textarea className={inputClasses} rows="3" value={formData.observaciones || ''} onChange={e => setFormData({...formData, observaciones: e.target.value})}></textarea>
+                <textarea className={inputClasses} rows="3" value={formData.observaciones || ''} onChange={e => setFormData({ ...formData, observaciones: e.target.value })}></textarea>
+              </div>
+              <div>
+                <label className={labelClasses}>Tipo Contrato</label>
+                <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.id_tipo_contrato} onChange={e => setFormData({ ...formData, id_tipo_contrato: e.target.value })}>
+                  <option value="">Seleccione...</option>
+                  {tiposContratos.map(c => <option key={c.id} value={c.id}>{c.tipo_contrato}</option>)}
+                </select>
               </div>
               <div>
                 <label className={labelClasses}>Documento Contrato</label>
@@ -185,11 +201,11 @@ export default function ContratosModal({ colaborador, onClose }) {
                         <td className="px-4 py-3 text-center">
                           {c.archivo ? (
                             <a href="#" onClick={(e) => handleDocumentClick(e, c.archivo, 'contratos')} className="inline-flex items-center gap-1 text-blue-600 hover:text-blue-800 text-xs bg-blue-50 px-2 py-1 rounded-md"><DocumentArrowDownIcon className="w-4 h-4" /> Ver</a>
-                          ) : <span className="text-xs text-gray-400 inline-flex items-center gap-1"><DocumentIcon className="w-4 h-4"/> N/A</span>}
+                          ) : <span className="text-xs text-gray-400 inline-flex items-center gap-1"><DocumentIcon className="w-4 h-4" /> N/A</span>}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex justify-center gap-2">
-                            <button onClick={() => handleEdit({...c, archivo_actual: c.archivo})} className="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 rounded-md"><PencilIcon className="h-4 w-4" /></button>
+                            <button onClick={() => handleEdit({ ...c, archivo_actual: c.archivo })} className="text-blue-600 hover:text-blue-800 p-1 bg-blue-50 rounded-md"><PencilIcon className="h-4 w-4" /></button>
                             <button onClick={() => handleDelete(c.id)} className="text-red-600 hover:text-red-800 p-1 bg-red-50 rounded-md"><TrashIcon className="h-4 w-4" /></button>
                           </div>
                         </td>

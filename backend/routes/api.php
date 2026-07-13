@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\ProductController;
@@ -37,6 +38,8 @@ use App\Http\Controllers\ColaboradorRecomendacionSstController;
 use App\Http\Controllers\ColaboradorVerificacionCompetenciaController;
 use App\Http\Controllers\GuiaController;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\TipoContratoController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -51,6 +54,7 @@ Route::get('sig/perfil/{id}', [PerfilPuestoController::class, 'show']);
 Route::post('sig/perfil', [PerfilPuestoController::class, 'store']);
 
 Route::apiResource('sig/areas', AreaController::class);
+Route::apiResource('tipos_contratos', TipoContratoController::class);
 Route::apiResource('sig/puestos-crud', PuestoController::class); // Named crud to avoid conflict with existing sig/puestos if needed
 Route::get('sig/colaboradores/metadata', [ColaboradorController::class, 'getMetadata']);
 Route::apiResource('sig/colaboradores', ColaboradorController::class);
@@ -145,29 +149,29 @@ Route::apiResource('cargos', CargoController::class);
 Route::prefix('tech-sheets')->group(function () {
     Route::get('/{code}', [TechSheetController::class, 'getFicha']);
     Route::put('/{code}', [TechSheetController::class, 'updateFicha']);
-    
+
     Route::get('/{code}/manual', [TechSheetController::class, 'getManual']);
     Route::post('/instruccion', [TechSheetController::class, 'saveInstruccion']);
     Route::put('/instruccion/{id}', [TechSheetController::class, 'updateInstruccion']);
     Route::delete('/instruccion/{id}', [TechSheetController::class, 'deleteInstruccion']);
-    
+
     Route::get('/{code}/medidas', [TechSheetController::class, 'getMedidas']);
     Route::post('/medidas', [TechSheetController::class, 'saveMedida']);
     Route::put('/medidas/{id}', [TechSheetController::class, 'updateMedida']);
     Route::delete('/medidas/{id}', [TechSheetController::class, 'deleteMedida']);
-    
+
     Route::post('/complementos', [TechSheetController::class, 'saveComplemento']);
     Route::delete('/complementos/{id}', [TechSheetController::class, 'deleteComplemento']);
-    
+
     Route::post('/identificacion', [TechSheetController::class, 'saveIdentificacion']);
     Route::delete('/identificacion/{id}', [TechSheetController::class, 'deleteIdentificacion']);
-    
+
     Route::post('/modificaciones', [TechSheetController::class, 'saveModificacion']);
     Route::delete('/modificaciones/{id}', [TechSheetController::class, 'deleteModificacion']);
-    
+
     Route::post('/observaciones', [TechSheetController::class, 'saveObservacion']);
     Route::delete('/observaciones/{id}', [TechSheetController::class, 'deleteObservacion']);
-    
+
     Route::post('/maquinas', [TechSheetController::class, 'saveMaquina']);
     Route::delete('/maquinas/{id}', [TechSheetController::class, 'deleteMaquina']);
 });
@@ -242,7 +246,7 @@ Route::prefix('insumos')->group(function () {
     Route::post('/', [InsumoController::class, 'store']);
     Route::put('/{id}', [InsumoController::class, 'update']);
     Route::delete('/{id}', [InsumoController::class, 'destroy']);
-    
+
     // Stock
     Route::get('/{id_insumo}/stock', [InsumoController::class, 'getStock']);
     Route::post('/stock', [InsumoController::class, 'storeStock']);
@@ -270,4 +274,21 @@ Route::prefix('insumos')->group(function () {
     Route::post('/unidades', [InsumoConfigController::class, 'storeUnidad']);
     Route::put('/unidades/{codigo}', [InsumoConfigController::class, 'updateUnidad']);
     Route::delete('/unidades/{codigo}', [InsumoConfigController::class, 'destroyUnidad']);
+});
+
+/*Route::get('/documento-existe/{carpeta}/{archivo}', function ($carpeta, $archivo) {
+
+    $ruta = "storage/${carpeta}/${archivo}";
+
+    return response()->json([
+        'exists' => Storage::disk('public')->exists($ruta)
+    ]);
+});*/
+Route::get('/documento-existe/{carpeta}/{archivo}', function ($carpeta, $archivo) {
+
+    $ruta = public_path("storage/{$carpeta}/{$archivo}");
+
+    return response()->json([
+        'exists' => file_exists($ruta)
+    ]);
 });

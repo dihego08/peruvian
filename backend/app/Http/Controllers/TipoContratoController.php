@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cargo;
-use App\Models\Person;
+use App\Models\TipoContrato;
 use Illuminate\Http\Request;
 
-class CargoController extends Controller
+class TipoContratoController extends Controller
 {
     public function index()
     {
-        return response()->json(Cargo::with('client')->get());
+        return response()->json(TipoContrato::all());
     }
 
     public function store(Request $request)
@@ -20,21 +19,20 @@ class CargoController extends Controller
             'id_referencia' => 'nullable|integer'
         ]);
 
-        $cargo = Cargo::create($validated);
+        $cargo = TipoContrato::create($validated);
         return response()->json($cargo, 201);
     }
 
     public function show($id)
     {
-        return response()->json(Cargo::with('client')->findOrFail($id));
+        return response()->json(TipoContrato::find($id));
     }
 
     public function update(Request $request, $id)
     {
-        $cargo = Cargo::findOrFail($id);
+        $cargo = TipoContrato::findOrFail($id);
         $validated = $request->validate([
-            'cargo' => 'string|max:255',
-            'id_referencia' => 'nullable|integer'
+            'tipo_contrato' => 'string|max:255'
         ]);
 
         $cargo->update($validated);
@@ -43,13 +41,8 @@ class CargoController extends Controller
 
     public function destroy($id)
     {
-        $cargo = Cargo::findOrFail($id);
+        $cargo = TipoContrato::findOrFail($id);
         $cargo->delete();
         return response()->json(null, 204);
-    }
-
-    public function getClients()
-    {
-        return response()->json(Person::where('kind', 1)->get(['id', 'name']));
     }
 }

@@ -87,7 +87,7 @@ export function getDocumentUrl(filename, folder) {
   return `${LEGACY_VIEW_BASE}/${legacyFolder}/${filename}`;
 }
 
-export async function handleDocumentClick(e, filename, folder) {
+/*export async function handleDocumentClick(e, filename, folder) {
   e.preventDefault();
   if (!filename) return;
 
@@ -105,16 +105,65 @@ export async function handleDocumentClick(e, filename, folder) {
   const legacyFolder = folderMap[folder] || folder;
   const legacyUrl = `${LEGACY_VIEW_BASE}/${legacyFolder}/${filename}`;
   const newUrl = `${getNewBaseUrl()}/storage/${folder}/${filename}`;
+  console.log(newUrl);
 
   try {
     const res = await fetch(newUrl, { method: 'HEAD' });
+    console.log(res);
     if (res.ok) {
+      console.log("SI ES OK");
       window.open(newUrl, '_blank');
+      return;
+    } else {
+      console.log("NO, NO ES OK");
+      console.warn('New URL returned non-ok status', res.status);
+      window.open(legacyUrl, '_blank');
       return;
     }
   } catch (err) {
-    console.warn("Could not check new url, falling back to legacy", err);
+    console.warn("Could not check new url (CORS or network). Opening new URL directly.", err);
+    // Si la comprobación falla por CORS, abrir la URL nueva directamente
+    // (la navegación no está sujeta a la misma política que las peticiones fetch).
+    window.open(legacyUrl, '_blank');
+    return;
   }
+}*/
+export async function handleDocumentClick(e, filename, folder) {
+  e.preventDefault();
 
-  window.open(legacyUrl, '_blank');
+  if (!filename) return;
+
+  const folderMap = {
+    formacion: 'formacion',
+    experiencia: 'experiencia',
+    vacaciones: 'vacaciones',
+    capacitaciones: 'capacitaciones',
+    examenes_medicos: 'certificado_medico',
+    contratos: 'contratos',
+    recomendaciones_sst: 'sst',
+    verificacion_competencias: 'competencias'
+  };
+
+  const legacyFolder = folderMap[folder] || folder;
+
+  const legacyUrl = `${LEGACY_VIEW_BASE}/${legacyFolder}/${encodeURIComponent(filename)}`;
+  const newUrl = `${getNewBaseUrl()}/storage/${folder}/${encodeURIComponent(filename)}`;
+
+  try {
+    const response = await fetch(
+      `${getNewBaseUrl()}/api/documento-existe/${folder}/${encodeURIComponent(filename)}`
+    );
+
+    const data = await response.json();
+
+    if (data.exists) {
+      window.open(newUrl, "_blank");
+    } else {
+      window.open(legacyUrl, "_blank");
+    }
+
+  } catch (err) {
+    console.error(err);
+    window.open(legacyUrl, "_blank");
+  }
 }

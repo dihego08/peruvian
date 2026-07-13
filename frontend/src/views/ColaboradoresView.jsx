@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import api from '../services/api';
-import { getColaboradorFotoUrl, handleColaboradorFotoError } from '../utils/image';
+import { getColaboradorFotoUrl, handleColaboradorFotoError, handleDocumentClick } from '../utils/image';
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
@@ -18,6 +18,8 @@ import ContratosModal from '../components/colaboradores/ContratosModal';
 import ExamenesMedicosModal from '../components/colaboradores/ExamenesMedicosModal';
 import RecomendacionesSstModal from '../components/colaboradores/RecomendacionesSstModal';
 import VerificacionCompetenciasModal from '../components/colaboradores/VerificacionCompetenciasModal';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const EMPTY = {
   id: '',
@@ -46,7 +48,11 @@ const EMPTY = {
   fecha_salida: '',
   id_cargo: '',
   linea: '1',
-  estado: true
+  estado: true,
+  contrato: '',
+  sst: '',
+  archivo: '',
+  competencias: ''
 };
 
 export default function ColaboradoresView() {
@@ -90,7 +96,7 @@ export default function ColaboradoresView() {
 
   useEffect(() => {
     fetchColaboradores();
-  }, [filterMonth, filterLine]);
+  }, []);
 
   const fetchMetadata = async () => {
     try {
@@ -227,15 +233,6 @@ export default function ColaboradoresView() {
     }
   };
 
-  const downloadCumpleanos = () => {
-    let url = `${import.meta.env.BASE_URL || '/'}pdf-cumpleaños.php`;
-    if (filterMonth !== '0' || filterLine !== '0') {
-      url += `?mes=${filterMonth}`;
-      if (filterLine !== '0') url += `&linea=${filterLine}`;
-    }
-    window.open(url, '_blank');
-  };
-
   const MESES = [
     { v: '0', n: '-- TODOS LOS MESES --' },
     { v: '1', n: 'Enero' }, { v: '2', n: 'Febrero' }, { v: '3', n: 'Marzo' },
@@ -256,6 +253,46 @@ export default function ColaboradoresView() {
   const labelClasses = "block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1";
   const horizontalLabelClasses = "w-1/3 text-right pr-4 text-xs font-bold text-gray-500 uppercase tracking-wider";
 
+  const filtered = colaboradores.filter(o => {
+    let mes = true;
+    let linea = true;
+    if (filterMonth > 0) {
+      mes = parseInt(o.fecha_nacimiento?.split("-")[1]) == filterMonth;
+    }
+    if (filterLine > 0) {
+      linea = o.linea == filterLine;
+    }
+    return mes && linea;
+  });
+  const exportToPDF = () => {
+    const doc = new jsPDF('landscape');
+    doc.text("Cumpleaños Colaboradores", 14, 15);
+
+    const tableColumn = ["#", "Área", "Colaborador", "Cumpleaños", "Línea"];
+    const tableRows = [];
+    let i = 1;
+    filtered.forEach(colaborador => {
+      const rowData = [
+        i,
+        colaborador.area?.area,
+        colaborador.nombres + " " + colaborador.apellido_paterno + " " + colaborador.apellido_materno,
+        colaborador.fecha_nacimiento,
+        "Línea " + colaborador.linea,
+      ];
+      tableRows.push(rowData);
+      i++;
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 20,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [31, 41, 55] }
+    });
+
+    doc.save("pedidos_export.pdf");
+  };
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-500">
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -284,7 +321,7 @@ export default function ColaboradoresView() {
               {LINEAS.map(l => <option key={l.v} value={l.v}>{l.n}</option>)}
             </select>
             <button
-              onClick={downloadCumpleanos}
+              onClick={exportToPDF}
               className="bg-gray-800 text-white px-5 py-2.5 rounded-lg hover:bg-gray-700 shadow-sm font-medium transition-colors text-sm whitespace-nowrap flex items-center gap-2"
             >
               <i className="glyphicon glyphicon-gift"></i> Descargar Cumpleaños
@@ -383,6 +420,40 @@ export default function ColaboradoresView() {
                         <select className={inputClasses} value={formData.linea} onChange={e => setFormData({ ...formData, linea: e.target.value })}>
                           {LINEAS.map(l => l.v !== '0' && <option key={l.v} value={l.v}>{l.n}</option>)}
                         </select>
+                      </div>
+                    </div>
+                  </div>
+
+
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className={horizontalLabelClasses}>Certificado Médico:</div>
+                      <div className="w-2/3">
+                        <a target='_blank' className='font-medium text-fg-brand underline hover:no-underline' href="#" onClick={(e) => handleDocumentClick(e, formData.archivo, 'examenes_medicos')}>{formData.archivo}</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className={horizontalLabelClasses}>Contrato:</div>
+                      <div className="w-2/3">
+                        <a target='_blank' className='font-medium text-fg-brand underline hover:no-underline' href="#" onClick={(e) => handleDocumentClick(e, formData.contrato, 'contratos')}>{formData.contrato}</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className={horizontalLabelClasses}>Recomendaciones SST:</div>
+                      <div className="w-2/3">
+                        <a target='_blank' className='font-medium text-fg-brand underline hover:no-underline' href="#" onClick={(e) => handleDocumentClick(e, formData.sst, 'recomendaciones_sst')}>{formData.sst}</a>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="flex items-center">
+                      <div className={horizontalLabelClasses}>Lista Verificación de Competencias:</div>
+                      <div className="w-2/3">
+                        <a target='_blank' className='font-medium text-fg-brand underline hover:no-underline' href="#" onClick={(e) => handleDocumentClick(e, formData.competencias, 'verificacion_competencias')}>{formData.competencias}</a>
                       </div>
                     </div>
                   </div>

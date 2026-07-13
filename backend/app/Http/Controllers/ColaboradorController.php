@@ -5,6 +5,10 @@ namespace App\Http\Controllers;
 use App\Models\Colaborador;
 use App\Models\Area;
 use App\Models\Puesto;
+use App\Models\ExamenMedico;
+use App\Models\Contrato;
+use App\Models\RecomendacionSst;
+use App\Models\VerificacionCompetencia;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -12,7 +16,46 @@ class ColaboradorController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Colaborador::with(['area', 'puesto']);
+        //$query = Colaborador::with(['area', 'puesto']);
+        /*$query = Colaborador::with([
+            'area',
+            'puesto',
+            'ultimoExamenMedico:id, id_colaborador,archivo',
+            'ultimoContrato:id, id_colaborador,archivo',
+            'ultimaRecomendacionSst:id, id_colaborador,archivo',
+            'ultimaVerificacionCompetencias:id, id_colaborador,archivo'
+        ]);*/
+        $query = Colaborador::query()
+            ->with(['area', 'puesto'])
+            ->select('colaboradores.*')
+            ->selectSub(
+                ExamenMedico::select('archivo')
+                    ->whereColumn('id_colaborador', 'colaboradores.id')
+                    ->latest('id')
+                    ->limit(1),
+                'certificado_medico'
+            )
+            ->selectSub(
+                Contrato::select('archivo')
+                    ->whereColumn('id_colaborador', 'colaboradores.id')
+                    ->latest('id')
+                    ->limit(1),
+                'contrato'
+            )
+            ->selectSub(
+                RecomendacionSst::select('archivo')
+                    ->whereColumn('id_colaborador', 'colaboradores.id')
+                    ->latest('id')
+                    ->limit(1),
+                'recomendacion_sst'
+            )
+            ->selectSub(
+                VerificacionCompetencia::select('archivo')
+                    ->whereColumn('id_colaborador', 'colaboradores.id')
+                    ->latest('id')
+                    ->limit(1),
+                'verificacion_competencias'
+            );
 
         if ($request->has('mes_cumpleanos') && $request->mes_cumpleanos != 0) {
             $query->whereMonth('fecha_nacimiento', $request->mes_cumpleanos);
@@ -24,11 +67,11 @@ class ColaboradorController extends Controller
 
         if ($request->has('search')) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('dni', 'like', "%$search%")
-                  ->orWhere('nombres', 'like', "%$search%")
-                  ->orWhere('apellido_paterno', 'like', "%$search%")
-                  ->orWhere('apellido_materno', 'like', "%$search%");
+                    ->orWhere('nombres', 'like', "%$search%")
+                    ->orWhere('apellido_paterno', 'like', "%$search%")
+                    ->orWhere('apellido_materno', 'like', "%$search%");
             });
         }
 
@@ -38,9 +81,9 @@ class ColaboradorController extends Controller
     public function store(Request $request)
     {
         $id = $request->input('id');
-        
+
         $data = $request->all();
-        
+
         if ($request->hasFile('foto')) {
             $file = $request->file('foto');
             $filename = time() . '_' . $file->getClientOriginalName();
@@ -48,7 +91,7 @@ class ColaboradorController extends Controller
             $file->move($destinationPath, $filename);
             $data['foto'] = $filename;
         }
-        
+
         // Handle checkboxes/boolean
         $data['asegurado'] = $request->boolean('asegurado') ? 1 : 0;
         $data['estado'] = $request->boolean('estado') ? 1 : 0;
