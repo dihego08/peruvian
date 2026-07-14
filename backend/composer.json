@@ -7,6 +7,7 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "dompdf/dompdf": "*",
         "greenter/data": "^5.3",
         "greenter/htmltopdf": "^5.3",
         "greenter/lite": "^5.3",

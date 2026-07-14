@@ -9,8 +9,10 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProviderController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\TransactionPdfController;
 use App\Http\Controllers\SellPaymentController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\OrderPdfController;
 use App\Http\Controllers\CotizationController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\InsumoConfigController;
@@ -37,6 +39,7 @@ use App\Http\Controllers\ColaboradorExamenMedicoController;
 use App\Http\Controllers\ColaboradorRecomendacionSstController;
 use App\Http\Controllers\ColaboradorVerificacionCompetenciaController;
 use App\Http\Controllers\GuiaController;
+use App\Http\Controllers\GuiaPdfController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TipoContratoController;
 
@@ -115,6 +118,7 @@ Route::get('guias/departamentos', [GuiaController::class, 'getDepartamentos']);
 Route::get('guias/provincias', [GuiaController::class, 'getProvincias']);
 Route::get('guias/distritos', [GuiaController::class, 'getDistritos']);
 Route::get('guias/{id}/detalle', [GuiaController::class, 'show']);
+Route::get('guias/{id}/pdf', [GuiaPdfController::class, 'downloadGuiaPdf']);
 Route::post('guias/{id}/send-sunat', [GuiaController::class, 'sendToSunat']);
 Route::delete('guias/{id}', [GuiaController::class, 'destroy']);
 Route::get('guias', [GuiaController::class, 'index']);
@@ -209,7 +213,7 @@ Route::get('transactions/sells/correlativo', [TransactionController::class, 'get
 Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
-Route::get('transactions/sells/{codigo}/pdf', [TransactionController::class, 'downloadSellPdf']);
+Route::get('transactions/sells/{codigo}/pdf', [TransactionPdfController::class, 'downloadSellPdf']);
 Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);
 
 // Sell Payments (Ventas Pagos) - migrated from sells-view.php / clsVenta::actualizar_pago
@@ -230,6 +234,7 @@ Route::get('transactions/orders', [OrderController::class, 'getOrders']);
 Route::post('transactions/orders', [OrderController::class, 'storeOrder']);
 Route::post('transactions/orders/upload', [OrderController::class, 'uploadImage']);
 Route::delete('transactions/orders/detail/{id}', [OrderController::class, 'deleteOrderDetail']);
+Route::get('transactions/orders/{codigo}/pdf', [OrderPdfController::class, 'downloadOrderPdf']);
 Route::get('transactions/orders/{codigo}/production', [OrderController::class, 'getProductionDetail']);
 Route::put('transactions/orders/{codigo}/production', [OrderController::class, 'updateProduction']);
 Route::patch('transactions/orders/{codigo}/status', [OrderController::class, 'updateOrderStatus']);
