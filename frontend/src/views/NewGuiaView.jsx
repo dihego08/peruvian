@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { PlusIcon, TrashIcon, MagnifyingGlassIcon, ArrowLeftIcon, CheckIcon, XCircleIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, MagnifyingGlassIcon, ArrowLeftIcon, CheckIcon, XCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
 
 // ─── moved OUTSIDE to prevent remount on every render ────────────────────────
 function Field({ label, children }) {
@@ -173,6 +173,8 @@ export default function NewGuiaView() {
   const [pedido, setPedido] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editUnidad, setEditUnidad] = useState('');
+  const [editingItemIndex, setEditingItemIndex] = useState(null);
+  const [editingRow, setEditingRow] = useState(null);
 
   useEffect(() => {
     api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
@@ -197,7 +199,7 @@ export default function NewGuiaView() {
     setSelProd(p);
     setTallas(Array(13).fill(''));
     setPesoBruto('');
-    setPesoNeto('');
+    setPesoNeto(p.weight);
     setPedido('');
     setEditDescripcion(p.name);
     setEditUnidad(p.unit || '');
@@ -214,12 +216,35 @@ export default function NewGuiaView() {
       descripcion_producto: editDescripcion + (tallaStr ? ` [${tallaStr}]` : ''),
       cantidad: cant,
       unidad: editUnidad,
-      pedido, t_neto: neto, t_bruto: bruto,
+      pedido,
+      t_neto: neto,
+      t_bruto: bruto,
+      code: selProd.code,
     }]);
     setSelProd(null);
     setSearchResults([]);
     setSearchNombre('');
     setSearchCodigo('');
+  };
+
+  const startEditItem = (item, index) => {
+    setEditingItemIndex(index);
+    setEditingRow({ ...item });
+  };
+
+  const cancelEditItem = () => {
+    setEditingItemIndex(null);
+    setEditingRow(null);
+  };
+
+  const saveEditedItem = () => {
+    if (editingItemIndex === null || !editingRow) return;
+    setItems(prev => prev.map((item, idx) => idx === editingItemIndex ? editingRow : item));
+    cancelEditItem();
+  };
+
+  const updateEditingRow = (field, value) => {
+    setEditingRow(prev => ({ ...prev, [field]: value }));
   };
 
   const totalBruto = items.reduce((s, i) => s + (parseFloat(i.t_bruto) || 0), 0).toFixed(2);
@@ -449,6 +474,7 @@ export default function NewGuiaView() {
             <table className="w-full text-sm">
               <thead className="bg-gray-50 text-gray-600 text-xs uppercase border-b">
                 <tr>
+                  <th className="px-4 py-3 text-left font-bold">Código</th>
                   <th className="px-4 py-3 text-left font-bold">Producto</th>
                   <th className="px-4 py-3 text-left font-bold">Pedido</th>
                   <th className="px-4 py-3 text-right font-bold">Cant.</th>
@@ -460,24 +486,58 @@ export default function NewGuiaView() {
               </thead>
               <tbody className="divide-y divide-gray-100">
                 {items.map((it, idx) => (
-                  <tr key={idx} className="hover:bg-gray-50">
-                    <td className="px-4 py-3 font-semibold text-gray-800 text-xs max-w-[260px]">{it.descripcion_producto}</td>
-                    <td className="px-4 py-3 text-gray-600 text-xs">{it.pedido}</td>
-                    <td className="px-4 py-3 text-right font-bold">{it.cantidad}</td>
-                    <td className="px-4 py-3 text-center text-gray-600 text-xs">{it.unidad}</td>
-                    <td className="px-4 py-3 text-right text-gray-700">{it.t_neto}</td>
-                    <td className="px-4 py-3 text-right text-gray-700">{it.t_bruto}</td>
-                    <td className="px-4 py-3 text-center">
-                      <button type="button" onClick={() => setItems(p => p.filter((_, i) => i !== idx))} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
-                        <TrashIcon className="h-4 w-4" />
-                      </button>
-                    </td>
-                  </tr>
+                  editingItemIndex === idx ? (
+                    <tr key={idx} className="bg-blue-50">
+                      <td className="px-4 py-3 text-gray-600 text-xs font-mono">
+                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.code} disabled />
+                      </td>
+                      <td className="px-4 py-3">
+                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.descripcion_producto} onChange={e => updateEditingRow('descripcion_producto', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3">
+                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.pedido || ''} onChange={e => updateEditingRow('pedido', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <input type="number" min="0" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.cantidad} onChange={e => updateEditingRow('cantidad', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3 text-center">
+                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs text-center" value={editingRow.unidad || ''} onChange={e => updateEditingRow('unidad', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <input type="number" step="0.001" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.t_neto} onChange={e => updateEditingRow('t_neto', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3 text-right">
+                        <input type="number" step="0.001" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.t_bruto} onChange={e => updateEditingRow('t_bruto', e.target.value)} />
+                      </td>
+                      <td className="px-4 py-3 text-center space-x-1">
+                        <button type="button" onClick={saveEditedItem} className="px-2 py-1 bg-green-600 text-white rounded-lg text-[10px] font-semibold hover:bg-green-700 transition-colors">Guardar</button>
+                        <button type="button" onClick={cancelEditItem} className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg text-[10px] font-semibold hover:bg-gray-300 transition-colors">Cancelar</button>
+                      </td>
+                    </tr>
+                  ) : (
+                    <tr key={idx} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-gray-600 text-xs font-mono">{it.code}</td>
+                      <td className="px-4 py-3 font-semibold text-gray-800 text-xs max-w-[260px]">{it.descripcion_producto}</td>
+                      <td className="px-4 py-3 text-gray-600 text-xs">{it.pedido}</td>
+                      <td className="px-4 py-3 text-right font-bold">{it.cantidad}</td>
+                      <td className="px-4 py-3 text-center text-gray-600 text-xs">{it.unidad}</td>
+                      <td className="px-4 py-3 text-right text-gray-700">{it.t_neto}</td>
+                      <td className="px-4 py-3 text-right text-gray-700">{it.t_bruto}</td>
+                      <td className="px-4 py-3 text-center flex items-center justify-center gap-1">
+                        <button type="button" onClick={() => startEditItem(it, idx)} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
+                          <PencilIcon className="h-4 w-4" />
+                        </button>
+                        <button type="button" onClick={() => setItems(p => p.filter((_, i) => i !== idx))} className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                          <TrashIcon className="h-4 w-4" />
+                        </button>
+                      </td>
+                    </tr>
+                  )
                 ))}
               </tbody>
               <tfoot className="bg-gray-50 border-t">
                 <tr>
-                  <td colSpan="4" className="px-4 py-3 text-xs font-black text-gray-600 uppercase">Totales</td>
+                  <td colSpan="5" className="px-4 py-3 text-xs font-black text-gray-600 uppercase">Totales</td>
                   <td className="px-4 py-3 text-right font-black text-gray-900">{totalNeto}</td>
                   <td className="px-4 py-3 text-right font-black text-gray-900">{totalBruto}</td>
                   <td></td>

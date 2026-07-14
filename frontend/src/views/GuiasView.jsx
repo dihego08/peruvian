@@ -366,7 +366,14 @@ export default function GuiasView() {
                         )}
                         {detailData.detalle?.map((item, idx) => (
                           <tr key={idx} className="hover:bg-gray-50">
-                            <td className="px-4 py-3 font-semibold text-gray-800">{item.descripcion_producto || item.name}</td>
+                            <td className="px-4 py-3">
+                              <div
+                                className="prose max-w-none [&_table]:border-collapse [&_table]:border [&_table_td]:border [&_table_td]:p-1"
+                                dangerouslySetInnerHTML={{
+                                  __html: item.descripcion_producto || item.name,
+                                }}
+                              />
+                            </td>
                             <td className="px-4 py-3 text-gray-600 text-xs">{item.pedido}</td>
                             <td className="px-4 py-3 text-right font-bold text-gray-800">{item.cantidad}</td>
                             <td className="px-4 py-3 text-center text-gray-600 text-xs">{item.unidad}</td>

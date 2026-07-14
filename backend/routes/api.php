@@ -209,6 +209,7 @@ Route::get('transactions/sells/correlativo', [TransactionController::class, 'get
 Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
+Route::get('transactions/sells/{codigo}/pdf', [TransactionController::class, 'downloadSellPdf']);
 Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);
 
 // Sell Payments (Ventas Pagos) - migrated from sells-view.php / clsVenta::actualizar_pago

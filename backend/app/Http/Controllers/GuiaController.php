@@ -42,7 +42,7 @@ class GuiaController extends Controller
 
         $detalle = DB::table('guia_detalle as vd')
             ->leftJoin('product as p', 'p.id', '=', 'vd.id_producto')
-            ->select('vd.*', 'p.name as descripcion_producto')
+            ->select('vd.*', 'vd.descripcion_producto as descripcion_producto')
             ->where('vd.id_guia', $id)
             ->get();
 
@@ -92,7 +92,7 @@ class GuiaController extends Controller
     public function searchProducts(Request $request)
     {
         $query = DB::table('product as p')
-            ->select('p.id', 'p.name', 'p.code', 'p.price_in', 'p.unit');
+            ->select('p.id', 'p.name', 'p.code', 'p.price_in', 'p.unit', 'p.weight');
 
         if ($request->filled('nombre')) {
             $query->where('p.name', 'like', '%' . $request->nombre . '%');

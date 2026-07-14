@@ -173,11 +173,11 @@ export default function SellsView() {
                       )}
 
                       <a
-                        href={`${import.meta.env.VITE_LEGACY_URL || 'https://peruvian.peruviandress.com'}/core/app/view/pdf-venta.php?codigo_venta=${sell.codigo_venta}`}
+                        href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf`}
                         target="_blank"
                         rel="noreferrer"
-                        className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Ver PDF"
+                        className="p-1 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
+                        title="Ver PDF con backend"
                       >
                         <DocumentTextIcon className="h-4 w-4" />
                       </a>

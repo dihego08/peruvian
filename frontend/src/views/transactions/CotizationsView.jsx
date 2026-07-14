@@ -137,7 +137,7 @@ const CotizationsView = () => {
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
                                             <a
-                                                href={`${import.meta.env.BASE_URL}pdf-cotizacion.php?codigo=${cot.codigo}`}
+                                                href={`https://peruvian.peruviandress.com/core/app/view/pdf-cotizacion.php?codigo=${cot.codigo}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-block p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
