@@ -187,15 +187,8 @@ export default function OrdersView() {
     doc.save("pedidos_export.pdf");
   };
 
-  const printOrderPDF = async (order) => {
-    try {
-      const res = await api.get(`/transactions/orders/${order.codigo}`);
-      const details = res.data.detalles || [];
-      await generateOrderPDF(order, details);
-    } catch (e) {
-      console.error(e);
-      alert('Error al generar el PDF del pedido');
-    }
+  const printOrderPDF = (order) => {
+    window.open(`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/orders/${encodeURIComponent(order.codigo)}/pdf`, '_blank');
   };
 
 
