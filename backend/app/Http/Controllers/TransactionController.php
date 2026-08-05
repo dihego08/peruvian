@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Services\SunatService;
+use Illuminate\Support\Facades\Http;
 use Dompdf\Dompdf;
 
 class TransactionController extends Controller
@@ -388,15 +389,15 @@ class TransactionController extends Controller
                 $hasFiles = true;
             } else {
                 // Intentar descargar de facturador_v2
-                $xmlContent1 = @file_get_contents($legacyXml1);
-                if ($xmlContent1 !== false) {
-                    $zip->addFromString(basename($legacyXml1), $xmlContent1);
+                $response1 = Http::withoutVerifying()->get($legacyXml1);
+                if ($response1->successful()) {
+                    $zip->addFromString(basename($legacyXml1), $response1->body());
                     $hasFiles = true;
                 } else {
                     // Intentar descargar de facturador_v3
-                    $xmlContent2 = @file_get_contents($legacyXml2);
-                    if ($xmlContent2 !== false) {
-                        $zip->addFromString(basename($legacyXml2), $xmlContent2);
+                    $response2 = Http::withoutVerifying()->get($legacyXml2);
+                    if ($response2->successful()) {
+                        $zip->addFromString(basename($legacyXml2), $response2->body());
                         $hasFiles = true;
                     }
                 }

@@ -36,6 +36,17 @@ import SellsSunatView from './views/reports/SellsSunatView';
 import VentasClienteView from './views/reports/VentasClienteView';
 import VentasMensualesView from './views/reports/VentasMensualesView';
 import VentasCruzadoView from './views/reports/VentasCruzadoView';
+/*********ASISTENCIAS */
+import Relojes from "./views/Relojes";
+import Feriados from "./views/Feriados";
+import Permisos from "./views/Permisos";
+import Horarios from "./views/Horarios";
+import TiposPermisos from "./views/TiposPermisos";
+import AsignarHorarioModal from "./views/AsignarHorario";
+import Reportes from "./views/Reportes";
+import ReportesDia from "./views/ReportesDia";
+import ReportesDias from "./views/ReportesDias";
+/*********ASISTENCIAS */
 import logo from './assets/logo.png';
 import SidebarMenu from './components/SidebarMenu';
 
@@ -141,6 +152,15 @@ function MainLayout({ setAuth }) {
             <Route path="/reports/ventas-cliente" element={<VentasClienteView />} />
             <Route path="/reports/ventas-mensuales" element={<VentasMensualesView />} />
             <Route path="/reports/ventas-cruzado" element={<VentasCruzadoView />} />
+            <Route path="/relojes" element={<Relojes />} />
+            <Route path="/feriados" element={<Feriados />} />
+            <Route path="/permisos" element={<Permisos />} />
+            <Route path="/horarios" element={<Horarios />} />
+            <Route path="/tipos-permisos" element={<TiposPermisos />} />
+            <Route path="/asignar-horario" element={<AsignarHorarioModal />} />
+            <Route path="/reportes" element={<Reportes />} />
+            <Route path="/reportes-dia" element={<ReportesDia />} />
+            <Route path="/reportes-dias" element={<ReportesDias />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>
