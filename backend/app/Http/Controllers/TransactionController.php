@@ -349,9 +349,76 @@ class TransactionController extends Controller
             DB::rollBack();
             return response()->json([
                 'Result' => 'ERROR',
-                'message' => 'Error al guardar la venta',
-                'error' => $e->getMessage(),
+                'message' => 'No se pudo registrar en base de datos. ' . $e->getMessage()
             ], 500);
         }
+    }
+
+    public function downloadSunatFiles($codigo)
+    {
+        $ruc = env('SUNAT_RUC', '20455175781');
+        $tipoDoc = '01'; // Default
+
+        $num_factura = explode('-', $codigo);
+        $serie = $num_factura[0] ?? '';
+        $correlativo = $num_factura[1] ?? '';
+
+        $invoiceName = "{$ruc}-{$tipoDoc}-{$serie}-{$correlativo}";
+        $filename = "{$serie}-{$correlativo}"; // e.g. F001-000123
+
+        // Rutas del nuevo sistema
+        $sunatPath = storage_path('app/sunat');
+        $xmlFile = $sunatPath . DIRECTORY_SEPARATOR . 'xml' . DIRECTORY_SEPARATOR . $invoiceName . '.xml';
+        $cdrFile = $sunatPath . DIRECTORY_SEPARATOR . 'cdr' . DIRECTORY_SEPARATOR . 'R-' . $invoiceName . '.zip';
+
+        // Rutas del sistema legacy
+        $legacyXml1 = 'https://peruvian.peruviandress.com/facturador_v2/files/' . $invoiceName . '.xml';
+        $legacyXml2 = 'https://peruvian.peruviandress.com/facturador_v3/' . $invoiceName . '.xml';
+
+        $zipName = $invoiceName . '_SUNAT.zip';
+        $zipPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipName;
+
+        $zip = new \ZipArchive();
+        if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
+            $hasFiles = false;
+
+            // XML: Buscar en nuevo sistema, luego en legacy (via HTTP)
+            if (file_exists($xmlFile)) {
+                $zip->addFile($xmlFile, basename($xmlFile));
+                $hasFiles = true;
+            } else {
+                // Intentar descargar de facturador_v2
+                $xmlContent1 = @file_get_contents($legacyXml1);
+                if ($xmlContent1 !== false) {
+                    $zip->addFromString(basename($legacyXml1), $xmlContent1);
+                    $hasFiles = true;
+                } else {
+                    // Intentar descargar de facturador_v3
+                    $xmlContent2 = @file_get_contents($legacyXml2);
+                    if ($xmlContent2 !== false) {
+                        $zip->addFromString(basename($legacyXml2), $xmlContent2);
+                        $hasFiles = true;
+                    }
+                }
+            }
+
+            // CDR: Solo existe en el nuevo sistema
+            if (file_exists($cdrFile)) {
+                $zip->addFile($cdrFile, basename($cdrFile));
+                $hasFiles = true;
+            }
+
+            $zip->close();
+
+            if (!$hasFiles) {
+                if (file_exists($zipPath))
+                    unlink($zipPath);
+                return response()->json(['message' => 'Archivos no encontrados en ninguna ruta'], 404);
+            }
+        } else {
+            return response()->json(['message' => 'No se pudo crear el archivo ZIP temporal'], 500);
+        }
+
+        return response()->download($zipPath, $zipName)->deleteFileAfterSend(true);
     }
 }

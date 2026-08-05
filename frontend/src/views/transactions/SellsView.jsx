@@ -172,6 +172,16 @@ export default function SellsView() {
                         </button>
                       )}
 
+                      {sell.envio_sunat == 1 && (
+                        <a
+                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/sunat-files`}
+                          className="p-1 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
+                          title="Descargar XML y CDR"
+                        >
+                          <ArrowDownTrayIcon className="h-4 w-4" />
+                        </a>
+                      )}
+
                       <a
                         href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf`}
                         target="_blank"

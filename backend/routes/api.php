@@ -42,7 +42,7 @@ use App\Http\Controllers\GuiaController;
 use App\Http\Controllers\GuiaPdfController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TipoContratoController;
-
+use App\Http\Controllers\ReportController;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -215,6 +215,7 @@ Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
 Route::get('transactions/sells/{codigo}/pdf', [TransactionPdfController::class, 'downloadSellPdf']);
 Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);
+Route::get('transactions/sells/{codigo}/sunat-files', [TransactionController::class, 'downloadSunatFiles']);
 
 // Sell Payments (Ventas Pagos) - migrated from sells-view.php / clsVenta::actualizar_pago
 Route::get('sell-payments', [SellPaymentController::class, 'index']);
@@ -241,6 +242,16 @@ Route::patch('transactions/orders/{codigo}/status', [OrderController::class, 'up
 Route::get('transactions/orders/{codigo}', [OrderController::class, 'getOrderDetail']);
 Route::put('transactions/orders/{codigo}', [OrderController::class, 'updateOrder']);
 Route::delete('transactions/orders/{codigo}', [OrderController::class, 'deleteOrder']);
+
+// Reports (Reportes)
+Route::prefix('reports')->group(function () {
+    Route::get('/sells-sunat', [ReportController::class, 'getSellsSunat']);
+    Route::put('/sells-sunat/{codigo}', [ReportController::class, 'updateSale']);
+    Route::delete('/sells-sunat/{codigo}', [ReportController::class, 'anularSale']);
+    Route::get('/ventas-cliente', [ReportController::class, 'getVentasCliente']);
+    Route::get('/ventas-mensuales', [ReportController::class, 'getVentasMensuales']);
+    Route::get('/ventas-cruzado', [ReportController::class, 'getVentasCruzado']);
+});
 
 // Insumos
 Route::prefix('insumos')->group(function () {

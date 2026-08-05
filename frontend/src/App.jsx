@@ -32,6 +32,10 @@ import PuestosView from './views/PuestosView';
 import ColaboradoresView from './views/ColaboradoresView';
 import GuiasView from './views/GuiasView';
 import NewGuiaView from './views/NewGuiaView';
+import SellsSunatView from './views/reports/SellsSunatView';
+import VentasClienteView from './views/reports/VentasClienteView';
+import VentasMensualesView from './views/reports/VentasMensualesView';
+import VentasCruzadoView from './views/reports/VentasCruzadoView';
 import logo from './assets/logo.png';
 import SidebarMenu from './components/SidebarMenu';
 
@@ -133,6 +137,10 @@ function MainLayout({ setAuth }) {
             <Route path="/insumos" element={<InsumosView />} />
             <Route path="/unidades" element={<UnidadesView />} />
             <Route path="/fam-class" element={<FamClassView />} />
+            <Route path="/reports/sells-sunat" element={<SellsSunatView />} />
+            <Route path="/reports/ventas-cliente" element={<VentasClienteView />} />
+            <Route path="/reports/ventas-mensuales" element={<VentasMensualesView />} />
+            <Route path="/reports/ventas-cruzado" element={<VentasCruzadoView />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </main>

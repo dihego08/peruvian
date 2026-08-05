@@ -92,6 +92,14 @@ class ColaboradorController extends Controller
             $data['foto'] = $filename;
         }
 
+        if ($request->hasFile('dni_archivo')) {
+            $file = $request->file('dni_archivo');
+            $filename = time() . '_dni_' . $file->getClientOriginalName();
+            $destinationPath = public_path('storage/doc-colaboradores');
+            $file->move($destinationPath, $filename);
+            $data['dni_archivo'] = $filename;
+        }
+
         // Handle checkboxes/boolean
         $data['asegurado'] = $request->boolean('asegurado') ? 1 : 0;
         $data['estado'] = $request->boolean('estado') ? 1 : 0;

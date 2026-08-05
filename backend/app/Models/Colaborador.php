@@ -39,7 +39,8 @@ class Colaborador extends Model
         'archivo',
         'contrato',
         'sst',
-        'competencias'
+        'competencias',
+        'dni_archivo'
     ];
 
     public function area()

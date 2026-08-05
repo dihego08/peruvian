@@ -6,7 +6,8 @@ import {
   ChevronRightIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
-  CameraIcon
+  CameraIcon,
+  DocumentArrowUpIcon
 } from '@heroicons/react/24/outline';
 import FamiliaresModal from '../components/colaboradores/FamiliaresModal';
 import FormacionModal from '../components/colaboradores/FormacionModal';
@@ -197,6 +198,13 @@ export default function ColaboradoresView() {
     }
   };
 
+  const handleDniArchivoChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setFormData(f => ({ ...f, dni_archivo: file }));
+    }
+  };
+
   const saveRecord = async () => {
     setSaving(true);
     try {
@@ -277,7 +285,7 @@ export default function ColaboradoresView() {
         colaborador.area?.area,
         colaborador.nombres + " " + colaborador.apellido_paterno + " " + colaborador.apellido_materno,
         colaborador.fecha_nacimiento,
-        "Línea " + colaborador.linea,
+        "Línea " + (colaborador.linea == null || colaborador.linea == "null" ? "--" : colaborador.linea),
       ];
       tableRows.push(rowData);
       i++;
@@ -291,7 +299,7 @@ export default function ColaboradoresView() {
       headStyles: { fillColor: [31, 41, 55] }
     });
 
-    doc.save("pedidos_export.pdf");
+    doc.save("Cumpleaños_export.pdf");
   };
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-500">
@@ -362,7 +370,31 @@ export default function ColaboradoresView() {
                     <div className="flex items-center">
                       <div className={horizontalLabelClasses}>DNI:</div>
                       <div className="w-2/3">
-                        <input type="text" className={inputClasses} value={formData.dni} onChange={e => setFormData({ ...formData, dni: e.target.value })} placeholder="DNI" />
+                        <div className="flex gap-2">
+                          <input type="text" className={inputClasses} value={formData.dni} onChange={e => setFormData({ ...formData, dni: e.target.value })} placeholder="DNI" />
+                          <label className="flex-shrink-0 cursor-pointer flex items-center gap-1 px-3 py-2 bg-gray-100 text-gray-700 rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors border border-gray-300">
+                            <DocumentArrowUpIcon className="w-4 h-4" />
+                            <span>Adjuntar</span>
+                            <input type="file" className="hidden" accept=".pdf,image/*" onChange={handleDniArchivoChange} />
+                          </label>
+                        </div>
+                        {formData.dni_archivo && (
+                          <div className="mt-2 flex items-center gap-2">
+                            <span className="text-sm text-gray-500 truncate max-w-xs">
+                              {formData.dni_archivo instanceof File ? formData.dni_archivo.name : formData.dni_archivo}
+                            </span>
+                            {!(formData.dni_archivo instanceof File) && (
+                              <button
+                                onClick={(e) => handleDocumentClick(e, formData.dni_archivo, 'dni')}
+                                className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors"
+                                type="button"
+                              >
+                                <MagnifyingGlassIcon className="w-4 h-4" />
+                                Ver
+                              </button>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center">

@@ -87,6 +87,18 @@ class AppMenuSeeder extends Seeder
                     ['module_key' => 'sig_documents', 'label' => 'Documentos', 'route' => '/sig/documents', 'icon' => 'fa fa-book', 'sort_order' => 5],
                 ],
             ],
+            [
+                'module_key' => 'grp_reports',
+                'label' => 'Reportes',
+                'icon' => 'fa fa-bar-chart',
+                'sort_order' => 60,
+                'children' => [
+                    ['module_key' => 'rep_sells_sunat', 'label' => 'Ventas - Sunat', 'route' => '/reports/sells-sunat', 'icon' => 'fa fa-money', 'sort_order' => 1],
+                    ['module_key' => 'rep_ventas_cliente', 'label' => 'Ventas - Cliente', 'route' => '/reports/ventas-cliente', 'icon' => 'fa fa-money', 'sort_order' => 2],
+                    ['module_key' => 'rep_ventas_mensuales', 'label' => 'Ventas - Mensuales', 'route' => '/reports/ventas-mensuales', 'icon' => 'fa fa-money', 'sort_order' => 3],
+                    ['module_key' => 'rep_ventas_cruzado', 'label' => 'Ventas - Cruzado', 'route' => '/reports/ventas-cruzado', 'icon' => 'fa fa-money', 'sort_order' => 4],
+                ],
+            ],
         ];
 
         foreach ($tree as $group) {
