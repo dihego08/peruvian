@@ -106,3 +106,6 @@ facturador_v3/
 *.pem
 *.xml
 *.pfx
+node_modules/
+package-lock.json
+package.json
