@@ -5,7 +5,7 @@ import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { PencilSquareIcon, TrashIcon, PlusIcon, XMarkIcon, ChevronDownIcon, DocumentArrowDownIcon,  MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 
 export default function ReportesDia() {
     const [reportes, setReportes] = useState([]);
@@ -271,7 +271,7 @@ export default function ReportesDia() {
                             disabled={reportes.length === 0}
                             className="w-full bg-emerald-600 text-white p-2.5 rounded-lg font-medium hover:bg-emerald-700 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                            Exportar <i className="fa fa-chevron-down text-xs"></i>
+                            <DocumentArrowDownIcon className="h-4 w-4" /> Exportar  <ChevronDownIcon className="h-3 w-3 ml-1" />
                         </button>
                         {dropdownOpen && (
                             <div className="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-lg shadow-lg z-10 overflow-hidden animate-in fade-in slide-in-from-top-2">
@@ -279,13 +279,13 @@ export default function ReportesDia() {
                                     onClick={() => { exportToExcel(); setDropdownOpen(false); }}
                                     className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
                                 >
-                                    <i className="fas fa-file-excel text-green-600 w-4"></i> Exportar a Excel
+                                    <span className="text-green-600 font-bold">X</span> Exportar a Excel
                                 </button>
                                 <button
                                     onClick={() => { exportToPDF(); setDropdownOpen(false); }}
                                     className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
                                 >
-                                    <i className="fas fa-file-pdf text-red-600 w-4"></i> Exportar a PDF
+                                    <span className="text-red-600 font-bold">P</span> Exportar a PDF
                                 </button>
                             </div>
                         )}

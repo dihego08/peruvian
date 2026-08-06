@@ -12,7 +12,8 @@ import autoTable from "jspdf-autotable";
 import { saveAs } from "file-saver";
 import * as XLSX from "xlsx";
 import DataTable from "react-data-table-component";
-import { PencilSquareIcon, TrashIcon, PlusIcon, ArrowDownTrayIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { PencilSquareIcon, TrashIcon, PlusIcon, XMarkIcon, ChevronDownIcon, DocumentArrowDownIcon,  MagnifyingGlassCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+
 
 export default function Permisos() {
     const [permisos, setPermisos] = useState([]);
@@ -304,7 +305,7 @@ export default function Permisos() {
                             onClick={() => setDropdownOpen(!dropdownOpen)}
                             className="bg-white text-gray-700 px-4 py-2.5 rounded-md font-medium border border-gray-300 hover:bg-gray-50 transition-colors flex items-center gap-2 shadow-sm"
                         >
-                            <ArrowDownTrayIcon className="h-4 w-4" /> Exportar
+                            <DocumentArrowDownIcon className="h-4 w-4" /> Exportar  <ChevronDownIcon className="h-3 w-3 ml-1" />
                         </button>
                         {dropdownOpen && (
                             <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-10 overflow-hidden">
@@ -312,13 +313,13 @@ export default function Permisos() {
                                     onClick={() => { exportToExcel(); setDropdownOpen(false); }}
                                     className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
                                 >
-                                    Excel
+                                    <span className="text-green-600 font-bold">X</span> Excel
                                 </button>
                                 <button
                                     onClick={() => { exportToPDF(); setDropdownOpen(false); }}
                                     className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
                                 >
-                                    PDF
+                                    <span className="text-red-600 font-bold">P</span> PDF
                                 </button>
                             </div>
                         )}
