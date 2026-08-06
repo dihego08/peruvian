@@ -9,6 +9,7 @@ import * as XLSX from "xlsx";
 import DataTable from "react-data-table-component";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 export default function ReportesDia() {
     const [reportes, setReportes] = useState([]);
@@ -166,7 +167,7 @@ export default function ReportesDia() {
             ),
             ignoreRowClick: true,
             allowOverflow: true,
-            width: "100px",
+            width: "120px",
             className: "text-center",
         },
         {
@@ -225,7 +226,7 @@ export default function ReportesDia() {
                                 </>
                             ) : (
                                 <>
-                                    <i className="fas fa-search"></i> Generar Reporte
+                                    <MagnifyingGlassIcon className="w-4 h-4" /> Generar Reporte
                                 </>
                             )}
                         </button>
