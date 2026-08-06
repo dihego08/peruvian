@@ -1,0 +1,296 @@
+import { useEffect, useState } from "react";
+import {
+    reportByDia
+} from "../services/reportesService";
+import alertify from 'alertifyjs';
+import FechaPicker from "../components/FechaPicker"; // el componente anterior
+import { saveAs } from "file-saver";
+import * as XLSX from "xlsx";
+import DataTable from "react-data-table-component";
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
+
+export default function ReportesDia() {
+    const [reportes, setReportes] = useState([]);
+    const [fecha, setFecha] = useState(""); 
+    const [filterText, setFilterText] = useState("");
+    const [loading, setLoading] = useState(false);
+
+    const exportToPDF = () => {
+        const doc = new jsPDF({
+            orientation: "landscape",
+            unit: "mm",
+            format: "a4",
+        });
+        doc.text(`Reporte de Asistencias de ${fecha}`, 14, 15);
+        const tableColumn = [
+            "Colaborador",
+            "Fecha",
+            "Hora Entrada",
+            "Hora Salida",
+            "Hora Inicio Refrigerio",
+            "Hora Fin Refrigerio",
+            "Hora Entrada Real",
+            "Hora Salida Real",
+            "Estado Badge",
+            "Minutos Tardanza",
+            "Minutos Salida Anticipada",
+            "Horas Efectivas",
+            "Horas Extras",
+            "Num. Marcaciones",
+        ];
+        const tableRows = filteredData.map((row) => [
+            row.colaborador,
+            row.fecha,
+            row.hora_entrada,
+            row.hora_salida,
+            row.hora_inicio_refrigerio,
+            row.hora_fin_refrigerio,
+            row.hora_entrada_real,
+            row.hora_salida_real,
+            row.estado_asistencia,
+            row.minutos_tardanza,
+            row.minutos_salida_anticipada,
+            row.horas_efectivas,
+            row.horas_extras,
+            row.num_marcaciones,
+        ]);
+        autoTable(doc, {
+            head: [tableColumn],
+            body: tableRows,
+            startY: 25,
+        });
+        doc.save(`reporte_asistencias_${fecha}.pdf`);
+    };
+    // Filtrado simple por fecha o estado
+    const filteredData = reportes.filter(
+        (item) =>
+            item.fecha?.toLowerCase().includes(filterText.toLowerCase()) ||
+            item.estado_asistencia?.toLowerCase().includes(filterText.toLowerCase()) ||
+            item.colaborador?.toLowerCase().includes(filterText.toLowerCase())
+    );
+    const subHeaderComponent = (
+        <div className="flex items-center justify-between w-full mb-4">
+            <input
+                type="text"
+                className="w-full max-w-md p-2.5 text-sm border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all"
+                placeholder="🔍 Buscar por colaborador, fecha o estado..."
+                value={filterText}
+                onChange={(e) => setFilterText(e.target.value)}
+            />
+        </div>
+    );
+    const listar = async () => {
+        setLoading(true);
+        try {
+            const data = await reportByDia({
+                fecha: fecha,
+            });
+            setReportes(data);
+        } catch (error) {
+            alertify.error("Error al generar el reporte");
+            console.error(error);
+        } finally {
+            setLoading(false); // 🔹 desactiva el loading siempre
+        }
+    };
+    const exportToExcel = () => {
+        // Crear hoja Excel
+        const ws = XLSX.utils.json_to_sheet(filteredData);
+        const wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Reporte");
+
+        // Generar archivo Excel y descargarlo
+        const wbout = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+        const blob = new Blob([wbout], { type: "application/octet-stream" });
+        saveAs(blob, `reporte_asistencias_${fecha}.xlsx`);
+    };
+    const getBadgeClass = (estado) => {
+        switch (estado) {
+            case "OK":
+                return "px-2.5 py-1 text-xs font-semibold rounded-full bg-emerald-100 text-emerald-800"; // verde
+            case "TARDANZA":
+                return "px-2.5 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800"; // amarillo
+            case "FALTA":
+                return "px-2.5 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800"; // rojo
+            default:
+                return "px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-800"; // gris por defecto
+        }
+    };
+    const columns = [
+        {
+            name: "Colaborador",
+            selector: (row) => row.colaborador,
+            sortable: true,
+        },{
+            name: "Fecha",
+            selector: (row) => row.fecha,
+            sortable: true,
+        },
+        {
+            name: "Hora Entrada",
+            selector: (row) => row.hora_entrada,
+            sortable: true,
+        },
+        {
+            name: "Hora Salida",
+            selector: (row) => row.hora_salida,
+            sortable: true,
+        },
+        {
+            name: "Hora Inicio Refrigerio",
+            selector: (row) => row.hora_inicio_refrigerio,
+            sortable: true,
+        },
+        {
+            name: "Hora Fin Refrigerio",
+            selector: (row) => row.hora_fin_refrigerio,
+            sortable: true,
+        },
+        {
+            name: "Hora Entrada Real",
+            selector: (row) => row.hora_entrada_real,
+            sortable: true,
+        },
+        {
+            name: "Hora Salida Real",
+            selector: (row) => row.hora_salida_real,
+            sortable: true,
+        },
+        {
+            name: "Estado Badge",
+            cell: (row) => (
+                <span className={getBadgeClass(row.estado_asistencia)}>
+                    {row.estado_asistencia}
+                </span>
+            ),
+            ignoreRowClick: true,
+            allowOverflow: true,
+            width: "100px",
+            className: "text-center",
+        },
+        {
+            name: "Minutos Tardanza",
+            selector: (row) => row.minutos_tardanza,
+            sortable: true,
+        },
+        {
+            name: "Minutos Salida Anticipada",
+            selector: (row) => row.minutos_salida_anticipada,
+            sortable: true,
+        },
+        {
+            name: "Horas Efectivas",
+            selector: (row) => row.horas_efectivas,
+            sortable: true,
+        },
+        {
+            name: "Horas Extras",
+            selector: (row) => row.horas_extras,
+            sortable: true,
+        },
+        {
+            name: "Num. Marcaciones",
+            selector: (row) => row.num_marcaciones,
+            sortable: true,
+        },
+    ];
+    const [dropdownOpen, setDropdownOpen] = useState(false);
+
+    return (
+        <div className="p-6">
+            <h1 className="text-2xl font-bold text-gray-800 mb-6">Reportes por Día</h1>
+            
+            <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-200 mb-6">
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    <div className="md:col-span-3">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                        <FechaPicker
+                            label="Fecha"
+                            value={fecha}
+                            onChange={({ ymd }) => setFecha(ymd)}
+                        />
+                    </div>
+                    
+                    <div className="md:col-span-3 md:col-start-7">
+                        <button
+                            className="w-full bg-blue-600 text-white p-2.5 rounded-lg font-medium hover:bg-blue-700 transition flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            onClick={listar}
+                            disabled={loading}
+                        >
+                            {loading ? (
+                                <>
+                                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    Generando...
+                                </>
+                            ) : (
+                                <>
+                                    <i className="fas fa-search"></i> Generar Reporte
+                                </>
+                            )}
+                        </button>
+                    </div>
+                    
+                    <div className="md:col-span-3 relative">
+                        <button 
+                            onClick={() => setDropdownOpen(!dropdownOpen)}
+                            className="w-full bg-gray-100 text-gray-700 p-2.5 rounded-lg font-medium border border-gray-300 hover:bg-gray-200 transition flex items-center justify-center gap-2"
+                        >
+                            Exportar <i className="fa fa-chevron-down text-xs"></i>
+                        </button>
+                        {dropdownOpen && (
+                            <div className="absolute right-0 mt-2 w-full bg-white border border-gray-100 rounded-lg shadow-lg z-10 overflow-hidden animate-in fade-in slide-in-from-top-2">
+                                <button 
+                                    onClick={() => { exportToExcel(); setDropdownOpen(false); }}
+                                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
+                                >
+                                    <i className="fas fa-file-excel text-green-600 w-4"></i> Exportar a Excel
+                                </button>
+                                <button 
+                                    onClick={() => { exportToPDF(); setDropdownOpen(false); }}
+                                    className="w-full text-left px-4 py-2.5 text-sm hover:bg-gray-50 flex items-center gap-2 text-gray-700"
+                                >
+                                    <i className="fas fa-file-pdf text-red-600 w-4"></i> Exportar a PDF
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="p-4 border-b border-gray-100 bg-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <h2 className="text-lg font-bold text-gray-800">
+                        {fecha ? `Reporte de Asistencias al ${fecha}` : "Reporte de Asistencias"}
+                    </h2>
+                    <div className="w-full md:w-auto">
+                        {subHeaderComponent}
+                    </div>
+                </div>
+                <div className="w-full">
+                    <DataTable
+                        columns={columns}
+                        data={filteredData}
+                        pagination
+                        highlightOnHover
+                        striped
+                        responsive
+                        customStyles={{
+                            headRow: {
+                                style: {
+                                    backgroundColor: '#f9fafb',
+                                    color: '#4b5563',
+                                    fontWeight: '600',
+                                    textTransform: 'uppercase',
+                                    fontSize: '0.75rem',
+                                    borderBottomWidth: '1px',
+                                    borderBottomColor: '#e5e7eb',
+                                }
+                            }
+                        }}
+                    />
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -383,30 +383,59 @@ class TransactionController extends Controller
         if ($zip->open($zipPath, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) === TRUE) {
             $hasFiles = false;
 
+            // Contexto para omitir verificación SSL
+            $context = stream_context_create([
+                'ssl' => [
+                    'verify_peer' => false,
+                    'verify_peer_name' => false,
+                ]
+            ]);
+
             // XML: Buscar en nuevo sistema, luego en legacy (via HTTP)
             if (file_exists($xmlFile)) {
                 $zip->addFile($xmlFile, basename($xmlFile));
                 $hasFiles = true;
             } else {
-                // Intentar descargar de facturador_v2
-                $response1 = Http::withoutVerifying()->get($legacyXml1);
-                if ($response1->successful()) {
-                    $zip->addFromString(basename($legacyXml1), $response1->body());
+                $xmlContent = @file_get_contents($legacyXml1, false, $context);
+                if ($xmlContent !== false) {
+                    $zip->addFromString(basename($legacyXml1), $xmlContent);
                     $hasFiles = true;
                 } else {
-                    // Intentar descargar de facturador_v3
-                    $response2 = Http::withoutVerifying()->get($legacyXml2);
-                    if ($response2->successful()) {
-                        $zip->addFromString(basename($legacyXml2), $response2->body());
+                    $xmlContent = @file_get_contents($legacyXml2, false, $context);
+                    if ($xmlContent !== false) {
+                        $zip->addFromString(basename($legacyXml2), $xmlContent);
                         $hasFiles = true;
                     }
                 }
             }
 
-            // CDR: Solo existe en el nuevo sistema
+            // CDR: Solo existe en el nuevo sistema local? Y en legacy?
+            // En legacy facturador_v3, el CDR está en 'cdr/' o en la misma carpeta como R-20455175781-01-F001-509.zip
+            $legacyCdr1 = 'https://peruvian.peruviandress.com/facturador_v2/files/R-' . $invoiceName . '.zip';
+            $legacyCdr2 = 'https://peruvian.peruviandress.com/facturador_v3/cdr/R-' . $invoiceName . '.zip';
+            $legacyCdr3 = 'https://peruvian.peruviandress.com/facturador_v3/R-' . $invoiceName . '.zip';
+
             if (file_exists($cdrFile)) {
                 $zip->addFile($cdrFile, basename($cdrFile));
                 $hasFiles = true;
+            } else {
+                $cdrContent = @file_get_contents($legacyCdr1, false, $context);
+                if ($cdrContent !== false) {
+                    $zip->addFromString('R-' . $invoiceName . '.zip', $cdrContent);
+                    $hasFiles = true;
+                } else {
+                    $cdrContent = @file_get_contents($legacyCdr2, false, $context);
+                    if ($cdrContent !== false) {
+                        $zip->addFromString('R-' . $invoiceName . '.zip', $cdrContent);
+                        $hasFiles = true;
+                    } else {
+                        $cdrContent = @file_get_contents($legacyCdr3, false, $context);
+                        if ($cdrContent !== false) {
+                            $zip->addFromString('R-' . $invoiceName . '.zip', $cdrContent);
+                            $hasFiles = true;
+                        }
+                    }
+                }
             }
 
             $zip->close();
@@ -414,7 +443,7 @@ class TransactionController extends Controller
             if (!$hasFiles) {
                 if (file_exists($zipPath))
                     unlink($zipPath);
-                return response()->json(['message' => 'Archivos no encontrados en ninguna ruta'], 404);
+                return response()->json(['message' => 'Archivos no encontrados en ninguna ruta (XML ni CDR)'], 404);
             }
         } else {
             return response()->json(['message' => 'No se pudo crear el archivo ZIP temporal'], 500);

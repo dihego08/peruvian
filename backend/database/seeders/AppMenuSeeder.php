@@ -99,6 +99,32 @@ class AppMenuSeeder extends Seeder
                     ['module_key' => 'rep_ventas_cruzado', 'label' => 'Ventas - Cruzado', 'route' => '/reports/ventas-cruzado', 'icon' => 'fa fa-money', 'sort_order' => 4],
                 ],
             ],
+            [
+                'module_key' => 'grp_asistencias_control',
+                'label' => 'Control Asistencias',
+                'icon' => 'fa fa-clock-o',
+                'sort_order' => 65,
+                'children' => [
+                    ['module_key' => 'asist_colaboradores', 'label' => 'Colaboradores', 'route' => '/colaboradores', 'icon' => 'fa fa-users', 'sort_order' => 1],
+                    ['module_key' => 'asist_relojes', 'label' => 'Relojes', 'route' => '/relojes', 'icon' => 'fa fa-clock-o', 'sort_order' => 2],
+                    ['module_key' => 'asist_feriados', 'label' => 'Feriados', 'route' => '/feriados', 'icon' => 'fa fa-calendar', 'sort_order' => 3],
+                    ['module_key' => 'asist_permisos', 'label' => 'Permisos', 'route' => '/permisos', 'icon' => 'fa fa-check-square-o', 'sort_order' => 4],
+                    ['module_key' => 'asist_horarios', 'label' => 'Horarios', 'route' => '/horarios', 'icon' => 'fa fa-calendar-times-o', 'sort_order' => 5],
+                    ['module_key' => 'asist_asignar', 'label' => 'Asignar Horario', 'route' => '/asignar', 'icon' => 'fa fa-user-plus', 'sort_order' => 6],
+                    ['module_key' => 'asist_tipos_permisos', 'label' => 'Tipos de Permisos', 'route' => '/tipos_permisos', 'icon' => 'fa fa-tags', 'sort_order' => 7],
+                ],
+            ],
+            [
+                'module_key' => 'grp_asistencias_reportes',
+                'label' => 'Reportes Asistencias',
+                'icon' => 'fa fa-pie-chart',
+                'sort_order' => 70,
+                'children' => [
+                    ['module_key' => 'rep_asist_colaborador', 'label' => 'Por Colaborador', 'route' => '/reportes', 'icon' => 'fa fa-user', 'sort_order' => 1],
+                    ['module_key' => 'rep_asist_dia', 'label' => 'Por Día', 'route' => '/reportes_dia', 'icon' => 'fa fa-calendar-o', 'sort_order' => 2],
+                    ['module_key' => 'rep_asist_completo', 'label' => 'Por Completo', 'route' => '/reportes_dias', 'icon' => 'fa fa-calendar', 'sort_order' => 3],
+                ],
+            ],
         ];
 
         foreach ($tree as $group) {

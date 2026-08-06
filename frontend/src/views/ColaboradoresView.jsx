@@ -53,7 +53,8 @@ const EMPTY = {
   contrato: '',
   sst: '',
   archivo: '',
-  competencias: ''
+  competencias: '',
+  dni_archivo: ''
 };
 
 export default function ColaboradoresView() {

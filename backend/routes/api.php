@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ColaboradorHorarioController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
@@ -42,7 +43,16 @@ use App\Http\Controllers\GuiaController;
 use App\Http\Controllers\GuiaPdfController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\TipoContratoController;
+use App\Http\Controllers\ReporteController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\RelojController;
+use App\Http\Controllers\FeriadoController;
+use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\TipoPermisoController;
+use App\Http\Controllers\HorarioController;
+use App\Http\Controllers\HorarioDiasController;
+use App\Http\Controllers\MarcacionController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
@@ -311,3 +321,64 @@ Route::get('/documento-existe/{carpeta}/{archivo}', function ($carpeta, $archivo
         'exists' => file_exists($ruta)
     ]);
 });
+
+
+$router->get('/relojes', [RelojController::class, 'lista']);
+$router->post('/relojes', [RelojController::class, 'insertar']);
+$router->get('/relojes/{id}', [RelojController::class, 'editar']);
+$router->put('/relojes/{id}', [RelojController::class, 'actualizar']);
+$router->delete('/relojes/{id}', [RelojController::class, 'eliminar']);
+$router->put('/relojes/{id}/estado', [RelojController::class, 'editarEstado']);
+
+$router->get('/feriados', [FeriadoController::class, 'lista']);
+$router->post('/feriados', [FeriadoController::class, 'insertar']);
+$router->get('/feriados/{id}', [FeriadoController::class, 'editar']);
+$router->put('/feriados/{id}', [FeriadoController::class, 'actualizar']);
+$router->delete('/feriados/{id}', [FeriadoController::class, 'eliminar']);
+$router->put('/feriados/{id}/estado', [FeriadoController::class, 'editarEstado']);
+
+//$router->group(['middleware' => 'auth'], function () use ($router) {
+$router->get('/permisos', [PermisoController::class, 'lista']);
+$router->post('/permisos', [PermisoController::class, 'insertar']);
+$router->get('/permisos/{id}', [PermisoController::class, 'editar']);
+$router->put('/permisos/{id}', [PermisoController::class, 'actualizar']);
+$router->delete('/permisos/{id}', [PermisoController::class, 'eliminar']);
+$router->put('/permisos/{id}/estado', [PermisoController::class, 'editarEstado']);
+//});
+
+$router->get('/tipos_permisos', [TipoPermisoController::class, 'lista']);
+$router->post('/tipos_permisos', [TipoPermisoController::class, 'insertar']);
+$router->get('/tipos_permisos/{id}', [TipoPermisoController::class, 'editar']);
+$router->put('/tipos_permisos/{id}', [TipoPermisoController::class, 'actualizar']);
+$router->delete('/tipos_permisos/{id}', [TipoPermisoController::class, 'eliminar']);
+
+$router->get('/colaboradores', [ColaboradorController::class, 'lista']);
+$router->put('/colaboradores/{id}/estado', [ColaboradorController::class, 'editarEstado']);
+$router->put('/colaboradores/{id}/marcacion', [ColaboradorController::class, 'editarMarcacion']);
+
+
+$router->get('/horarios', [HorarioController::class, 'lista']);
+$router->post('/horarios', [HorarioController::class, 'insertar']);
+$router->get('/horarios/{id}', [HorarioController::class, 'editar']);
+$router->put('/horarios/{id}', [HorarioController::class, 'actualizar']);
+$router->delete('/horarios/{id}', [HorarioController::class, 'eliminar']);
+$router->put('/horarios/{id}/estado', [HorarioController::class, 'editarEstado']);
+
+$router->get('/horario_dias', [HorarioDiasController::class, 'lista']);
+$router->post('/horario_dias', [HorarioDiasController::class, 'insertar']);
+$router->get('/horario_dias/{id}', [HorarioDiasController::class, 'editar']);
+$router->put('/horario_dias/{id}', [HorarioDiasController::class, 'actualizar']);
+$router->delete('/horario_dias/{id}', [HorarioDiasController::class, 'eliminar']);
+
+$router->get('/colaborador_horario', [ColaboradorHorarioController::class, 'lista']);
+$router->post('/colaborador_horario', [ColaboradorHorarioController::class, 'insertar']);
+$router->get('/colaborador_horario/{id}', [ColaboradorHorarioController::class, 'editar']);
+$router->put('/colaborador_horario/{id}', [ColaboradorHorarioController::class, 'actualizar']);
+$router->delete('/colaborador_horario/{id}', [ColaboradorHorarioController::class, 'eliminar']);
+$router->put('/colaborador_horario/{id}/estado', [ColaboradorHorarioController::class, 'editarEstado']);
+
+$router->post('/reportes/colaborador', [ReporteController::class, 'asistencia']);
+$router->post('/reportes/dia', [ReporteController::class, 'asistencia_dia']);
+$router->post('/reportes/dias', [ReporteController::class, 'asistencia_dias']);
+
+$router->post('/marcaciones/batch', [MarcacionController::class, 'insertarBatch']);
