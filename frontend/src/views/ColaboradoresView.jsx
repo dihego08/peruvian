@@ -386,7 +386,7 @@ export default function ColaboradoresView() {
                             </span>
                             {!(formData.dni_archivo instanceof File) && (
                               <button
-                                onClick={(e) => handleDocumentClick(e, formData.dni_archivo, 'dni')}
+                                onClick={(e) => handleDocumentClick(e, formData.dni_archivo, 'doc-colaboradores')}
                                 className="flex items-center gap-1 px-3 py-1.5 bg-blue-50 text-blue-600 rounded-lg text-sm font-medium hover:bg-blue-100 transition-colors"
                                 type="button"
                               >

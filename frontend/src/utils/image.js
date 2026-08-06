@@ -81,7 +81,8 @@ export function getDocumentUrl(filename, folder) {
     'examenes_medicos': 'certificado_medico',
     'contratos': 'contratos',
     'recomendaciones_sst': 'sst',
-    'verificacion_competencias': 'competencias'
+    'verificacion_competencias': 'competencias',
+    'doc-colaboradores': 'dni'
   };
   const legacyFolder = folderMap[folder] || folder;
   return `${LEGACY_VIEW_BASE}/${legacyFolder}/${filename}`;
@@ -141,7 +142,8 @@ export async function handleDocumentClick(e, filename, folder) {
     examenes_medicos: 'certificado_medico',
     contratos: 'contratos',
     recomendaciones_sst: 'sst',
-    verificacion_competencias: 'competencias'
+    verificacion_competencias: 'competencias',
+    'doc-colaboradores': 'dni'
   };
 
   const legacyFolder = folderMap[folder] || folder;
