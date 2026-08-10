@@ -46,9 +46,9 @@ class OrderPdfController extends Controller
 
         $detalles = DB::table('order_detalle_2')->where('codigo_cabecera', $codigo)->get();
 
-        $logoDataUri = 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
-        
-        $imageDataUri = !empty($imagen) ? 'https://peruvian.peruviandress.com/storage/products/' . rawurlencode($imagen) : '';
+        $logoDataUri = 'https://omcar.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+
+        $imageDataUri = !empty($imagen) ? 'https://omcar.peruviandress.com/storage/products/' . rawurlencode($imagen) : '';
 
         $html = '<!DOCTYPE html>
         <html lang="es">
@@ -98,7 +98,7 @@ class OrderPdfController extends Controller
                         <th rowspan="2" style="vertical-align: middle;">Total</th>
                     </tr>
                     <tr>';
-        
+
         $cabecera_html = "";
         $table_2 = "";
         $total = 0;
@@ -106,54 +106,54 @@ class OrderPdfController extends Controller
         foreach ($detalles as $idx => $res) {
             $subtotal = $res->total;
             if ($idx === 0) {
-                $cabecera_html = '<th>'.e($res->n1 ?? '').'</th>
-                <th>'.e($res->n2 ?? '').'</th>
-                <th>'.e($res->n3 ?? '').'</th>
-                <th>'.e($res->n4 ?? '').'</th>
-                <th>'.e($res->n5 ?? '').'</th>
-                <th>'.e($res->n6 ?? '').'</th>
-                <th>'.e($res->n7 ?? '').'</th>
-                <th>'.e($res->n8 ?? '').'</th>
-                <th>'.e($res->n9 ?? '').'</th>
-                <th>'.e($res->n10 ?? '').'</th>
-                <th>'.e($res->n11 ?? '').'</th>
-                <th>'.e($res->n12 ?? '').'</th>
-                <th>'.e($res->n13 ?? '').'</th>';
+                $cabecera_html = '<th>' . e($res->n1 ?? '') . '</th>
+                <th>' . e($res->n2 ?? '') . '</th>
+                <th>' . e($res->n3 ?? '') . '</th>
+                <th>' . e($res->n4 ?? '') . '</th>
+                <th>' . e($res->n5 ?? '') . '</th>
+                <th>' . e($res->n6 ?? '') . '</th>
+                <th>' . e($res->n7 ?? '') . '</th>
+                <th>' . e($res->n8 ?? '') . '</th>
+                <th>' . e($res->n9 ?? '') . '</th>
+                <th>' . e($res->n10 ?? '') . '</th>
+                <th>' . e($res->n11 ?? '') . '</th>
+                <th>' . e($res->n12 ?? '') . '</th>
+                <th>' . e($res->n13 ?? '') . '</th>';
             }
 
             $total += $subtotal;
-            $table_2 .= '<tr><td>'.e($res->modelo).'</td>'.
-            '<td>'.e($res->color).'</td>'.
-            '<td>'.e($res->_2 ?? ' ').'</td>'.
-            '<td>'.e($res->_4 ?? ' ').'</td>'.
-            '<td>'.e($res->_6 ?? ' ').'</td>'.
-            '<td>'.e($res->_8 ?? ' ').'</td>'.
-            '<td>'.e($res->_10 ?? ' ').'</td>'.
-            '<td>'.e($res->_12 ?? ' ').'</td>'.
-            '<td>'.e($res->_14 ?? ' ').'</td>'.
-            '<td>'.e($res->_16 ?? ' ').'</td>'.
-            '<td>'.e($res->s ?? ' ').'</td>'.
-            '<td>'.e($res->m ?? ' ').'</td>'.
-            '<td>'.e($res->l ?? ' ').'</td>'.
-            '<td>'.e($res->xl ?? ' ').'</td>'.
-            '<td>'.e($res->xxl ?? ' ').'</td>'.
-            '<td>'.e($subtotal).'</td></tr>';
+            $table_2 .= '<tr><td>' . e($res->modelo) . '</td>' .
+                '<td>' . e($res->color) . '</td>' .
+                '<td>' . e($res->_2 ?? ' ') . '</td>' .
+                '<td>' . e($res->_4 ?? ' ') . '</td>' .
+                '<td>' . e($res->_6 ?? ' ') . '</td>' .
+                '<td>' . e($res->_8 ?? ' ') . '</td>' .
+                '<td>' . e($res->_10 ?? ' ') . '</td>' .
+                '<td>' . e($res->_12 ?? ' ') . '</td>' .
+                '<td>' . e($res->_14 ?? ' ') . '</td>' .
+                '<td>' . e($res->_16 ?? ' ') . '</td>' .
+                '<td>' . e($res->s ?? ' ') . '</td>' .
+                '<td>' . e($res->m ?? ' ') . '</td>' .
+                '<td>' . e($res->l ?? ' ') . '</td>' .
+                '<td>' . e($res->xl ?? ' ') . '</td>' .
+                '<td>' . e($res->xxl ?? ' ') . '</td>' .
+                '<td>' . e($subtotal) . '</td></tr>';
 
-            $table_2 .= '<tr style="background-color: #f9fafb;"><td colspan="2" style="font-weight:bold; font-size:10px;">PRODUCIDOS</td>'.
-            '<td>'.e($res->p2).'</td>'.
-            '<td>'.e($res->p4).'</td>'.
-            '<td>'.e($res->p6).'</td>'.
-            '<td>'.e($res->p8).'</td>'.
-            '<td>'.e($res->p10).'</td>'.
-            '<td>'.e($res->p12).'</td>'.
-            '<td>'.e($res->p14).'</td>'.
-            '<td>'.e($res->p16).'</td>'.
-            '<td>'.e($res->ps).'</td>'.
-            '<td>'.e($res->pm).'</td>'.
-            '<td>'.e($res->pl).'</td>'.
-            '<td>'.e($res->pxl).'</td>'.
-            '<td>'.e($res->pxxl).'</td>'.
-            '<td>'.e($res->ptotal).'</td></tr>';
+            $table_2 .= '<tr style="background-color: #f9fafb;"><td colspan="2" style="font-weight:bold; font-size:10px;">PRODUCIDOS</td>' .
+                '<td>' . e($res->p2) . '</td>' .
+                '<td>' . e($res->p4) . '</td>' .
+                '<td>' . e($res->p6) . '</td>' .
+                '<td>' . e($res->p8) . '</td>' .
+                '<td>' . e($res->p10) . '</td>' .
+                '<td>' . e($res->p12) . '</td>' .
+                '<td>' . e($res->p14) . '</td>' .
+                '<td>' . e($res->p16) . '</td>' .
+                '<td>' . e($res->ps) . '</td>' .
+                '<td>' . e($res->pm) . '</td>' .
+                '<td>' . e($res->pl) . '</td>' .
+                '<td>' . e($res->pxl) . '</td>' .
+                '<td>' . e($res->pxxl) . '</td>' .
+                '<td>' . e($res->ptotal) . '</td></tr>';
         }
 
         if (empty($cabecera_html)) {
@@ -161,9 +161,9 @@ class OrderPdfController extends Controller
         }
 
         $html .= $cabecera_html . '</tr></thead><tbody>' . $table_2;
-        $html .= '<tr style="font-weight: bold;"><td colspan="15" style="text-align: right;">Total Producidos:</td><td>'.$totalp.'</td></tr>';
+        $html .= '<tr style="font-weight: bold;"><td colspan="15" style="text-align: right;">Total Producidos:</td><td>' . $totalp . '</td></tr>';
         $html .= '</tbody></table>';
-        
+
         $html .= '<p style="margin-top: 10px;"><strong>Comentarios:</strong> ' . nl2br(e($comentarios)) . '</p>';
         $html .= '</body></html>';
 

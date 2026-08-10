@@ -22,7 +22,7 @@ class GuiaPdfController extends Controller
         }
 
         $conductor = DB::table('conductores')->where('ruc', $guia->ruc_conductor)->first();
-        
+
         $data_transportista = '';
         $transportista = null;
         if (!empty($guia->ruc_transportista)) {
@@ -48,7 +48,7 @@ class GuiaPdfController extends Controller
         }
 
         $person = DB::table('person')->where('no', $guia->ruc_destinatario)->first();
-        
+
         $cliente = [
             'direccion' => $person ? $person->address1 : '',
             'razon_social' => $person ? $person->name : '',
@@ -69,14 +69,14 @@ class GuiaPdfController extends Controller
             <th style=\"padding: 5px; border: 1px solid #e5e7eb;\">Descripción</th>
             <th style=\"padding: 5px; border: 1px solid #e5e7eb;\">Peso (Kg)</th>
         </tr>";
-        
+
         $total_peso_items = 0;
         $total_cantidades_items = 0;
 
         foreach ($detalle as $res) {
             $desc = !empty($res->descripcion_producto) ? $res->descripcion_producto : $res->name;
             $peso_t = ($res->t_bruto == 0) ? $res->t_neto : $res->t_bruto;
-            
+
             $table .= '<tr>
                 <td style="width: 15%; padding: 5px; border: 1px solid #e5e7eb;"><p>' . $res->cantidad . ' ' . $res->unidad_descripcion . '</p></td>
                 <td style="width: 15%; padding: 5px; border: 1px solid #e5e7eb;">' . $res->pedido . '</td>
@@ -103,7 +103,7 @@ class GuiaPdfController extends Controller
         $qrSvg = $writer->writeString($qrText);
         $qrDataUri = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
-        $logoDataUri = 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+        $logoDataUri = 'https://omcar.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
 
         $modalidad_trasnporte = ($guia->modalidad_trasnporte == '01' || $guia->modalidad_trasnporte == 1) ? 'Transporte público' : 'Transporte privado';
         $motivo_traslado = ($guia->motivo_traslado == 13) ? "OTROS " . $guia->descripcion_motivo : $guia->desc_motivo_traslado;
@@ -121,13 +121,13 @@ class GuiaPdfController extends Controller
             . '<table style="width: 100%;">'
             . '<tr><td style="text-align: center;">' . ($logoDataUri ? '<img src="' . $logoDataUri . '" align="left" border="0" style="width: 200px;" />' : '') . '</td></tr>'
             . '<tr><td style="opacity: 0 !important; text-align: center; font-weight: bold; font-size: 20px;">PERUVIAN DRESS TPX S.A.C.</td></tr>'
-            . '<tr><td style="text-align: left;"><strong>Dirección: </strong>CAL.BELEN MZA. B LOTE. 8 JERUSALEN - MARIANO - MELGAR - AREQUIPA - AREQUIPA</td></tr>'
+            . '<tr><td style="text-align: left;"><strong>Dirección: </strong>CAL.BELEN NRO. 319 URB. JERUSALEN AREQUIPA - AREQUIPA - MARIANO MELGAR</td></tr>'
             . '</table></td>'
             . '<td style="width: 10%;"></td>'
             . '<td style="padding: 5px; border-radius: 4px; width: 40%; text-align: center;">'
             . '<table style="width: 100%;">'
             . '<tr><td style="text-align: center;"><span style="font-weight: bold; font-size: 20px;">Guía de Remisión Electrónica</span></td></tr>'
-            . '<tr><td style="text-align: center; font-weight: bold;">R.U.C.: 20455175781</td></tr>'
+            . '<tr><td style="text-align: center; font-weight: bold;">R.U.C.: 20611081651</td></tr>'
             . '<tr><td style="text-align: center;">Nro. ' . $guia->num_guia . '</td></tr>'
             . '</table></td></tr></table>'
             . '<div style="border: solid 1px; border-radius: 10px; padding: 10px; width: 100%; margin-bottom: 12px; box-sizing: border-box;">'
@@ -178,7 +178,7 @@ class GuiaPdfController extends Controller
             . '<hr style="margin-top: 30px; width: 100%; border: 1px solid #d1d5db;" />'
             . '<table style="width: 100%; font-size: 11px; margin-top: 20px; border-collapse: collapse;">'
             . '<tr><td style="width: 70%; border: solid 1px #aaaaaa; padding: 8px;">'
-            . '<p style="margin: 0;">consulte en www.peruviandress.com (https://www.peruviandress.com/fe)</p>'
+            . '<p style="margin: 0;">consulte en www.omcar.com (https://www.omcar.com/fe)</p>'
             . '<p style="margin-top: 5px;">Representación Impresa de la GUÍA DE REMISIÓN ELECTRÓNICA.</p>'
             . '</td><td style="width: 200px; vertical-align: top; padding-top: 8px;">'
             . '<img src="' . $qrDataUri . '" align="left" border="0" style="width: 120px;" />'

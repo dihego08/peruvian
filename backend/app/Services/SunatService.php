@@ -20,9 +20,9 @@ class SunatService
     public function createSee(): See
     {
         $see = new See();
-        $see->setCertificate(file_get_contents(storage_path('app/certs/certificate_pv_2024.pem')));
+        $see->setCertificate(file_get_contents(storage_path('app/certs/certificate_OMCAR_2025.pem')));
         $see->setService(SunatEndpoints::FE_PRODUCCION);
-        $see->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'));
+        $see->setClaveSOL(env('SUNAT_RUC', '20611081651'), env('SUNAT_USUARIO', 'OMCAR225'), env('SUNAT_CLAVE', 'Omcar225'));
 
         return $see;
     }
@@ -43,13 +43,13 @@ class SunatService
             ->setProvincia('AREQUIPA')
             ->setDistrito('MARIANO MELGAR')
             ->setUrbanizacion('-')
-            ->setDireccion('CAL.BELEN MZA. B LOTE. 8 AREQUIPA - AREQUIPA - MARIANO MELGAR')
+            ->setDireccion('CAL.BELEN NRO. 319 URB. JERUSALEN AREQUIPA - AREQUIPA - MARIANO MELGAR')
             ->setCodLocal('0000');
 
         return (new Company())
-            ->setRuc(env('SUNAT_RUC', '20455175781'))
-            ->setRazonSocial(env('SUNAT_RAZON_SOCIAL', 'PERUVIAN DRESS TPX S.A.C.'))
-            ->setNombreComercial('PERUVIAN DRESS TPX S.A.C.')
+            ->setRuc(env('SUNAT_RUC', '20611081651'))
+            ->setRazonSocial(env('SUNAT_RAZON_SOCIAL', 'OMCAR SOLUTIONS E.I.R.L.'))
+            ->setNombreComercial('OMCAR SOLUTIONS E.I.R.L.')
             ->setAddress($address);
     }
 
@@ -162,7 +162,7 @@ class SunatService
 
         return [
             'success' => true,
-            'code' => (int)$cdr->getCode(),
+            'code' => (int) $cdr->getCode(),
             'message' => $cdr->getDescription() ?? null,
         ];
     }

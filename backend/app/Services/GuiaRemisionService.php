@@ -19,8 +19,8 @@ use Greenter\Ws\Services\SunatEndpoints;
 
 class GuiaRemisionService
 {
-    private const RUC_EMPRESA = '20455175781';
-    private const RAZON_SOCIAL_EMPRESA = 'PERUVIAN DRESS TPX S.A.C.';
+    private const RUC_EMPRESA = '20611081651';
+    private const RAZON_SOCIAL_EMPRESA = 'OMCAR SOLUTIONS E.I.R.L.';
     private const SLEEP_TIME = 60;
 
     public function createSee(): \Greenter\Api
@@ -30,7 +30,7 @@ class GuiaRemisionService
             'cpe' => 'https://api-cpe.sunat.gob.pe/v1',
         ]);
 
-        $certificate = file_get_contents(storage_path('app/certs/certificate_pv_2024.pem'));
+        $certificate = file_get_contents(storage_path('app/certs/certificate_OMCAR_2025.pem'));
 
         $api->setBuilderOptions([
             'strict_variables' => true,
@@ -38,9 +38,9 @@ class GuiaRemisionService
             'debug' => true,
             'cache' => false,
         ])
-        ->setApiCredentials(env('SUNAT_CLIENT_ID', '54833fd6-ef25-49a2-95bd-5ffc6f95a97a'), env('SUNAT_CLIENT_SECRET', 'Ff68EQcyDY9K2Q3Ox2TlyA=='))
-        ->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'))
-        ->setCertificate($certificate);
+            ->setApiCredentials(env('SUNAT_CLIENT_ID', '1be3fd93-fa8b-4329-bb4e-260c67b7f7c8'), env('SUNAT_CLIENT_SECRET', '35gHoUKEWOl5Al6oH7SK8w=='))
+            ->setClaveSOL(env('SUNAT_RUC', '20611081651'), env('SUNAT_USUARIO', 'OMCAR225'), env('SUNAT_CLAVE', 'Omcar225'))
+            ->setCertificate($certificate);
 
         return $api;
     }
@@ -50,7 +50,7 @@ class GuiaRemisionService
         try {
             DB::statement("SET SESSION wait_timeout = 120");
             DB::statement("SET SESSION interactive_timeout = 120");
-            
+
             DB::beginTransaction();
 
             $guia = $this->obtenerGuia($idGuia);
@@ -172,7 +172,7 @@ class GuiaRemisionService
         }
 
         $envio->setLlegada(new Direction($guia['ubigeo_destino'], $guia['destino']))
-              ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
+            ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
 
         if (!empty($guia['ruc_transportista'])) {
             $transportista = $this->obtenerTransportista($guia['ruc_transportista']);
@@ -182,7 +182,7 @@ class GuiaRemisionService
                     ->setNumDoc($transportista['ruc'] ?? '')
                     ->setRznSocial($transportista['razon_social'] ?? '')
                     ->setNroMtc($transportista['nro_mtc'] ?? '0001');
-                
+
                 $envio->setTransportista($transp);
             }
         }
@@ -221,8 +221,8 @@ class GuiaRemisionService
         $items = [];
         foreach ($detalles as $row) {
             $row = (array) $row;
-            $descripcion = !empty($row['descripcion_producto']) 
-                ? $row['descripcion_producto'] 
+            $descripcion = !empty($row['descripcion_producto'])
+                ? $row['descripcion_producto']
                 : $row['description'];
 
             $item = (new DespatchDetail())

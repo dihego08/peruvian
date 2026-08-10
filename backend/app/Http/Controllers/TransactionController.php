@@ -357,7 +357,7 @@ class TransactionController extends Controller
 
     public function downloadSunatFiles($codigo)
     {
-        $ruc = env('SUNAT_RUC', '20455175781');
+        $ruc = env('SUNAT_RUC', '20611081651');
         $tipoDoc = '01'; // Default
 
         $num_factura = explode('-', $codigo);
@@ -373,8 +373,8 @@ class TransactionController extends Controller
         $cdrFile = $sunatPath . DIRECTORY_SEPARATOR . 'cdr' . DIRECTORY_SEPARATOR . 'R-' . $invoiceName . '.zip';
 
         // Rutas del sistema legacy
-        $legacyXml1 = 'https://peruvian.peruviandress.com/facturador_v2/files/' . $invoiceName . '.xml';
-        $legacyXml2 = 'https://peruvian.peruviandress.com/facturador_v3/' . $invoiceName . '.xml';
+        $legacyXml1 = 'https://omcar.peruviandress.com/facturador_v2/files/' . $invoiceName . '.xml';
+        $legacyXml2 = 'https://omcar.peruviandress.com/facturador_v3/' . $invoiceName . '.xml';
 
         $zipName = $invoiceName . '_SUNAT.zip';
         $zipPath = sys_get_temp_dir() . DIRECTORY_SEPARATOR . $zipName;
@@ -411,9 +411,9 @@ class TransactionController extends Controller
 
             // CDR: Solo existe en el nuevo sistema local? Y en legacy?
             // En legacy facturador_v3, el CDR está en 'cdr/' o en la misma carpeta como R-20455175781-01-F001-509.zip
-            $legacyCdr1 = 'https://peruvian.peruviandress.com/facturador_v2/files/R-' . $invoiceName . '.zip';
-            $legacyCdr2 = 'https://peruvian.peruviandress.com/facturador_v3/cdr/R-' . $invoiceName . '.zip';
-            $legacyCdr3 = 'https://peruvian.peruviandress.com/facturador_v3/R-' . $invoiceName . '.zip';
+            $legacyCdr1 = 'https://omcar.peruviandress.com/facturador_v2/files/R-' . $invoiceName . '.zip';
+            $legacyCdr2 = 'https://omcar.peruviandress.com/facturador_v3/cdr/R-' . $invoiceName . '.zip';
+            $legacyCdr3 = 'https://omcar.peruviandress.com/facturador_v3/R-' . $invoiceName . '.zip';
 
             if (file_exists($cdrFile)) {
                 $zip->addFile($cdrFile, basename($cdrFile));

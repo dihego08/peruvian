@@ -60,7 +60,7 @@ class TransactionPdfController extends Controller
         $qrSvg = $writer->writeString($qrText);
         $qrDataUri = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
-        $logoDataUri = 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+        $logoDataUri = 'https://omcar.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
         $ds = '';
         if ($cabecera->descuento > 0) {
             $ds = '<tr style="width: 200px;">'
@@ -151,16 +151,16 @@ class TransactionPdfController extends Controller
             . '<td style="padding: 5px; border-radius: 4px; width: 222px; text-align: left;">'
             . '<table style="width: 222px;">'
             . '<tr><td style="text-align: center; width: 400px;">' . ($logoDataUri ? '<img src="' . $logoDataUri . '" align="left" border="0" style="width: 200px;" />' : '') . '</td></tr>'
-            . '<tr><td style="opacity: 0 !important; text-align: center; width: 222px; font-weight: bold; font-size: 20px;">PERUVIAN DRESS TPX S.A.C.</td></tr>'
-            . '<tr><td style="text-align: left; width: 222px;"><strong>Dirección: </strong>CAL.BELEN MZA. B LOTE. 8 JERUSALEN - MARIANO - MELGAR - AREQUIPA - AREQUIPA</td></tr>'
+            . '<tr><td style="opacity: 0 !important; text-align: center; width: 222px; font-weight: bold; font-size: 20px;">OMCAR SOLUTIONS E.I.R.L.</td></tr>'
+            . '<tr><td style="text-align: left; width: 222px;"><strong>Dirección: </strong>CAL.BELEN NRO. 319 URB. JERUSALEN AREQUIPA - AREQUIPA - MARIANO MELGAR</td></tr>'
             . '<tr><td style="text-align: left; width: 222px;"><strong>Celular.: </strong>958133948</td></tr>'
-            . '<tr><td style="text-align: left; width: 222px;"><strong>Correo : </strong>omendoza@peruviandress.com</td></tr>'
+            . '<tr><td style="text-align: left; width: 222px;"><strong>Correo : </strong>ventas.omcar@gmail.com</td></tr>'
             . '</table></td>'
             . '<td style="width: 44px;"></td>'
             . '<td style="padding: 5px; border-radius: 4px; width: 222px; text-align: center;">'
             . '<table style="width: 222px;">'
             . '<tr><td style="text-align: center; width: 222px;"><span style="font-weight: bold; font-size: 20px;">Factura Electrónica</span></td></tr>'
-            . '<tr><td style="text-align: center; width: 222px; font-weight: bold;">R.U.C.: 20455175781</td></tr>'
+            . '<tr><td style="text-align: center; width: 222px; font-weight: bold;">R.U.C.: 20611081651</td></tr>'
             . '<tr><td style="text-align: center; width: 222px;">Nro. ' . $cabecera->codigo_venta . '</td></tr>'
             . '<tr><td style="text-align: center; width: 222px;">Nro. R.I. Emisor: 212321</td></tr>'
             . '<tr><td style="text-align: center; width: 222px;"><strong>Guía de Remisión:</strong> ' . $cabecera->guia . '</td></tr>'
@@ -205,7 +205,7 @@ class TransactionPdfController extends Controller
             . '<hr style="margin-top: 30px; width: 100%; border: 1px solid #d1d5db;" />'
             . '<table style="width: 100%; font-size: 11px; margin-top: 20px; border-collapse: collapse;">'
             . '<tr><td style="width: 70%; border: solid 1px #aaaaaa; padding: 8px;">'
-            . '<p style="margin: 0;">consulte en www.peruviandress.com (https://www.peruviandress.com/fe)</p>'
+            . '<p style="margin: 0;">consulte en www.omcar.com (https://www.omcar.com/fe)</p>'
             . '</td><td style="width: 200px; vertical-align: top; padding-top: 8px;">'
             . '<img src="' . $qrDataUri . '" align="left" border="0" style="width: 120px;" />'
             . '</td></tr></table>'
