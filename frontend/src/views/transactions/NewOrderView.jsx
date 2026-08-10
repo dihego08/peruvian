@@ -3,8 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
 import { handleProductImageError } from '../../utils/image';
 
-const SIZE_COLS = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
-const DEFAULT_HEADERS = ['2','4','6','8','10','12','14','16','S','M','L','XL','XXL'];
+const SIZE_COLS = ['_2', '_4', '_6', '_8', '_10', '_12', '_14', '_16', 's', 'm', 'l', 'xl', 'xxl'];
+const DEFAULT_HEADERS = ['2', '4', '6', '8', '10', '12', '14', '16', 'S', 'M', 'L', 'XL', 'XXL'];
 
 // Fila en blanco para la tabla de captura de color/cantidades
 const emptyRow = () => ({ color: '', sizes: Array(13).fill('') });
@@ -61,7 +61,7 @@ export default function NewOrderView() {
   const selectModel = (product) => {
     setSelectedModel(product);
     setFormData(f => ({ ...f, nombre_producto: product.name, imagen_alt: product.image || '' }));
-    setImagePreview(product.image ? `https://peruvian.peruviandress.com/storage/products/${product.image}` : null);
+    setImagePreview(product.image ? `https://omcar.peruviandress.com/storage/products/${product.image}` : null);
     setImageFile(null);
     setSearchResults([]);
     setSearchQuery('');
@@ -170,26 +170,26 @@ export default function NewOrderView() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Cliente *</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.person_id} onChange={e => setFormData({...formData, person_id: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.person_id} onChange={e => setFormData({ ...formData, person_id: e.target.value })}>
               <option value="">Seleccione...</option>
               {clients.map(c => <option key={c.id} value={c.id}>{c.name} {c.lastname}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nº Contrato</label>
-            <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" placeholder="Número de contrato" value={formData.num_contrato} onChange={e => setFormData({...formData, num_contrato: e.target.value})} />
+            <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" placeholder="Número de contrato" value={formData.num_contrato} onChange={e => setFormData({ ...formData, num_contrato: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Fecha de Inicio *</label>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_desde} onChange={e => setFormData({...formData, fecha_desde: e.target.value})} />
+            <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_desde} onChange={e => setFormData({ ...formData, fecha_desde: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Tiempo de Entrega (días hábiles) *</label>
-            <input type="number" min="1" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tiempo_entrega} onChange={e => setFormData({...formData, tiempo_entrega: e.target.value})} />
+            <input type="number" min="1" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tiempo_entrega} onChange={e => setFormData({ ...formData, tiempo_entrega: e.target.value })} />
           </div>
           <div className="md:col-span-2">
             <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Comentario</label>
-            <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" placeholder="Observaciones..." value={formData.comentario} onChange={e => setFormData({...formData, comentario: e.target.value})} />
+            <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" placeholder="Observaciones..." value={formData.comentario} onChange={e => setFormData({ ...formData, comentario: e.target.value })} />
           </div>
         </div>
       </div>
@@ -252,7 +252,7 @@ export default function NewOrderView() {
                 </div>
               )}
             </div>
-            
+
             <div className="flex-1 flex flex-col gap-2 w-full text-left">
               <div>
                 <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">

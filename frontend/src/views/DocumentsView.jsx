@@ -97,7 +97,7 @@ export default function DocumentsView() {
   };
 
   const openFile = (filename) => {
-    window.open(`https://peruvian.peruviandress.com/BIBLIOTECA/${filename}`, '_blank');
+    window.open(`https://omcar.peruviandress.com/BIBLIOTECA/${filename}`, '_blank');
   };
 
   return (

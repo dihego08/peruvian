@@ -11,7 +11,7 @@ import {
     ChevronUpIcon
 } from '@heroicons/react/24/outline';
 
-const IMAGE_BASE_URL = 'https://peruvian.peruviandress.com/storage/products';
+const IMAGE_BASE_URL = 'https://omcar.peruviandress.com/storage/products';
 const LOCAL_IMAGE_BASE_URL = 'http://localhost/peruvian/storage/products';
 
 const NewCotizationView = () => {

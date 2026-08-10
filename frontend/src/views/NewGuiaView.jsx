@@ -146,7 +146,7 @@ const TALLAS = ['2', '4', '6', '8', '10', '12', '14', 'XS', 'S', 'M', 'L', 'XL',
 const INIT = {
   num_guia: '', fecha_emision: today, fecha_traslado: today,
   motivo_traslado: '01', descripcion_motivo: '',
-  origen: 'CAL.BELEN MZA. B LOTE. 8 JERUSALEN - MARIANO MELGAR - AREQUIPA - AREQUIPA',
+  origen: 'CAL.BELEN NRO. 319 URB. JERUSALEN AREQUIPA - AREQUIPA - MARIANO MELGAR',
   ruc_destinatario: '', destino: '',
   ubigeo_origen: { departamento: '', provincia: '', distrito: '' },
   ubigeo_destino: { departamento: '', provincia: '', distrito: '' },
@@ -177,7 +177,7 @@ export default function NewGuiaView() {
   const [editingRow, setEditingRow] = useState(null);
 
   useEffect(() => {
-    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
+    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => { });
     api.get('/guias/next-num').then(r => setHead(h => ({ ...h, num_guia: r.data.num_guia }))).catch(() => { });
   }, []);
 

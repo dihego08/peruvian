@@ -188,7 +188,7 @@ export default function OrdersView() {
   };
 
   const printOrderPDF = (order) => {
-    window.open(`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/orders/${encodeURIComponent(order.codigo)}/pdf`, '_blank');
+    window.open(`${import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api'}/transactions/orders/${encodeURIComponent(order.codigo)}/pdf`, '_blank');
   };
 
 

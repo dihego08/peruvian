@@ -111,7 +111,7 @@ export default function MachineMaintenanceView() {
               {machine.maquina_ubicacion}
             </span>
             {machine.factura_compra && (
-              <a href={`https://peruvian.peruviandress.com/storage/maquinas/${machine.factura_compra}`} target="_blank" rel="noreferrer" className="text-xs font-bold text-gray-500 hover:text-blue-600 underline">
+              <a href={`https://omcar.peruviandress.com/storage/maquinas/${machine.factura_compra}`} target="_blank" rel="noreferrer" className="text-xs font-bold text-gray-500 hover:text-blue-600 underline">
                 Ver Factura
               </a>
             )}
@@ -122,7 +122,7 @@ export default function MachineMaintenanceView() {
           <div className="md:col-span-1">
             <div className="aspect-video bg-gray-100 rounded-xl border border-gray-200 flex items-center justify-center overflow-hidden">
               {machine.maquina_imagen ? (
-                <img src={`https://peruvian.peruviandress.com/storage/maquinas/${machine.maquina_imagen}`} alt="Maquina" className="w-full h-full object-cover" />
+                <img src={`https://omcar.peruviandress.com/storage/maquinas/${machine.maquina_imagen}`} alt="Maquina" className="w-full h-full object-cover" />
               ) : (
                 <WrenchScrewdriverIcon className="h-12 w-12 text-gray-300" />
               )}

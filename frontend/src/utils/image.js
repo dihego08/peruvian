@@ -1,8 +1,8 @@
-const LEGACY_BASE = 'https://peruvian.peruviandress.com/storage/products';
-const LEGACY_COLABORADORES_BASE = 'https://peruvian.peruviandress.com/core/app/view/img-colaboradores';
+const LEGACY_BASE = 'https://omcar.peruviandress.com/storage/products';
+const LEGACY_COLABORADORES_BASE = 'https://omcar.peruviandress.com/core/app/view/img-colaboradores';
 
 function getNewBaseUrl() {
-  const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api';
+  const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api';
   return apiBase
     .replace(/\/api$/, '')
     .replace(/\/backend\/public$/, '');
@@ -69,7 +69,7 @@ export function handleColaboradorFotoError(e, filename) {
   e.target.onerror = null;
 }
 
-const LEGACY_VIEW_BASE = 'https://peruvian.peruviandress.com/core/app/view';
+const LEGACY_VIEW_BASE = 'https://omcar.peruviandress.com/core/app/view';
 
 export function getDocumentUrl(filename, folder) {
   if (!filename) return '';

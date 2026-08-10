@@ -174,7 +174,7 @@ export default function SellsView() {
 
                       {sell.envio_sunat == 1 && (
                         <a
-                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/sunat-files`}
+                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/sunat-files`}
                           className="p-1 text-orange-500 hover:bg-orange-50 rounded-lg transition-colors"
                           title="Descargar XML y CDR"
                         >
@@ -183,7 +183,7 @@ export default function SellsView() {
                       )}
 
                       <a
-                        href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf`}
+                        href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf`}
                         target="_blank"
                         rel="noreferrer"
                         className="p-1 text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors"
@@ -288,7 +288,7 @@ export default function SellsView() {
                             <div className="flex items-center gap-2">
                               {item.producto_imagen && (
                                 <img
-                                  src={`https://peruvian.peruviandress.com/storage/products/${item.producto_imagen}`}
+                                  src={`https://omcar.peruviandress.com/storage/products/${item.producto_imagen}`}
                                   className="w-7 h-7 object-cover rounded border border-gray-200"
                                   onError={e => { e.target.style.display = 'none'; }}
                                   alt=""

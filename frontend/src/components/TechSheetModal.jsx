@@ -219,9 +219,8 @@ export default function TechSheetModal({ isOpen, onClose, productCode }) {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`px-6 py-3 text-sm font-bold transition-all relative ${
-                activeTab === tab.id ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'
-              }`}
+              className={`px-6 py-3 text-sm font-bold transition-all relative ${activeTab === tab.id ? 'text-blue-600' : 'text-gray-500 hover:text-gray-700'
+                }`}
             >
               {tab.label}
               {activeTab === tab.id && <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600"></div>}
@@ -297,11 +296,11 @@ export default function TechSheetModal({ isOpen, onClose, productCode }) {
                   <div className="space-y-6">
                     <div className="bg-gray-50 rounded-xl overflow-hidden aspect-video flex items-center justify-center border border-gray-200">
                       {data.product.image ? (
-                        <img src={`https://peruvian.peruviandress.com/storage/products/${data.product.image}`} className="w-full h-full object-contain" alt="Product" />
+                        <img src={`https://omcar.peruviandress.com/storage/products/${data.product.image}`} className="w-full h-full object-contain" alt="Product" />
                       ) : (
                         <div className="text-center text-gray-300">
-                           <EyeIcon className="h-12 w-12 mx-auto mb-2" />
-                           <p className="text-xs font-bold uppercase">Sin imagen</p>
+                          <EyeIcon className="h-12 w-12 mx-auto mb-2" />
+                          <p className="text-xs font-bold uppercase">Sin imagen</p>
                         </div>
                       )}
                     </div>
@@ -526,7 +525,7 @@ export default function TechSheetModal({ isOpen, onClose, productCode }) {
                         <p className="text-[10px] uppercase font-bold text-gray-400">Archivo Actual</p>
                       </div>
                       <div className="flex gap-2">
-                        <a href={`https://peruvian.peruviandress.com/core/app/view/img-colaboradores/${data.archivo.archivo}`} target="_blank" rel="noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Descargar">
+                        <a href={`https://omcar.peruviandress.com/core/app/view/img-colaboradores/${data.archivo.archivo}`} target="_blank" rel="noreferrer" className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Descargar">
                           <ArrowDownTrayIcon className="h-5 w-5" />
                         </a>
                       </div>
@@ -587,7 +586,7 @@ export default function TechSheetModal({ isOpen, onClose, productCode }) {
         <div className="bg-gray-100 px-6 py-4 border-t border-gray-200 flex justify-between items-center">
           <button
             className="flex items-center gap-2 px-6 py-2 bg-white border border-gray-300 text-gray-700 rounded-md font-bold hover:bg-gray-50 transition-all shadow-sm text-sm"
-            onClick={() => window.open(`https://peruvian.peruviandress.com/core/app/view/pdf-ficha_tecnica.php?num_modelo=${productCode}`, '_blank')}
+            onClick={() => window.open(`https://omcar.peruviandress.com/core/app/view/pdf-ficha_tecnica.php?num_modelo=${productCode}`, '_blank')}
           >
             <PrinterIcon className="h-5 w-5" />
             Exportar PDF

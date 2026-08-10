@@ -91,7 +91,7 @@ export default function TechSheetView() {
                     <td className="px-4 py-3">
                       <div className="w-10 h-10 bg-gray-50 rounded-lg overflow-hidden mx-auto border border-gray-200">
                         {product.image ? (
-                          <img src={`https://peruvian.peruviandress.com/storage/products/${product.image}`} className="w-full h-full object-cover" alt="" />
+                          <img src={`https://omcar.peruviandress.com/storage/products/${product.image}`} className="w-full h-full object-cover" alt="" />
                         ) : (
                           <div className="w-full h-full flex items-center justify-center text-gray-300"><EyeIcon className="h-5 w-5" /></div>
                         )}

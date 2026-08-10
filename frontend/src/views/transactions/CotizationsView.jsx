@@ -11,7 +11,7 @@ import {
     XMarkIcon
 } from '@heroicons/react/24/outline';
 
-//const IMAGE_BASE_URL = 'https://peruvian.peruviandress.com/storage/products';
+//const IMAGE_BASE_URL = 'https://omcar.peruviandress.com/storage/products';
 //const LOCAL_IMAGE_BASE_URL = 'http://localhost/peruvian/storage/products';
 
 const CotizationsView = () => {
@@ -137,7 +137,7 @@ const CotizationsView = () => {
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
                                             <a
-                                                href={`https://peruvian.peruviandress.com/core/app/view/pdf-cotizacion.php?codigo=${cot.codigo}`}
+                                                href={`https://omcar.peruviandress.com/core/app/view/pdf-cotizacion.php?codigo=${cot.codigo}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-block p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
