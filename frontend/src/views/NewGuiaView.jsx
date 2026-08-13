@@ -434,7 +434,12 @@ export default function NewGuiaView() {
                 </select>
               </div>
               <div className="space-y-2">
-                <p className="text-xs font-bold text-gray-600 uppercase">Cantidades por Talla</p>
+                <div className="flex items-center justify-between">
+                  <p className="text-xs font-bold text-gray-600 uppercase">Cantidades por Talla</p>
+                  <p className="text-xs font-bold text-blue-600 bg-blue-100 px-2 py-1 rounded">
+                    Total: {tallas.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0) || 0}
+                  </p>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {TALLAS.map((t, i) => (
                     <div key={t} className="flex flex-col items-center gap-1">
