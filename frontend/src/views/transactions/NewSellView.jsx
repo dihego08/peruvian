@@ -26,7 +26,7 @@ export default function NewSellView() {
     cash: 0,
     detraccion: 'no',
     detraccion_p: 0,
-    incluye_igv: '1',
+    incluye_igv: '0',
     tipo_documento: '2',
     // Novedades:
     fecha_emision: new Date().toISOString().slice(0, 10),
@@ -100,8 +100,8 @@ export default function NewSellView() {
       setFormasPago(fRes.data);
 
       // Auto select first option if available
-      /*if (pRes.data.length > 0) setFormData(prev => ({ ...prev, tipos_pago: pRes.data[0].id }));
-      if (dRes.data.length > 0) setFormData(prev => ({ ...prev, tipos_entrega: dRes.data[0].id }));*/
+      if (pRes.data.length > 0 && !formData.tipos_pago) setFormData(prev => ({ ...prev, tipos_pago: pRes.data[0].id }));
+      if (dRes.data.length > 0 && !formData.tipos_entrega) setFormData(prev => ({ ...prev, tipos_entrega: dRes.data[0].id }));
     } catch (e) {
       console.warn("Error cargando diccionarios de pago/entrega", e);
     }
