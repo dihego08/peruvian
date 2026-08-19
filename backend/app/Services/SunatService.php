@@ -53,7 +53,7 @@ class SunatService
             ->setAddress($address);
     }
 
-    public function buildItems($detalle): array
+    /*public function buildItems($detalle): array
     {
         $items = [];
         foreach ($detalle as $res) {
@@ -78,8 +78,37 @@ class SunatService
         }
 
         return $items;
-    }
+    }*/
+    public function buildItems($detalle): array
+    {
+        $items = [];
+        foreach ($detalle as $res) {
+            $monto_valor_venta = number_format($res->precio_unitario * $res->cantidad, 2, '.', '');
+            $precio_bordado = empty($res->precio_bordado) ? 0 : $res->precio_bordado;
 
+            $valor_venta_total = $monto_valor_venta + $precio_bordado; // total de línea sin IGV
+            $igv_total = $valor_venta_total * 0.18;                    // IGV de la línea
+            $precio_unitario_con_igv = ($valor_venta_total + $igv_total) / $res->cantidad; // ✅ por unidad
+
+            $item = new SaleDetail();
+            $item->setCodProducto($res->id_producto)
+                ->setUnidad('NIU')
+                ->setDescripcion($res->tipo ?? ($res->producto_nombre ?? ''))
+                ->setCantidad($res->cantidad)
+                ->setMtoValorUnitario($res->precio_unitario)
+                ->setMtoValorVenta(number_format($valor_venta_total, 2, '.', ''))
+                ->setMtoBaseIgv(number_format($valor_venta_total, 2, '.', ''))
+                ->setPorcentajeIgv(18)
+                ->setIgv(number_format($igv_total, 2, '.', ''))
+                ->setTipAfeIgv('10')
+                ->setTotalImpuestos(number_format($igv_total, 2, '.', ''))
+                ->setMtoPrecioUnitario(number_format($precio_unitario_con_igv, 2, '.', ''));
+
+            $items[] = $item;
+        }
+
+        return $items;
+    }
     public function buildInvoice(array $cabecera, array $items, Client $client, Company $company): Invoice
     {
         $num_factura = explode('-', $cabecera['codigo_venta']);
@@ -162,7 +191,7 @@ class SunatService
 
         return [
             'success' => true,
-            'code' => (int)$cdr->getCode(),
+            'code' => (int) $cdr->getCode(),
             'message' => $cdr->getDescription() ?? null,
         ];
     }
