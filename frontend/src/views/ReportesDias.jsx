@@ -60,8 +60,13 @@ export default function ReportesDia() {
 
     // Convertir formato "HH:MM:SS" a horas decimales
     const convertirHorasADecimal = (tiempoStr) => {
-        if (!tiempoStr || tiempoStr === null) return 0;
-        const partes = tiempoStr.split(':');
+        if (tiempoStr === null || tiempoStr === undefined || tiempoStr === '') return 0;
+        if (typeof tiempoStr === 'number') return tiempoStr;
+        
+        const str = String(tiempoStr);
+        if (!str.includes(':')) return parseFloat(str) || 0;
+
+        const partes = str.split(':');
         const horas = parseInt(partes[0]) || 0;
         const minutos = parseInt(partes[1]) || 0;
         const segundos = parseInt(partes[2]) || 0;

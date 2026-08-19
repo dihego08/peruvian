@@ -25,6 +25,7 @@ export default function NewSellView() {
     discount: 0,
     cash: 0,
     detraccion: 'no',
+    detraccion_p: 0,
     incluye_igv: '1',
     tipo_documento: '2',
     // Novedades:
@@ -50,7 +51,7 @@ export default function NewSellView() {
 
   useEffect(() => {
     calculateTotals();
-  }, [cart, formData.discount, formData.incluye_igv, formData.tipo_documento]);
+  }, [cart, formData.discount, formData.incluye_igv, formData.tipo_documento, formData.detraccion]);
 
   useEffect(() => {
     const fetchCorrelativo = async () => {
@@ -194,6 +195,12 @@ export default function NewSellView() {
     }
 
     setTotals({ subtotal: sub, igv: igv, total: tot });
+
+    if (formData.detraccion === 'yes') {
+      setFormData(prev => ({ ...prev, detraccion_p: Math.round(tot * 0.10) }));
+    } else {
+      setFormData(prev => ({ ...prev, detraccion_p: 0 }));
+    }
   };
 
   const handleSubmit = async () => {
@@ -498,6 +505,26 @@ export default function NewSellView() {
                 <input type="number" step="0.01" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.discount} onChange={e => setFormData({ ...formData, discount: e.target.value })} />
               </div>
 
+              <div className="pt-2 border-t border-gray-100">
+                <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Aplicar Detracción</label>
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="radio" name="detraccion" value="no" checked={formData.detraccion === 'no'} onChange={(e) => setFormData({ ...formData, detraccion: 'no' })} className="text-blue-600 focus:ring-blue-500" />
+                    No
+                  </label>
+                  <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+                    <input type="radio" name="detraccion" value="yes" checked={formData.detraccion === 'yes'} onChange={(e) => setFormData({ ...formData, detraccion: 'yes' })} className="text-blue-600 focus:ring-blue-500" />
+                    Sí
+                  </label>
+                </div>
+                {formData.detraccion === 'yes' && (
+                  <div className="mt-2">
+                    <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Monto Detracción (S/)</label>
+                    <input type="number" step="0.01" className="w-full p-2 border border-blue-200 rounded-md bg-blue-50 text-blue-800 font-bold text-sm focus:border-blue-500 focus:ring-blue-500" value={formData.detraccion_p} onChange={e => setFormData({ ...formData, detraccion_p: e.target.value })} />
+                  </div>
+                )}
+              </div>
+
               <div className="bg-gray-50 p-4 rounded-lg border border-gray-200 mt-2">
                 <div className="flex justify-between mb-2">
                   <span className="text-gray-600 font-medium text-sm">Subtotal:</span>
@@ -511,6 +538,12 @@ export default function NewSellView() {
                   <div className="flex justify-between mb-2 text-red-500">
                     <span className="font-medium text-sm">Descuento:</span>
                     <span className="font-bold text-sm">- S/ {Number(formData.discount).toFixed(2)}</span>
+                  </div>
+                )}
+                {formData.detraccion === 'yes' && (
+                  <div className="flex justify-between mb-2 text-orange-500">
+                    <span className="font-medium text-sm">Detracción (10%):</span>
+                    <span className="font-bold text-sm">S/ {Number(formData.detraccion_p).toFixed(2)}</span>
                   </div>
                 )}
                 <div className="flex justify-between mt-3 pt-3 border-t border-gray-300">
