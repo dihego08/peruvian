@@ -23,6 +23,9 @@ export default function SellPaymentsView() {
   const [adeudaLocal, setAdeudaLocal] = useState(0);
   const [saving, setSaving]         = useState(false);
 
+  // Estado para detracción
+  const [detraccionForm, setDetraccionForm] = useState({});
+
   useEffect(() => {
     fetchClients();
     fetchTiposDoc();
@@ -111,6 +114,42 @@ export default function SellPaymentsView() {
       setHistorial(prev => prev.filter(p => p.id !== id));
       fetchSells({});
     } catch (e) { alert('Error al eliminar pago'); }
+  };
+
+  const handleDetraccionChange = (codigo, field, value) => {
+    setDetraccionForm(prev => ({
+      ...prev,
+      [codigo]: {
+        ...prev[codigo],
+        [field]: value
+      }
+    }));
+  };
+
+  const handleSaveDetraccion = async (codigo) => {
+    const form = detraccionForm[codigo];
+    if (!form || form.status !== '1' || !form.date) {
+      alert('Debes seleccionar PAGADO y establecer una fecha para guardar la detracción.');
+      return;
+    }
+
+    try {
+      await api.post(`/sell-payments/${codigo}/pay-detraccion`, {
+        paga: form.status,
+        fecha_pago: form.date
+      });
+      alert('Detracción guardada correctamente');
+      
+      const p = {};
+      if (filters.desde) p.desde = filters.desde;
+      if (filters.hasta) p.hasta = filters.hasta;
+      if (filters.tipos_pago) p.tipos_pago = filters.tipos_pago;
+      if (filters.tipos_documento !== '0') p.tipos_documento = filters.tipos_documento;
+      if (filters.combo_cliente !== '0') p.combo_cliente = filters.combo_cliente;
+      fetchSells(p);
+    } catch (e) {
+      alert('Error al guardar la detracción');
+    }
   };
 
   return (
@@ -211,7 +250,41 @@ export default function SellPaymentsView() {
                     <td className="px-4 py-3 text-gray-600 text-xs">{s.entrega || '-'}</td>
                     <td className="px-4 py-3 text-right font-semibold text-gray-800">S/ {parseFloat(s.valor_pagar || 0).toFixed(2)}</td>
                     <td className="px-4 py-3 text-gray-700 max-w-[160px] truncate">{s.person || '-'}</td>
-                    <td className="px-4 py-3 text-right text-gray-600">{s.detraccion_p > 0 ? `S/ ${s.detraccion_p}` : '-'}</td>
+                    <td className="px-4 py-3 text-right text-gray-600">
+                      {s.detraccion_p > 0 ? (
+                        <div className="flex flex-col items-end gap-1">
+                          <span className="font-semibold text-gray-800">S/ {s.detraccion_p}</span>
+                          {s.detraccion_paga == 0 ? (
+                            <div className="flex flex-col gap-1 w-28 text-left mt-1">
+                              <select 
+                                className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
+                                value={detraccionForm[s.codigo_venta]?.status || '0'}
+                                onChange={e => handleDetraccionChange(s.codigo_venta, 'status', e.target.value)}
+                              >
+                                <option value="0">PENDIENTE</option>
+                                <option value="1">PAGADO</option>
+                              </select>
+                              {detraccionForm[s.codigo_venta]?.status === '1' && (
+                                <input 
+                                  type="date" 
+                                  className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
+                                  value={detraccionForm[s.codigo_venta]?.date || ''}
+                                  onChange={e => handleDetraccionChange(s.codigo_venta, 'date', e.target.value)}
+                                />
+                              )}
+                              <button 
+                                className="w-full bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold hover:bg-green-200 transition-colors"
+                                onClick={() => handleSaveDetraccion(s.codigo_venta)}
+                              >
+                                Guardar
+                              </button>
+                            </div>
+                          ) : (
+                            <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">PAGADO</span>
+                          )}
+                        </div>
+                      ) : '-'}
+                    </td>
                     <td className={`px-4 py-3 text-right font-bold ${tieneDeuda ? 'text-red-600' : 'text-green-600'}`}>
                       S/ {parseFloat(s.a_cuenta || 0).toFixed(2)}
                     </td>

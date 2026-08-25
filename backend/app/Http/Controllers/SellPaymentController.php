@@ -206,4 +206,28 @@ class SellPaymentController extends Controller
         $tipos = DB::table('kind_doc')->select('id', 'tipo_documento')->get();
         return response()->json(['Result' => 'OK', 'Records' => $tipos]);
     }
+
+    /**
+     * Registrar el pago de la detracción
+     */
+    public function payDetraccion(Request $request, $codigo_venta)
+    {
+        $request->validate([
+            'paga' => 'required|in:0,1',
+            'fecha_pago' => 'required|date'
+        ]);
+
+        try {
+            DB::table('ventas_cabecera')
+                ->where('codigo_venta', $codigo_venta)
+                ->update([
+                    'detraccion_paga' => $request->paga,
+                    'fecha_pago_detraccion' => $request->fecha_pago,
+                ]);
+
+            return response()->json(['Result' => 'OK']);
+        } catch (\Exception $e) {
+            return response()->json(['Result' => 'ERROR', 'error' => $e->getMessage()], 500);
+        }
+    }
 }

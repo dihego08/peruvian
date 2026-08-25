@@ -232,6 +232,7 @@ Route::get('sell-payments', [SellPaymentController::class, 'index']);
 Route::get('sell-payments/tipos-documento', [SellPaymentController::class, 'tiposDocumento']);
 Route::get('sell-payments/{codigo}/history', [SellPaymentController::class, 'paymentHistory']);
 Route::post('sell-payments/{codigo}/pay', [SellPaymentController::class, 'storePayment']);
+Route::post('sell-payments/{codigo}/pay-detraccion', [SellPaymentController::class, 'payDetraccion']);
 Route::delete('sell-payments/payment/{id}', [SellPaymentController::class, 'deletePayment']);
 
 // Cotizations
