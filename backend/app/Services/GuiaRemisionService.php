@@ -30,7 +30,7 @@ class GuiaRemisionService
             'cpe' => 'https://api-cpe.sunat.gob.pe/v1',
         ]);
 
-        $certificate = file_get_contents(storage_path('app/certs/certificate_OMCAR_2025.pem'));
+        $certificate = file_get_contents(storage_path('app/certs/certificado_om_2026.pem'));
 
         $api->setBuilderOptions([
             'strict_variables' => true,

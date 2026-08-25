@@ -20,7 +20,7 @@ class SunatService
     public function createSee(): See
     {
         $see = new See();
-        $see->setCertificate(file_get_contents(storage_path('app/certs/certificate_OMCAR_2025.pem')));
+        $see->setCertificate(file_get_contents(storage_path('app/certs/certificado_om_2026.pem')));
         $see->setService(SunatEndpoints::FE_PRODUCCION);
         $see->setClaveSOL(env('SUNAT_RUC', '20611081651'), env('SUNAT_USUARIO', 'OMCAR225'), env('SUNAT_CLAVE', 'Omcar225'));
 
