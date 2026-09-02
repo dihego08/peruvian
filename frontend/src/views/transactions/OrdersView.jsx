@@ -119,8 +119,12 @@ export default function OrdersView() {
 
   let pedidosTiempo = 0;
   let pedidosFuera = 0;
+  let cant_pedido = 0;
+  let cant_produccion = 0;
 
   filtered.forEach(o => {
+    cant_pedido += parseInt(o.total ?? 0);
+    cant_produccion += parseInt(o.totalp ?? 0);
     if (o.fecha_entrega_real) {
       if (o.fecha_entrega_real <= o.fecha_entrega) pedidosTiempo++;
       else pedidosFuera++;
@@ -390,6 +394,12 @@ export default function OrdersView() {
                   </tr>
                 );
               })}
+              <tr>
+                <td colSpan="4" className="text-right font-semibold">Total Pedido:</td>
+                <td colSpan="3" className="text-center font-bold text-blue-600">{cant_pedido}</td>
+                <td colSpan="3" className="text-right font-semibold">Total Producción:</td>
+                <td colSpan="3" className="text-center font-bold text-green-600">{cant_produccion}</td>
+              </tr>
             </tbody>
           </table>
         </div>
