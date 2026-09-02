@@ -145,9 +145,23 @@ export default function NewSellView() {
   };
 
   const handleResultChange = (id, field, value) => {
-    setSearchResults(searchResults.map(item =>
-      item.id === id ? { ...item, [field]: value } : item
-    ));
+    setSearchResults(searchResults.map(item => {
+      if (item.id === id) {
+        const updatedItem = { ...item, [field]: value };
+        
+        // Handle prepending 'SERVICIO DE CONFECCIÓN ' when type changes to Servicio
+        if (field === 'edit_tipo') {
+          if (value === 'Servicio' && !updatedItem.edit_name.startsWith('SERVICIO DE CONFECCIÓN ')) {
+            updatedItem.edit_name = 'SERVICIO DE CONFECCIÓN ' + updatedItem.edit_name;
+          } else if (value === 'Producto' && updatedItem.edit_name.startsWith('SERVICIO DE CONFECCIÓN ')) {
+            updatedItem.edit_name = updatedItem.edit_name.replace('SERVICIO DE CONFECCIÓN ', '');
+          }
+        }
+        
+        return updatedItem;
+      }
+      return item;
+    }));
   };
 
   const addToCart = (item) => {
@@ -319,7 +333,7 @@ export default function NewSellView() {
                       </select>
                     </td>
                     <td className="p-2">
-                      <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" value={item.edit_tipo === "Servicio" ? "SERVICIO DE CONFECCIÓN " + item.edit_name : item.edit_name} onChange={e => handleResultChange(item.id, 'edit_name', e.target.value)} />
+                      <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" value={item.edit_name} onChange={e => handleResultChange(item.id, 'edit_name', e.target.value)} />
                     </td>
                     <td className="p-2">
                       <input type="number" step="0.01" className="w-full p-2 border border-gray-300 rounded-md text-right focus:border-blue-500 focus:ring-blue-500" value={item.edit_price_unit} onChange={e => handleResultChange(item.id, 'edit_price_unit', e.target.value)} />
