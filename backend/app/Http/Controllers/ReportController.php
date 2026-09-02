@@ -102,7 +102,7 @@ class ReportController extends Controller
             ->map(function ($item) {
                 return [
                     'label' => $item->cliente,
-                    'y' => (float)$item->total
+                    'y' => (float) $item->total
                 ];
             });
 
@@ -121,7 +121,7 @@ class ReportController extends Controller
             ->map(function ($item) {
                 return [
                     'label' => $item->modelo,
-                    'y' => (float)$item->total
+                    'y' => (float) $item->total
                 ];
             });
 
@@ -173,7 +173,7 @@ class ReportController extends Controller
             ->distinct()
             ->orderBy('anio', 'asc')
             ->get();
-        
+
         $anios = $aniosRaw->pluck('anio');
         $values = [];
 
@@ -187,7 +187,7 @@ class ReportController extends Controller
                 ->groupBy(DB::raw('MONTH(fecha_emision)'))
                 ->orderBy(DB::raw('MONTH(fecha_emision)'), 'asc')
                 ->get();
-            
+
             $values[$anio] = $mesesData;
         }
 
@@ -294,7 +294,7 @@ class ReportController extends Controller
         $items = $sunatService->buildItems($detalle->all());
 
         $see = $sunatService->createSee();
-        $note = $sunatService->buildCreditNote((array)$cabecera, $items, $client, $company, $codMotivo, $motivo, $correlativoNc);
+        $note = $sunatService->buildCreditNote((array) $cabecera, $items, $client, $company, $codMotivo, $motivo, $correlativoNc);
 
         $sendResult = $sunatService->sendCreditNote($note, $see);
 
