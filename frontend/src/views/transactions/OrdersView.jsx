@@ -13,6 +13,15 @@ const ESTADO_MAP = {
   2: { label: 'Cancelado', color: 'bg-red-100 text-red-800' },
 };
 
+const formatDate = (dateStr) => {
+  if (!dateStr) return '-';
+  const parts = dateStr.split('-');
+  if (parts.length >= 3) {
+    return `${parts[2].substring(0, 2)}/${parts[1]}/${parts[0]}`;
+  }
+  return dateStr;
+};
+
 export default function OrdersView() {
   const navigate = useNavigate();
   const location = useLocation();
@@ -119,8 +128,12 @@ export default function OrdersView() {
 
   let pedidosTiempo = 0;
   let pedidosFuera = 0;
+  let cant_pedido = 0;
+  let cant_produccion = 0;
 
   filtered.forEach(o => {
+    cant_pedido += parseInt(o.total ?? 0);
+    cant_produccion += parseInt(o.totalp ?? 0);
     if (o.fecha_entrega_real) {
       if (o.fecha_entrega_real <= o.fecha_entrega) pedidosTiempo++;
       else pedidosFuera++;
@@ -163,14 +176,14 @@ export default function OrdersView() {
     filtered.forEach(order => {
       const rowData = [
         order.codigo,
-        order.fecha_creacion ? new Date(order.fecha_creacion).toLocaleDateString('es-PE') : '-',
+        formatDate(order.fecha_creacion),
         order.name,
         order.nombre_modelo || order.producto || '-',
         order.num_contrato || '-',
         order.total || 0,
         order.totalp || 0,
-        order.fecha_entrega ? new Date(order.fecha_entrega).toLocaleDateString('es-PE') : '-',
-        order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-',
+        formatDate(order.fecha_entrega),
+        formatDate(order.fecha_entrega_real),
         (order.guia_remision || '').split(' - ').join(', ')
       ];
       tableRows.push(rowData);
@@ -315,7 +328,7 @@ export default function OrdersView() {
                 return (
                   <tr key={order.codigo} id={`order-row-${order.codigo}`} className={rowClass}>
                     <td className="px-4 py-3 font-mono font-bold text-gray-800 text-wrap">{order.codigo}</td>
-                    <td className="px-4 py-3 text-gray-600 text-wrap">{order.fecha_creacion ? order.fecha_creacion /*new Date(order.fecha_creacion).toLocaleDateString('es-PE')*/ : '-'}</td>
+                    <td className="px-4 py-3 text-gray-600 text-wrap">{formatDate(order.fecha_creacion)}</td>
                     <td className="px-4 py-3 font-medium text-wrap">{order.name}</td>
                     <td className="px-4 py-3 text-gray-700 truncate max-w-xs text-wrap">{order.nombre_modelo || order.producto || '-'}</td>
                     <td className="px-4 py-3 text-gray-700 text-wrap">{order.codigo_unitario || order.codigo_modelo || '-'}</td>
@@ -344,7 +357,7 @@ export default function OrdersView() {
                     <td className={`px-4 py-3 text-center ${diasColor}`}>
                       {parseFloat(order.total || 0) > parseFloat(order.totalp || 0) ? isNaN(diasRest) ? '-' : diasRest < 0 ? `${Math.abs(diasRest)}d tarde` : `${diasRest}d` : ''}
                     </td>
-                    <td className="px-4 py-3 text-gray-600">{order.fecha_entrega_real ? new Date(order.fecha_entrega_real).toLocaleDateString('es-PE') : '-'}</td>
+                    <td className="px-4 py-3 text-gray-600">{formatDate(order.fecha_entrega_real)}</td>
                     <td className="px-4 py-3 text-center">
                       <div className="flex items-center justify-center gap-1">
                         <button
@@ -390,6 +403,12 @@ export default function OrdersView() {
                   </tr>
                 );
               })}
+              <tr>
+                <td colSpan="4" className="text-right font-semibold">Total Pedido:</td>
+                <td colSpan="3" className="text-center font-bold text-blue-600">{cant_pedido}</td>
+                <td colSpan="3" className="text-right font-semibold">Total Producción:</td>
+                <td colSpan="3" className="text-center font-bold text-green-600">{cant_produccion}</td>
+              </tr>
             </tbody>
           </table>
         </div>

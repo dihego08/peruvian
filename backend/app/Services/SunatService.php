@@ -8,6 +8,7 @@ use Greenter\Model\Client\Client;
 use Greenter\Model\Sale\Charge;
 use Greenter\Model\Sale\FormaPagos\FormaPagoContado;
 use Greenter\Model\Sale\Invoice;
+use Greenter\Model\Sale\Note;
 use Greenter\Model\Sale\Legend;
 use Greenter\Model\Sale\SaleDetail;
 use Greenter\See;
@@ -193,6 +194,75 @@ class SunatService
             'success' => true,
             'code' => (int) $cdr->getCode(),
             'message' => $cdr->getDescription() ?? null,
+        ];
+    }
+
+    public function buildCreditNote(array $cabecera, array $items, Client $client, Company $company, string $codMotivo, string $motivo, string $correlativoNc): Note
+    {
+        $num_factura = explode('-', $cabecera['codigo_venta']);
+
+        $note = (new Note())
+            ->setUblVersion('2.1')
+            ->setTipDocAfectado('01') // Factura
+            ->setNumDocfectado($cabecera['codigo_venta'])
+            ->setCodMotivo($codMotivo)
+            ->setDesMotivo($motivo)
+            ->setTipoDoc('07') // Nota de Crédito
+            ->setSerie('FF01')
+            ->setFechaEmision(new \DateTime())
+            ->setCorrelativo($correlativoNc)
+            ->setTipoMoneda('PEN')
+            ->setCompany($company)
+            ->setClient($client)
+            ->setMtoOperGravadas($cabecera['subtotal'])
+            ->setMtoIGV($cabecera['igv'])
+            ->setTotalImpuestos($cabecera['igv'])
+            ->setMtoImpVenta($cabecera['total']);
+
+        $note->setDetails($items)
+            ->setLegends([
+                (new Legend())
+                    ->setCode('1000')
+                    ->setValue($this->getTotalEnLetras($cabecera['total']))
+            ]);
+
+        return $note;
+    }
+
+    public function sendCreditNote(Note $note, See $see): array
+    {
+        $result = $see->send($note);
+
+        $sunatPath = storage_path('app/sunat');
+        $xmlPath = $sunatPath . DIRECTORY_SEPARATOR . 'xml';
+        $cdrPath = $sunatPath . DIRECTORY_SEPARATOR . 'cdr';
+
+        if (!file_exists($xmlPath)) {
+            mkdir($xmlPath, 0755, true);
+        }
+
+        if (!file_exists($cdrPath)) {
+            mkdir($cdrPath, 0755, true);
+        }
+
+        file_put_contents($xmlPath . DIRECTORY_SEPARATOR . $note->getName() . '.xml', $see->getFactory()->getLastXml());
+
+        if (!$result->isSuccess()) {
+            return [
+                'success' => false,
+                'code' => $result->getError()->getCode(),
+                'message' => $result->getError()->getMessage(),
+            ];
+        }
+
+        $cdr = $result->getCdrResponse();
+        file_put_contents($cdrPath . DIRECTORY_SEPARATOR . 'R-' . $note->getName() . '.zip', $result->getCdrZip());
+
+        return [
+            'success' => true,
+            'code' => (int) $cdr->getCode(),
+            'message' => $cdr->getDescription() ?? null,
+            'notaName' => $note->getName()
         ];
     }
 }

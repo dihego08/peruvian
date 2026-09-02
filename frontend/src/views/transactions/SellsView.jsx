@@ -15,6 +15,11 @@ export default function SellsView() {
   const [modalItems, setModalItems] = useState([]);   // detalle
   const [modalLoading, setModalLoading] = useState(false);
 
+  const [isAnularModalOpen, setIsAnularModalOpen] = useState(false);
+  const [anularSellCode, setAnularSellCode] = useState(null);
+  const [anularReason, setAnularReason] = useState('-1');
+  const [anularLoading, setAnularLoading] = useState(false);
+
   useEffect(() => { fetchSells(); }, []);
 
   const fetchSells = async () => {
@@ -70,6 +75,56 @@ export default function SellsView() {
     } finally {
       setSendSunatLoading(false);
       setSendingSunatId(null);
+    }
+  };
+
+  const handleOpenAnularModal = (codigo) => {
+    setAnularSellCode(codigo);
+    setAnularReason('-1');
+    setIsAnularModalOpen(true);
+  };
+
+  const closeAnularModal = () => {
+    setIsAnularModalOpen(false);
+    setAnularSellCode(null);
+    setAnularReason('-1');
+  };
+
+  const handleAnularSubmit = async () => {
+    if (anularReason === '-1') {
+      alert('Debes seleccionar un motivo de anulación.');
+      return;
+    }
+
+    const reasonSelect = document.getElementById('cod_motivo');
+    const motivoText = reasonSelect.options[reasonSelect.selectedIndex].text;
+
+    setAnularLoading(true);
+    try {
+      // Usamos el endpoint delete que puede recibir datos (axios.delete con data)
+      // Pero primero verifiquemos si reportService lo envía bien. ReportService está en /reports/sells-sunat.
+      // Ya que no tenemos reportService importado en esta vista y usamos api directamente:
+      const response = await api.delete(`/reports/sells-sunat/${encodeURIComponent(anularSellCode)}`, {
+        data: {
+          motivo: motivoText,
+          cod_motivo: anularReason
+        }
+      });
+
+      if (response.data.Result === 'OK') {
+        alert(response.data.Message || 'Nota de crédito generada correctamente.');
+        fetchSells();
+        closeAnularModal();
+      } else if (response.data.Result === 'RECHAZADO') {
+        alert(`Rechazado por SUNAT: ${response.data.Message}`);
+      } else {
+        alert(response.data.Message || 'Hubo un error al anular.');
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.Message || 'Hubo un error al anular. Revisa la consola o SUNAT.');
+    } finally {
+      setAnularLoading(false);
     }
   };
 
@@ -160,6 +215,18 @@ export default function SellsView() {
                       >
                         <EyeIcon className="h-5 w-5" />
                       </button>
+
+                      {sell.envio_sunat == 1 && (sell.estado_anulado == null || sell.estado_anulado == "" || sell.estado_anulado == 0) && (
+                        <button
+                          onClick={() => handleOpenAnularModal(sell.codigo_venta)}
+                          className="p-1 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          title="Anular / Nota de Crédito"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      )}
 
                       {sell.envio_sunat != 1 && (
                         <button
@@ -348,6 +415,76 @@ export default function SellsView() {
                 </div>
               </div>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ===== MODAL ANULAR (NOTA CREDITO) ===== */}
+      {isAnularModalOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden flex flex-col">
+            <div className="bg-red-50 px-6 py-4 border-b border-red-100 flex items-center gap-3">
+              <div className="bg-red-100 text-red-600 p-2 rounded-full">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-bold text-red-800">Anular Factura</h3>
+                <p className="text-sm text-red-600">Generar Nota de Crédito en SUNAT</p>
+              </div>
+            </div>
+            <div className="p-6">
+              <p className="text-sm text-gray-600 mb-4">
+                Estás a punto de anular la venta <span className="font-bold text-gray-900">{anularSellCode}</span>.
+                Esta acción enviará una Nota de Crédito a SUNAT y no se puede deshacer.
+              </p>
+              
+              <div className="mb-4">
+                <label htmlFor="cod_motivo" className="block text-sm font-medium text-gray-700 mb-1">Motivo de Anulación <span className="text-red-500">*</span></label>
+                <select
+                  id="cod_motivo"
+                  className="w-full p-2.5 border border-gray-300 rounded-md focus:border-red-500 text-sm outline-none bg-white"
+                  value={anularReason}
+                  onChange={(e) => setAnularReason(e.target.value)}
+                  disabled={anularLoading}
+                >
+                  <option value="-1">SELECCIONA UN MOTIVO...</option>
+                  <option value="01">01 - Anulación de la operación</option>
+                  <option value="02">02 - Anulación por error en el RUC</option>
+                  <option value="03">03 - Corrección por error en la descripción</option>
+                  <option value="04">04 - Descuento global</option>
+                  <option value="05">05 - Descuento por ítem</option>
+                  <option value="06">06 - Devolución total</option>
+                  <option value="07">07 - Devolución por ítem</option>
+                  <option value="08">08 - Bonificación</option>
+                  <option value="09">09 - Disminución en el valor</option>
+                </select>
+              </div>
+            </div>
+            <div className="bg-gray-50 px-6 py-4 border-t border-gray-100 flex justify-end gap-2">
+              <button
+                onClick={closeAnularModal}
+                disabled={anularLoading}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleAnularSubmit}
+                disabled={anularLoading}
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
+              >
+                {anularLoading ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Procesando...
+                  </>
+                ) : (
+                  'Sí, Anular Factura'
+                )}
+              </button>
+            </div>
           </div>
         </div>
       )}

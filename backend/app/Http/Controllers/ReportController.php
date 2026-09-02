@@ -237,17 +237,119 @@ class ReportController extends Controller
         return response()->json(['Result' => 'OK']);
     }
 
-    public function anularSale($codigo)
+    public function anularSale(Request $request, $codigo, \App\Services\SunatService $sunatService)
     {
-        // El sistema legacy ponía estado_anulado = 1, o id_estado_entrega = 4 (anulado).
-        // Actualizaremos id_estado_entrega a 4 que es el código legacy para anulado, y estado_anulado a 1
-        $updated = DB::table('ventas_cabecera')
-            ->where('codigo_venta', $codigo)
-            ->update([
-                'id_estado_entrega' => 4,
-                'estado_anulado' => 1
-            ]);
+        $motivo = $request->input('motivo', 'Anulación de la operación');
+        $codMotivo = $request->input('cod_motivo', '01');
 
-        return response()->json(['Result' => 'OK']);
+        $cabecera = DB::table('ventas_cabecera as vc')
+            ->leftJoin('person as pe', 'pe.id', '=', 'vc.id_person')
+            ->where('vc.codigo_venta', $codigo)
+            ->select([
+                'vc.*',
+                'pe.name as person',
+                'pe.no as ruc',
+                'pe.address1 as direccion',
+            ])
+            ->first();
+
+        if (!$cabecera) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Venta no encontrada'], 404);
+        }
+
+        if ($cabecera->estado_anulado == 1) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Venta ya está anulada'], 400);
+        }
+
+        // Fetch details
+        $detalle = DB::table('ventas_detalle as vd')
+            ->leftJoin('product as pr', 'pr.id', '=', 'vd.id_producto')
+            ->where('vd.codigo_venta_cabecera', $codigo)
+            ->select([
+                'vd.*',
+                'pr.name as producto_nombre',
+                'pr.code as producto_codigo',
+            ])
+            ->get();
+
+        if ($detalle->isEmpty()) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'La venta no tiene items'], 400);
+        }
+
+        // Get correlative for NC
+        $aux = DB::table('aux')->where('tabla', 'nota_credito')->first();
+        if (!$aux) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Correlativo no encontrado'], 500);
+        }
+        $correlativoNc = $aux->id + 1;
+
+        // Build objects
+        $customerData = [
+            'ruc' => $cabecera->ruc ?? $cabecera->ruc_add ?? '',
+            'razon_social' => $cabecera->person ?? '-',
+        ];
+
+        $client = $sunatService->buildClient($customerData);
+        $company = $sunatService->buildCompany();
+        $items = $sunatService->buildItems($detalle->all());
+
+        $see = $sunatService->createSee();
+        $note = $sunatService->buildCreditNote((array)$cabecera, $items, $client, $company, $codMotivo, $motivo, $correlativoNc);
+
+        $sendResult = $sunatService->sendCreditNote($note, $see);
+
+        if (!$sendResult['success']) {
+            return response()->json([
+                'Result' => 'ERROR',
+                'Message' => 'Error al enviar a SUNAT: ' . $sendResult['message'],
+                'Code' => $sendResult['code']
+            ], 500);
+        }
+
+        $code = $sendResult['code'];
+        $aceptado = ($code === 0 || ($code >= 1 && $code < 2000));
+
+        if (!$aceptado) {
+            return response()->json([
+                'Result' => 'RECHAZADO',
+                'Message' => 'SUNAT rechazó la nota de crédito: ' . $sendResult['message'],
+                'Code' => $code
+            ], 400);
+        }
+
+        DB::beginTransaction();
+        try {
+            DB::table('ventas_cabecera')
+                ->where('codigo_venta', $codigo)
+                ->update([
+                    'estado_anulado' => 1,
+                    'id_estado_entrega' => 4, // 4 = Anulado en bd legacy
+                    'motivo' => $motivo,
+                    'correlativo_nc' => $correlativoNc,
+                    'fecha_anulacion' => date("Y-m-d H:i:s"),
+                    'codigo_sunat_nc' => $code,
+                    'descripcion_sunat_nc' => $sendResult['message'],
+                    'total' => 0,
+                    'igv' => 0,
+                    'detraccion_p' => 0,
+                    'igv_p' => 0,
+                    'subtotal' => 0,
+                    'valor_pagar' => 0,
+                    'a_cuenta' => 0
+                ]);
+
+            DB::table('aux')->where('tabla', 'nota_credito')->increment('id');
+            DB::commit();
+
+            return response()->json([
+                'Result' => 'OK',
+                'Message' => 'Nota de crédito aceptada por SUNAT',
+                'Code' => $code,
+                'NotaCredito' => $sendResult['notaName'] ?? null
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Error al actualizar base de datos: ' . $e->getMessage()], 500);
+        }
     }
 }
