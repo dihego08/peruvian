@@ -319,7 +319,7 @@ export default function NewSellView() {
                       </select>
                     </td>
                     <td className="p-2">
-                      <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" value={item.edit_tipo === "Servicio" ? "SERVICIO DE " + item.edit_name : item.edit_name} onChange={e => handleResultChange(item.id, 'edit_name', e.target.value)} />
+                      <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 focus:ring-blue-500" value={item.edit_tipo === "Servicio" ? "SERVICIO DE CONFECCIÓN " + item.edit_name : item.edit_name} onChange={e => handleResultChange(item.id, 'edit_name', e.target.value)} />
                     </td>
                     <td className="p-2">
                       <input type="number" step="0.01" className="w-full p-2 border border-gray-300 rounded-md text-right focus:border-blue-500 focus:ring-blue-500" value={item.edit_price_unit} onChange={e => handleResultChange(item.id, 'edit_price_unit', e.target.value)} />
