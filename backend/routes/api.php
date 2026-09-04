@@ -52,6 +52,8 @@ use App\Http\Controllers\TipoPermisoController;
 use App\Http\Controllers\HorarioController;
 use App\Http\Controllers\HorarioDiasController;
 use App\Http\Controllers\MarcacionController;
+use App\Http\Controllers\CronogramaController;
+use App\Http\Controllers\DispositivoController;
 
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -144,6 +146,14 @@ Route::delete('/library/files/{id}', [DocumentController::class, 'deleteFile']);
 
 // Maintenance
 Route::apiResource('machine-maintenance', MaquinaMantenimientoController::class);
+
+// Cronograma de Mantenimiento
+Route::get('cronogramas/tipos', [CronogramaController::class, 'getTipos']);
+Route::apiResource('cronogramas', CronogramaController::class);
+Route::put('cronogramas/fechas/{id}/estado', [CronogramaController::class, 'actualizarEstadoFecha']);
+
+// Dispositivos y Accesorios
+Route::apiResource('dispositivos', DispositivoController::class);
 
 // Machines
 Route::post('/machines/{id}/restore', [MaquinaController::class, 'restore']);

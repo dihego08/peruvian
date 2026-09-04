@@ -19,6 +19,21 @@ class MaquinaController extends Controller
         if (!isset($validated['maquina_fecha_registro'])) {
             $validated['maquina_fecha_registro'] = now();
         }
+
+        if ($request->hasFile('maquina_imagen')) {
+            $file = $request->file('maquina_imagen');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('storage/maquinas'), $filename);
+            $validated['maquina_imagen'] = $filename;
+        }
+
+        if ($request->hasFile('factura_compra')) {
+            $file = $request->file('factura_compra');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('storage/maquinas'), $filename);
+            $validated['factura_compra'] = $filename;
+        }
+
         $maquina = Maquina::create($validated);
         return response()->json($maquina, 201);
     }
@@ -31,7 +46,23 @@ class MaquinaController extends Controller
     public function update(Request $request, $id)
     {
         $maquina = Maquina::findOrFail($id);
-        $maquina->update($request->all());
+        $data = $request->all();
+
+        if ($request->hasFile('maquina_imagen')) {
+            $file = $request->file('maquina_imagen');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('storage/maquinas'), $filename);
+            $data['maquina_imagen'] = $filename;
+        }
+
+        if ($request->hasFile('factura_compra')) {
+            $file = $request->file('factura_compra');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('storage/maquinas'), $filename);
+            $data['factura_compra'] = $filename;
+        }
+
+        $maquina->update($data);
         return response()->json($maquina);
     }
 
