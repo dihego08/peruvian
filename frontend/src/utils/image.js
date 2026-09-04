@@ -1,7 +1,7 @@
-const LEGACY_BASE = 'https://peruvian.peruviandress.com/storage/products';
-const LEGACY_BASE_DISPOSITIVOS = 'https://peruvian.peruviandress.com/storage/dispositivos';
-const LEGACY_BASE_MAQUINAS = 'https://peruvian.peruviandress.com/storage/maquinas';
-const LEGACY_COLABORADORES_BASE = 'https://peruvian.peruviandress.com/core/app/view/img-colaboradores';
+const LEGACY_BASE = 'https://omcar.peruviandress.com/storage/products';
+const LEGACY_BASE_DISPOSITIVOS = 'https://omcar.peruviandress.com/storage/dispositivos';
+const LEGACY_BASE_MAQUINAS = 'https://omcar.peruviandress.com/storage/maquinas';
+const LEGACY_COLABORADORES_BASE = 'https://omcar.peruviandress.com/core/app/view/img-colaboradores';
 
 function getNewBaseUrl() {
   const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api';
