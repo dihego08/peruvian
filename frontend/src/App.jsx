@@ -23,6 +23,8 @@ import CargosView from './views/CargosView';
 import PermissionsView from './views/PermissionsView';
 import MaquinasView from './views/MaquinasView';
 import MachineMaintenanceView from './views/MachineMaintenanceView';
+import MaintenanceProgramView from './views/MaintenanceProgramView';
+import DispositivosView from './views/DispositivosView';
 import DocumentsView from './views/DocumentsView';
 import PurchasesView from './views/PurchasesView';
 import NewPurchaseView from './views/NewPurchaseView';
@@ -126,6 +128,8 @@ function MainLayout({ setAuth }) {
             <Route path="/brands" element={<BrandsView />} />
             <Route path="/tech-sheets" element={<TechSheetView />} />
             <Route path="/machines" element={<MaquinasView />} />
+            <Route path="/machines/maintenance-program" element={<MaintenanceProgramView />} />
+            <Route path="/machines/dispositivos" element={<DispositivosView />} />
             <Route path="/machines/:mid/maintenance" element={<MachineMaintenanceView />} />
             <Route path="/purchases" element={<PurchasesView />} />
             <Route path="/purchases/new" element={<NewPurchaseView />} />

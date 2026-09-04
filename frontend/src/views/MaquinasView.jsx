@@ -2,6 +2,10 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
 import {
+  getMaquinaImageUrl,
+  handleMaquinaImageError
+} from '../utils/image';
+import {
   PencilSquareIcon,
   TrashIcon,
   CpuChipIcon,
@@ -47,6 +51,7 @@ export default function MaquinasView() {
   const [editingId, setEditingId] = useState(null);
   const [formData, setFormData] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
+  const [expandedImage, setExpandedImage] = useState(null);
 
   useEffect(() => {
     fetchMachines();
@@ -69,10 +74,22 @@ export default function MaquinasView() {
     e.preventDefault();
     setSaving(true);
     try {
+      const data = new FormData();
+      Object.keys(formData).forEach(key => {
+        if (formData[key] !== null && formData[key] !== undefined) {
+          data.append(key, formData[key]);
+        }
+      });
+
       if (editingId) {
-        await api.put(`/machines/${editingId}`, formData);
+        data.append('_method', 'PUT');
+        await api.post(`/machines/${editingId}`, data, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       } else {
-        await api.post('/machines', formData);
+        await api.post('/machines', data, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
       }
       closeModal();
       fetchMachines();
@@ -119,6 +136,14 @@ export default function MaquinasView() {
             <option value="1">Ver Activos</option>
             <option value="0">Ver Bajas</option>
           </select>
+          <button onClick={() => navigate('/machines/dispositivos')} className="bg-emerald-600 text-white px-5 py-2.5 rounded-md hover:bg-emerald-700 shadow-sm font-medium transition-colors flex items-center gap-2 text-sm">
+            <CpuChipIcon className="h-4 w-4" />
+            Dispositivos
+          </button>
+          <button onClick={() => navigate('/machines/maintenance-program')} className="bg-blue-600 text-white px-5 py-2.5 rounded-md hover:bg-blue-700 shadow-sm font-medium transition-colors flex items-center gap-2 text-sm">
+            <DocumentArrowUpIcon className="h-4 w-4" />
+            Programa de Mantenimiento
+          </button>
           <button onClick={openCreate} className="bg-gray-800 text-white px-5 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors flex items-center gap-2 text-sm">
             <PlusIcon className="h-4 w-4" />
             Agregar Máquina
@@ -145,6 +170,7 @@ export default function MaquinasView() {
             <thead className="bg-gray-50 text-gray-600 uppercase text-[10px] border-b border-gray-200 font-black tracking-widest">
               <tr>
                 <th className="px-4 py-4">Código / Tipo</th>
+                <th className="px-4 py-4">Imagen</th>
                 <th className="px-4 py-4">Descripción</th>
                 <th className="px-4 py-4">Ubicación</th>
                 <th className="px-4 py-4">Cabezal (Marca/Serie)</th>
@@ -166,6 +192,19 @@ export default function MaquinasView() {
                     </div>
                   </td>
                   <td className="px-4 py-4">
+                    {item.maquina_imagen ? (
+                      <img
+                        src={getMaquinaImageUrl(item.maquina_imagen)}
+                        alt={item.maquina_descripcion}
+                        className="w-12 h-12 object-cover rounded-md border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
+                        onClick={(e) => setExpandedImage(e.target.src)}
+                        onError={(e) => handleMaquinaImageError(e, item.maquina_imagen)}
+                      />
+                    ) : (
+                      <span className="text-gray-300">-</span>
+                    )}
+                  </td>
+                  <td className="px-4 py-4">
                     <p className="font-bold text-gray-800">{item.maquina_descripcion}</p>
                     <p className="text-[10px] text-gray-500 uppercase italic">Marca: {item.maquina_marca}</p>
                   </td>
@@ -180,6 +219,7 @@ export default function MaquinasView() {
                       <p className="text-gray-400 font-mono">S/N: {item.maquina_serie || '-'}</p>
                     </div>
                   </td>
+
                   <td className="px-4 py-4">
                     <div className="text-xs">
                       <p className="text-gray-900 font-medium">{item.maquina_marca_motor || '-'}</p>
@@ -188,7 +228,7 @@ export default function MaquinasView() {
                   </td>
                   <td className="px-4 py-4">
                     <div className="flex items-center justify-center gap-2">
-                      <button 
+                      <button
                         onClick={() => navigate(`/machines/${item.maquina_id}/maintenance`)}
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-50 text-blue-700 rounded-lg hover:bg-blue-100 transition-all text-[10px] font-black uppercase tracking-tight border border-blue-100 shadow-sm"
                       >
@@ -297,46 +337,82 @@ export default function MaquinasView() {
               {/* Seccion 3: Requerimientos y Suministros */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Medidas para Espacio</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_exigencias} onChange={e => setFormData({ ...formData, maquina_exigencias: e.target.value })} placeholder="Ej: 1.20 x 0.80m" />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Medidas para Espacio</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_exigencias} onChange={e => setFormData({ ...formData, maquina_exigencias: e.target.value })} placeholder="Ej: 1.20 x 0.80m" />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Voltaje</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_voltaje} onChange={e => setFormData({ ...formData, maquina_voltaje: e.target.value })} placeholder="Ej: 220V" />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Voltaje</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_voltaje} onChange={e => setFormData({ ...formData, maquina_voltaje: e.target.value })} placeholder="Ej: 220V" />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tipo de Corriente</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_tipo_corriente} onChange={e => setFormData({ ...formData, maquina_tipo_corriente: e.target.value })} placeholder="Ej: Monofásica / Trifásica" />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Tipo de Corriente</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_tipo_corriente} onChange={e => setFormData({ ...formData, maquina_tipo_corriente: e.target.value })} placeholder="Ej: Monofásica / Trifásica" />
                 </div>
               </div>
 
               {/* Seccion 4: Información de Compra */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gray-50 rounded-xl border border-gray-200">
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Año de Compra</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_anio_compra} onChange={e => setFormData({ ...formData, maquina_anio_compra: e.target.value })} />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Año de Compra</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_anio_compra} onChange={e => setFormData({ ...formData, maquina_anio_compra: e.target.value })} />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Vida Útil (Años)</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_vida_util} onChange={e => setFormData({ ...formData, maquina_vida_util: e.target.value })} />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Vida Útil (Años)</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.maquina_vida_util} onChange={e => setFormData({ ...formData, maquina_vida_util: e.target.value })} />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Precio de Compra</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none font-mono" value={formData.precio_compra} onChange={e => setFormData({ ...formData, precio_compra: e.target.value })} placeholder="0.00" />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Precio de Compra</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none font-mono" value={formData.precio_compra} onChange={e => setFormData({ ...formData, precio_compra: e.target.value })} placeholder="0.00" />
                 </div>
                 <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Proveedor</label>
-                    <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.proveedor} onChange={e => setFormData({ ...formData, proveedor: e.target.value })} />
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Proveedor</label>
+                  <input type="text" className="w-full p-2.5 border border-gray-300 rounded-md text-sm outline-none" value={formData.proveedor} onChange={e => setFormData({ ...formData, proveedor: e.target.value })} />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Imagen de Máquina</label>
+                  <input type="file" accept="image/*" className="w-full p-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500 bg-white" onChange={e => setFormData({ ...formData, maquina_imagen: e.target.files[0] })} />
+                  {editingId && typeof formData.maquina_imagen === 'string' && formData.maquina_imagen !== '' && (
+                    <p className="text-[10px] text-gray-500 mt-1">Archivo actual: {formData.maquina_imagen}</p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Factura de Compra</label>
+                  <input type="file" accept="image/*,application/pdf" className="w-full p-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500 bg-white" onChange={e => setFormData({ ...formData, factura_compra: e.target.files[0] })} />
+                  {editingId && typeof formData.factura_compra === 'string' && formData.factura_compra !== '' && (
+                    <p className="text-[10px] text-gray-500 mt-1">Archivo actual: {formData.factura_compra}</p>
+                  )}
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-6 border-t border-gray-100">
+              <div className="flex justify-end gap-3 pt-6 mt-6 border-t border-gray-100">
                 <button type="button" onClick={closeModal} className="px-6 py-2.5 text-gray-700 font-bold text-sm hover:bg-gray-100 rounded-md transition-colors">Cancelar</button>
                 <button type="submit" disabled={saving} className="px-10 py-2.5 bg-gray-800 text-white rounded-md hover:bg-gray-700 font-bold text-sm transition-all shadow-sm disabled:opacity-50">
                   {saving ? 'Guardando...' : 'Guardar Maquinaria'}
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* Modal Imagen */}
+      {expandedImage && (
+        <div
+          className="fixed inset-0 z-[60] flex items-center justify-center p-4 bg-gray-900/80 backdrop-blur-sm cursor-pointer animate-in fade-in zoom-in duration-200"
+          onClick={() => setExpandedImage(null)}
+        >
+          <div className="relative max-w-4xl max-h-[90vh] flex flex-col">
+            <button
+              className="absolute -top-10 right-0 text-white hover:text-gray-300 transition-colors"
+              onClick={() => setExpandedImage(null)}
+            >
+              <XMarkIcon className="h-8 w-8" />
+            </button>
+            <img
+              src={expandedImage}
+              alt="Vista ampliada"
+              className="w-full h-full object-contain rounded-lg shadow-2xl border-4 border-white"
+              onClick={(e) => e.stopPropagation()}
+            />
           </div>
         </div>
       )}

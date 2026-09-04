@@ -1,4 +1,6 @@
 const LEGACY_BASE = 'https://peruvian.peruviandress.com/storage/products';
+const LEGACY_BASE_DISPOSITIVOS = 'https://peruvian.peruviandress.com/storage/dispositivos';
+const LEGACY_BASE_MAQUINAS = 'https://peruvian.peruviandress.com/storage/maquinas';
 const LEGACY_COLABORADORES_BASE = 'https://peruvian.peruviandress.com/core/app/view/img-colaboradores';
 
 function getNewBaseUrl() {
@@ -12,7 +14,14 @@ export function getProductImageUrl(filename) {
   if (!filename) return '';
   return `${LEGACY_BASE}/${filename}`;
 }
-
+export function getDispositivoImageUrl(filename) {
+  if (!filename) return '';
+  return `${LEGACY_BASE_DISPOSITIVOS}/${filename}`;
+}
+export function getMaquinaImageUrl(filename) {
+  if (!filename) return '';
+  return `${LEGACY_BASE_MAQUINAS}/${filename}`;
+}
 export function handleProductImageError(e, filename) {
   if (!e.target.src.startsWith(LEGACY_BASE)) {
     e.target.onerror = null;
@@ -22,7 +31,24 @@ export function handleProductImageError(e, filename) {
   e.target.src = `${newBaseUrl}/storage/products/${filename}`;
   e.target.onerror = null;
 }
-
+export function handleDispositivoImageError(e, filename) {
+  if (!e.target.src.startsWith(LEGACY_BASE_DISPOSITIVOS)) {
+    e.target.onerror = null;
+    return;
+  }
+  const newBaseUrl = getNewBaseUrl();
+  e.target.src = `${newBaseUrl}/storage/dispositivos/${filename}`;
+  e.target.onerror = null;
+}
+export function handleMaquinaImageError(e, filename) {
+  if (!e.target.src.startsWith(LEGACY_BASE_MAQUINAS)) {
+    e.target.onerror = null;
+    return;
+  }
+  const newBaseUrl = getNewBaseUrl();
+  e.target.src = `${newBaseUrl}/storage/maquinas/${filename}`;
+  e.target.onerror = null;
+}
 export const getBase64ImageFromUrl = async (imageUrl) => {
   return new Promise((resolve, reject) => {
     const img = new Image();
