@@ -33,6 +33,8 @@ export default function MachineMaintenanceView() {
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [dateFrom, setDateFrom] = useState('');
+  const [dateTo, setDateTo] = useState('');
 
   useEffect(() => {
     fetchMachine();
@@ -88,7 +90,19 @@ export default function MachineMaintenanceView() {
 
   if (!machine) return <div className="p-8 text-center text-gray-500">Cargando datos de la máquina...</div>;
 
-  const totalCost = maintenance.reduce((sum, item) => sum + parseFloat(item.maq_mtto_costo || 0), 0);
+  const filteredMaintenance = maintenance.filter(p => {
+    const matchQuery = (p.maq_mtto_fecha || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.maq_mtto_reponsable || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.maq_mtto_observacion || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.maq_mtto_costo || '').toString().toLowerCase().includes(searchQuery.toLowerCase());
+    let matchFrom = true;
+    let matchTo = true;
+    if (dateFrom) matchFrom = p.maq_mtto_fecha >= dateFrom;
+    if (dateTo) matchTo = p.maq_mtto_fecha <= dateTo;
+    return matchQuery && matchFrom && matchTo;
+  });
+
+  const totalCost = filteredMaintenance.reduce((sum, item) => sum + parseFloat(item.maq_mtto_costo || 0), 0);
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-20">
@@ -186,9 +200,15 @@ export default function MachineMaintenanceView() {
             </label>
             <input required type="number" step="0.01" className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none font-mono" value={formData.maq_mtto_costo} onChange={e => setFormData({ ...formData, maq_mtto_costo: e.target.value })} placeholder="0.00" />
           </div>
-          <div className="md:col-span-3">
+          <div className="md:col-span-1">
             <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
-              <ChatBubbleLeftEllipsisIcon className="h-3 w-3" /> Observaciones / Trabajo Realizado
+              <ChatBubbleLeftEllipsisIcon className="h-3 w-3" /> Mantenimiento Realizado
+            </label>
+            <input required type="text" className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none" value={formData.maq_mtto_tipo} onChange={e => setFormData({ ...formData, maq_mtto_tipo: e.target.value })} placeholder="Describa el mantenimiento realizado..." />
+          </div>
+          <div className="md:col-span-2">
+            <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
+              <ChatBubbleLeftEllipsisIcon className="h-3 w-3" /> Observaciones
             </label>
             <input required type="text" className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none" value={formData.maq_mtto_observacion} onChange={e => setFormData({ ...formData, maq_mtto_observacion: e.target.value })} placeholder="Describa el mantenimiento realizado..." />
           </div>
@@ -211,14 +231,40 @@ export default function MachineMaintenanceView() {
           </div>
         </div>
         <div className="overflow-x-auto">
-          <div className="flex flex-col md:flex-row gap-4 p-4">
+          <div className="flex flex-col md:flex-row gap-4 p-4 items-center">
             <input
               type="text"
-              placeholder="Buscar por código o nombre..."
+              placeholder="Buscar..."
               className="flex-1 p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-gray-500 font-bold uppercase">Desde:</label>
+              <input
+                type="date"
+                className="p-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
+                value={dateFrom}
+                onChange={e => setDateFrom(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-xs text-gray-500 font-bold uppercase">Hasta:</label>
+              <input
+                type="date"
+                className="p-2 border border-gray-300 rounded-md text-sm outline-none focus:border-blue-500"
+                value={dateTo}
+                onChange={e => setDateTo(e.target.value)}
+              />
+            </div>
+            {(dateFrom || dateTo || searchQuery) && (
+              <button
+                onClick={() => { setDateFrom(''); setDateTo(''); setSearchQuery(''); }}
+                className="text-xs font-bold text-red-500 hover:text-red-700 transition-colors"
+              >
+                Limpiar
+              </button>
+            )}
           </div>
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] font-black border-b border-gray-200 tracking-widest">
@@ -226,6 +272,7 @@ export default function MachineMaintenanceView() {
                 <th className="px-8 py-4">Tipo</th>
                 <th className="px-4 py-4">Fecha</th>
                 <th className="px-4 py-4">Responsable</th>
+                <th className="px-4 py-4">Mantenimiento Realizado</th>
                 <th className="px-4 py-4">Observaciones</th>
                 <th className="px-4 py-4 text-right">Costo</th>
                 <th className="px-8 py-4 text-center">Acciones</th>
@@ -234,9 +281,9 @@ export default function MachineMaintenanceView() {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr><td colSpan="6" className="px-8 py-12 text-center text-gray-400">Cargando historial...</td></tr>
-              ) : maintenance.length === 0 ? (
-                <tr><td colSpan="6" className="px-8 py-12 text-center text-gray-400 italic">No hay mantenimientos registrados aún.</td></tr>
-              ) : maintenance.filter(p => (p.maq_mtto_fecha || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.maq_mtto_reponsable || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.maq_mtto_observacion || '').toLowerCase().includes(searchQuery.toLowerCase())).map(item => (
+              ) : filteredMaintenance.length === 0 ? (
+                <tr><td colSpan="6" className="px-8 py-12 text-center text-gray-400 italic">No hay mantenimientos registrados aún para esta búsqueda.</td></tr>
+              ) : filteredMaintenance.map(item => (
                 <tr key={item.maq_mtto_id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-8 py-4">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${item.tipo_mantenimiento == '1' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>
@@ -245,6 +292,7 @@ export default function MachineMaintenanceView() {
                   </td>
                   <td className="px-4 py-4 text-gray-600 font-medium">{item.maq_mtto_fecha}</td>
                   <td className="px-4 py-4 font-bold text-gray-800">{item.maq_mtto_reponsable}</td>
+                  <td className="px-4 py-4 text-gray-500 text-xs italic leading-relaxed">{item.maq_mtto_tipo}</td>
                   <td className="px-4 py-4 text-gray-500 text-xs italic leading-relaxed">{item.maq_mtto_observacion}</td>
                   <td className="px-4 py-4 text-right font-mono font-bold text-gray-900">S/ {parseFloat(item.maq_mtto_costo || 0).toFixed(2)}</td>
                   <td className="px-8 py-4">
