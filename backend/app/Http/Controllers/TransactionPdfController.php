@@ -278,7 +278,7 @@ class TransactionPdfController extends Controller
         $qrSvg = $writer->writeString($qrText);
         $qrDataUri = 'data:image/svg+xml;base64,' . base64_encode($qrSvg);
 
-        $logoDataUri = 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+        $logoDataUri = 'https://omcar.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
 
         $detalleTable = '<table id="tabla_detalles" style="border: solid 1px #eeeeee; text-align: center; margin-top: 10px; width: 100%; font-size: 10px; border-collapse: collapse;">'
             . '<tr style="border-bottom: solid 1px; background-color: #f7fafc;">'

@@ -108,14 +108,14 @@ class MaquinaController extends Controller
                 <td style="border: 1px solid #000;"></td>
             </tr>';
 
-        $logoDataUri = 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+        $logoDataUri = 'https://omcar.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
         $imagen_maquina = '';
         if ($maquina->maquina_imagen) {
             $localPath = public_path('storage/maquinas/' . $maquina->maquina_imagen);
             if (file_exists($localPath)) {
                 $imgUrl = url('storage/maquinas/' . $maquina->maquina_imagen);
             } else {
-                $imgUrl = 'https://peruvian.peruviandress.com/storage/maquinas/' . $maquina->maquina_imagen;
+                $imgUrl = 'https://omcar.peruviandress.com/storage/maquinas/' . $maquina->maquina_imagen;
             }
             $imagen_maquina = '<img src="' . $imgUrl . '" style="width:294px;" />';
         }

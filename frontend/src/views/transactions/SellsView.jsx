@@ -230,7 +230,7 @@ export default function SellsView() {
 
                       {sell.estado_anulado != null && sell.estado_anulado != "" && sell.estado_anulado != 0 && (
                         <a
-                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf-nota`}
+                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiomcar.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf-nota`}
                           target="_blank"
                           rel="noreferrer"
                           className="p-1 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-bold text-xs flex items-center justify-center w-7 h-7"
@@ -451,7 +451,7 @@ export default function SellsView() {
                 Estás a punto de anular la venta <span className="font-bold text-gray-900">{anularSellCode}</span>.
                 Esta acción enviará una Nota de Crédito a SUNAT y no se puede deshacer.
               </p>
-              
+
               <div className="mb-4">
                 <label htmlFor="cod_motivo" className="block text-sm font-medium text-gray-700 mb-1">Motivo de Anulación <span className="text-red-500">*</span></label>
                 <select
