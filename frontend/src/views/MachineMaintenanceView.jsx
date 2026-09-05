@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import jsPDF from "jspdf";
+import autoTable from "jspdf-autotable";
 import {
   ArrowLeftIcon,
   WrenchScrewdriverIcon,
@@ -94,6 +96,7 @@ export default function MachineMaintenanceView() {
     const matchQuery = (p.maq_mtto_fecha || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.maq_mtto_reponsable || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.maq_mtto_observacion || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (p.maq_mtto_tipo || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
       (p.maq_mtto_costo || '').toString().toLowerCase().includes(searchQuery.toLowerCase());
     let matchFrom = true;
     let matchTo = true;
@@ -103,6 +106,44 @@ export default function MachineMaintenanceView() {
   });
 
   const totalCost = filteredMaintenance.reduce((sum, item) => sum + parseFloat(item.maq_mtto_costo || 0), 0);
+
+  const exportToPDF = () => {
+    const doc = new jsPDF({
+      orientation: "portrait",
+      unit: "mm",
+      format: "a4"
+    });
+
+    doc.text(`Historial de Mantenimientos`, 14, 15);
+    doc.setFontSize(10);
+    doc.text(`Máquina: ${machine.maquina_tipo}-${machine.maquina_codigo} | ${machine.maquina_descripcion}`, 14, 22);
+    doc.text(`Inversión Total Mostrada: S/ ${totalCost.toFixed(2)}`, 14, 28);
+
+    const tableColumn = ["Tipo", "Fecha", "Responsable", "Mtto. Realizado", "Observaciones", "Costo (S/)"];
+    const tableRows = [];
+
+    filteredMaintenance.forEach(item => {
+      const row = [
+        item.tipo_mantenimiento == '1' ? 'Preventivo' : 'Correctivo',
+        item.maq_mtto_fecha,
+        item.maq_mtto_reponsable,
+        item.maq_mtto_tipo,
+        item.maq_mtto_observacion,
+        parseFloat(item.maq_mtto_costo || 0).toFixed(2)
+      ];
+      tableRows.push(row);
+    });
+
+    autoTable(doc, {
+      head: [tableColumn],
+      body: tableRows,
+      startY: 34,
+      styles: { fontSize: 8 },
+      headStyles: { fillColor: [59, 130, 246] }
+    });
+
+    doc.save(`mantenimientos_${machine.maquina_codigo}.pdf`);
+  };
 
   return (
     <div className="flex flex-col gap-8 animate-in fade-in duration-700 pb-20">
@@ -210,7 +251,7 @@ export default function MachineMaintenanceView() {
             <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1.5 flex items-center gap-1">
               <ChatBubbleLeftEllipsisIcon className="h-3 w-3" /> Observaciones
             </label>
-            <input required type="text" className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none" value={formData.maq_mtto_observacion} onChange={e => setFormData({ ...formData, maq_mtto_observacion: e.target.value })} placeholder="Describa el mantenimiento realizado..." />
+            <input type="text" className="w-full p-2.5 border border-gray-300 rounded-lg text-sm focus:border-blue-500 outline-none" value={formData.maq_mtto_observacion} onChange={e => setFormData({ ...formData, maq_mtto_observacion: e.target.value })} placeholder="Observaciones..." />
           </div>
           <div className="md:col-span-1 flex items-end">
             <button type="submit" disabled={saving} className="w-full py-2.5 bg-gray-800 text-white rounded-lg hover:bg-gray-700 font-bold text-sm transition-all shadow-md flex items-center justify-center gap-2 disabled:opacity-50">
@@ -225,9 +266,21 @@ export default function MachineMaintenanceView() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
         <div className="px-8 py-4 bg-gray-50 border-b border-gray-200 flex items-center justify-between">
           <h3 className="font-black text-gray-900 uppercase tracking-tighter">Historial de Mantenimientos</h3>
-          <div className="text-right">
-            <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Inversión Total</p>
-            <p className="text-lg font-mono font-bold text-blue-600">S/ {totalCost.toFixed(2)}</p>
+          <div className="flex items-center gap-6">
+            <button
+              onClick={exportToPDF}
+              className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center gap-1 shadow-sm"
+              title="Generar PDF del listado actual"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+              </svg>
+              Imprimir Lista (PDF)
+            </button>
+            <div className="text-right">
+              <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest">Inversión Total</p>
+              <p className="text-lg font-mono font-bold text-blue-600">S/ {totalCost.toFixed(2)}</p>
+            </div>
           </div>
         </div>
         <div className="overflow-x-auto">
