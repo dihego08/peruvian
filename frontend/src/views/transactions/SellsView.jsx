@@ -228,6 +228,18 @@ export default function SellsView() {
                         </button>
                       )}
 
+                      {sell.estado_anulado != null && sell.estado_anulado != "" && sell.estado_anulado != 0 && (
+                        <a
+                          href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/transactions/sells/${encodeURIComponent(sell.codigo_venta)}/pdf-nota`}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="p-1 text-rose-600 hover:bg-rose-50 rounded-lg transition-colors font-bold text-xs flex items-center justify-center w-7 h-7"
+                          title="Ver PDF Nota de Crédito"
+                        >
+                          NC
+                        </a>
+                      )}
+
                       {sell.envio_sunat != 1 && (
                         <button
                           onClick={() => handleSendSunat(sell.codigo_venta)}
