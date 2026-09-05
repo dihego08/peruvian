@@ -32,6 +32,7 @@ export default function MachineMaintenanceView() {
   const [formData, setFormData] = useState({ ...MTTO_EMPTY, maquina_id: mid });
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchMachine();
@@ -115,6 +116,12 @@ export default function MachineMaintenanceView() {
                 Ver Factura
               </a>
             )}
+            <a href={`${import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api'}/machines/${machine.maquina_id}/pdf`} target="_blank" rel="noreferrer" className="px-3 py-1.5 bg-red-50 text-red-600 rounded-lg text-xs font-bold border border-red-100 hover:bg-red-100 transition-colors flex items-center gap-1 shadow-sm">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                <path fillRule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v3.586l-1.293-1.293a1 1 0 10-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 11.586V8z" clipRule="evenodd" />
+              </svg>
+              Ficha/PDF
+            </a>
           </div>
         </div>
 
@@ -135,6 +142,8 @@ export default function MachineMaintenanceView() {
             <InfoItem label="Voltaje / Corriente" value={`${machine.maquina_voltaje} / ${machine.maquina_tipo_corriente}`} />
             <InfoItem label="Año Compra" value={machine.maquina_anio_compra} />
             <InfoItem label="Vida Útil" value={machine.maquina_vida_util} />
+            <InfoItem label="Proveedor" value={`${machine.proveedor}`} />
+            <InfoItem label="Precio de Compra" value={`S/ ${machine.precio_compra}`} />
           </div>
         </div>
       </div>
@@ -202,6 +211,15 @@ export default function MachineMaintenanceView() {
           </div>
         </div>
         <div className="overflow-x-auto">
+          <div className="flex flex-col md:flex-row gap-4 p-4">
+            <input
+              type="text"
+              placeholder="Buscar por código o nombre..."
+              className="flex-1 p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm focus:ring-1 focus:ring-blue-500 transition-all outline-none"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
           <table className="w-full text-left text-sm">
             <thead className="bg-gray-50 text-gray-500 uppercase text-[10px] font-black border-b border-gray-200 tracking-widest">
               <tr>
@@ -218,7 +236,7 @@ export default function MachineMaintenanceView() {
                 <tr><td colSpan="6" className="px-8 py-12 text-center text-gray-400">Cargando historial...</td></tr>
               ) : maintenance.length === 0 ? (
                 <tr><td colSpan="6" className="px-8 py-12 text-center text-gray-400 italic">No hay mantenimientos registrados aún.</td></tr>
-              ) : maintenance.map(item => (
+              ) : maintenance.filter(p => (p.maq_mtto_fecha || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.maq_mtto_reponsable || '').toLowerCase().includes(searchQuery.toLowerCase()) || (p.maq_mtto_observacion || '').toLowerCase().includes(searchQuery.toLowerCase())).map(item => (
                 <tr key={item.maq_mtto_id} className="hover:bg-gray-50/50 transition-colors">
                   <td className="px-8 py-4">
                     <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tighter ${item.tipo_mantenimiento == '1' ? 'bg-blue-100 text-blue-700' : 'bg-red-100 text-red-700'}`}>

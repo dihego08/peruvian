@@ -157,6 +157,7 @@ Route::apiResource('dispositivos', DispositivoController::class);
 
 // Machines
 Route::post('/machines/{id}/restore', [MaquinaController::class, 'restore']);
+Route::get('/machines/{id}/pdf', [MaquinaController::class, 'downloadPdf']);
 Route::apiResource('machines', MaquinaController::class);
 
 // Navigation (menú lateral por usuario, igual que layout.php)
@@ -234,6 +235,7 @@ Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
 Route::get('transactions/sells/{codigo}/pdf', [TransactionPdfController::class, 'downloadSellPdf']);
+Route::get('transactions/sells/{codigo}/pdf-nota', [TransactionPdfController::class, 'downloadNotaCreditoPdf']);
 Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);
 Route::get('transactions/sells/{codigo}/sunat-files', [TransactionController::class, 'downloadSunatFiles']);
 
