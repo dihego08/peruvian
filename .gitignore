@@ -109,3 +109,4 @@ facturador_v3/
 node_modules/
 package-lock.json
 package.json
+.env.development
