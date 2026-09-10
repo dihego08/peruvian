@@ -85,7 +85,6 @@ class SellPaymentController extends Controller
     {
         $pagos = DB::table('pagos')
             ->where('codigo_venta', $codigo_venta)
-            ->orderBy('fecha_creacion', 'asc')
             ->select([
                 'id',
                 'codigo_venta',
@@ -96,8 +95,31 @@ class SellPaymentController extends Controller
                 'pago',
                 'deuda',
                 DB::raw("DATE(fecha_creacion) as fecha_creacion"),
+                DB::raw("'pago' as tipo"),
             ])
             ->get();
+
+        $venta = DB::table('ventas_cabecera')
+            ->where('codigo_venta', $codigo_venta)
+            ->select('id_person', 'detraccion_p', 'detraccion_paga', 'fecha_pago_detraccion')
+            ->first();
+
+        if ($venta && $venta->detraccion_p > 0) {
+            $pagos->push((object) [
+                'id'             => null,
+                'codigo_venta'   => $codigo_venta,
+                'id_person'      => $venta->id_person,
+                'banco'          => "BN",
+                'concepto'       => $venta->detraccion_paga ? 'Detracción' : 'Detracción (pendiente)',
+                'total'          => $venta->detraccion_p,
+                'pago'           => $venta->detraccion_paga ? $venta->detraccion_p : 0,
+                'deuda'          => $venta->detraccion_paga ? 0 : $venta->detraccion_p,
+                'fecha_creacion' => $venta->fecha_pago_detraccion,
+                'tipo'           => 'detraccion',
+            ]);
+        }
+
+        $pagos = $pagos->sortBy('fecha_creacion')->values();
 
         return response()->json([
             'Result'  => 'OK',
@@ -205,5 +227,28 @@ class SellPaymentController extends Controller
     {
         $tipos = DB::table('kind_doc')->select('id', 'tipo_documento')->get();
         return response()->json(['Result' => 'OK', 'Records' => $tipos]);
+    }
+    /**
+     * Registrar el pago de la detracción
+     */
+    public function payDetraccion(Request $request, $codigo_venta)
+    {
+        $request->validate([
+            'paga' => 'required|in:0,1',
+            'fecha_pago' => 'required_if:paga,1|nullable|date'
+        ]);
+
+        try {
+            DB::table('ventas_cabecera')
+                ->where('codigo_venta', $codigo_venta)
+                ->update([
+                    'detraccion_paga' => $request->paga,
+                    'fecha_pago_detraccion' => $request->paga == 1 ? $request->fecha_pago : null,
+                ]);
+
+            return response()->json(['Result' => 'OK']);
+        } catch (\Exception $e) {
+            return response()->json(['Result' => 'ERROR', 'error' => $e->getMessage()], 500);
+        }
     }
 }
