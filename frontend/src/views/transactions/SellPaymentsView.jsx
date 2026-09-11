@@ -23,8 +23,9 @@ export default function SellPaymentsView() {
   const [adeudaLocal, setAdeudaLocal] = useState(0);
   const [saving, setSaving]         = useState(false);
 
-  // Estado para detracción
-  const [detraccionForm, setDetraccionForm] = useState({});
+  // Estado para detracción (dentro de la modal de detalle)
+  const [detraccionDate, setDetraccionDate] = useState(new Date().toISOString().slice(0,10));
+  const [savingDetraccion, setSavingDetraccion] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -67,6 +68,7 @@ export default function SellPaymentsView() {
     setModal(sell);
     setAdeudaLocal(parseFloat(sell.a_cuenta || 0));
     setPayForm({ monto_pagado: '', fecha: new Date().toISOString().slice(0,10), banco: '', concepto: '' });
+    setDetraccionDate(new Date().toISOString().slice(0,10));
     try {
       const r = await api.get(`/sell-payments/${sell.codigo_venta}/history`);
       setHistorial(r.data.Records || []);
@@ -116,53 +118,29 @@ export default function SellPaymentsView() {
     } catch (e) { alert('Error al eliminar pago'); }
   };
 
-  const handleDeleteDetraccion = async (codigo_venta) => {
-    if (!window.confirm('¿Quitar el pago de la detracción?')) return;
-    try {
-      await api.post(`/sell-payments/${codigo_venta}/pay-detraccion`, {
-        paga: '0',
-        fecha_pago: null,
-      });
-      const r = await api.get(`/sell-payments/${codigo_venta}/history`);
-      setHistorial(r.data.Records || []);
-      fetchSells({});
-    } catch (e) { alert('Error al quitar el pago de la detracción'); }
+  // Aplica un cambio de estado de detracción y sincroniza tabla, modal e historial
+  const updateDetraccionPayment = async (codigo_venta, paga, fecha_pago) => {
+    await api.post(`/sell-payments/${codigo_venta}/pay-detraccion`, { paga, fecha_pago });
+    const r = await api.get(`/sell-payments/${codigo_venta}/history`);
+    setHistorial(r.data.Records || []);
+    setSells(prev => prev.map(s => s.codigo_venta === codigo_venta ? { ...s, detraccion_paga: Number(paga) } : s));
+    setModal(m => (m && m.codigo_venta === codigo_venta) ? { ...m, detraccion_paga: Number(paga) } : m);
   };
 
-  const handleDetraccionChange = (codigo, field, value) => {
-    setDetraccionForm(prev => ({
-      ...prev,
-      [codigo]: {
-        ...prev[codigo],
-        [field]: value
-      }
-    }));
+  const handleMarkDetraccionPaid = async () => {
+    if (!detraccionDate) { alert('Selecciona la fecha de pago'); return; }
+    setSavingDetraccion(true);
+    try {
+      await updateDetraccionPayment(modal.codigo_venta, '1', detraccionDate);
+    } catch (e) { alert('Error al guardar la detracción'); }
+    finally { setSavingDetraccion(false); }
   };
 
-  const handleSaveDetraccion = async (codigo) => {
-    const form = detraccionForm[codigo];
-    if (!form || form.status !== '1' || !form.date) {
-      alert('Debes seleccionar PAGADO y establecer una fecha para guardar la detracción.');
-      return;
-    }
-
+  const handleUndoDetraccion = async (codigo_venta) => {
+    if (!window.confirm('¿Deshacer el pago de la detracción?')) return;
     try {
-      await api.post(`/sell-payments/${codigo}/pay-detraccion`, {
-        paga: form.status,
-        fecha_pago: form.date
-      });
-      alert('Detracción guardada correctamente');
-      
-      const p = {};
-      if (filters.desde) p.desde = filters.desde;
-      if (filters.hasta) p.hasta = filters.hasta;
-      if (filters.tipos_pago) p.tipos_pago = filters.tipos_pago;
-      if (filters.tipos_documento !== '0') p.tipos_documento = filters.tipos_documento;
-      if (filters.combo_cliente !== '0') p.combo_cliente = filters.combo_cliente;
-      fetchSells(p);
-    } catch (e) {
-      alert('Error al guardar la detracción');
-    }
+      await updateDetraccionPayment(codigo_venta, '0', null);
+    } catch (e) { alert('Error al deshacer la detracción'); }
   };
 
   return (
@@ -268,32 +246,9 @@ export default function SellPaymentsView() {
                         <div className="flex flex-col items-end gap-1">
                           <span className="font-semibold text-gray-800">S/ {s.detraccion_p}</span>
                           {s.detraccion_paga == 0 ? (
-                            <div className="flex flex-col gap-1 w-28 text-left mt-1">
-                              <select 
-                                className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
-                                value={detraccionForm[s.codigo_venta]?.status || '0'}
-                                onChange={e => handleDetraccionChange(s.codigo_venta, 'status', e.target.value)}
-                              >
-                                <option value="0">PENDIENTE</option>
-                                <option value="1">PAGADO</option>
-                              </select>
-                              {detraccionForm[s.codigo_venta]?.status === '1' && (
-                                <input 
-                                  type="date" 
-                                  className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
-                                  value={detraccionForm[s.codigo_venta]?.date || ''}
-                                  onChange={e => handleDetraccionChange(s.codigo_venta, 'date', e.target.value)}
-                                />
-                              )}
-                              <button 
-                                className="w-full bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold hover:bg-green-200 transition-colors"
-                                onClick={() => handleSaveDetraccion(s.codigo_venta)}
-                              >
-                                Guardar
-                              </button>
-                            </div>
+                            <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">PENDIENTE</span>
                           ) : (
-                            <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">PAGADO</span>
+                            <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">PAGADO</span>
                           )}
                         </div>
                       ) : '-'}
@@ -346,6 +301,36 @@ export default function SellPaymentsView() {
                   <p className={`font-bold text-base mt-0.5 ${parseFloat(modal.a_cuenta) > 0 ? 'text-red-600' : 'text-gray-800'}`}>S/ {parseFloat(modal.a_cuenta || 0).toFixed(2)}</p>
                 </div>
               </div>
+
+              {/* Detracción */}
+              {parseFloat(modal.detraccion_p || 0) > 0 && (
+                <div className={`rounded-xl p-4 border ${modal.detraccion_paga == 0 ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}>
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className={`text-sm font-bold ${modal.detraccion_paga == 0 ? 'text-amber-800' : 'text-green-800'}`}>Detracción</h3>
+                    <span className="font-bold text-gray-800 text-sm">S/ {parseFloat(modal.detraccion_p || 0).toFixed(2)}</span>
+                  </div>
+                  {modal.detraccion_paga == 0 ? (
+                    <div className="flex flex-wrap items-end gap-3 mt-2">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha de pago</label>
+                        <input type="date" className="p-2 border border-gray-300 rounded-md text-sm focus:border-amber-500" value={detraccionDate} onChange={e => setDetraccionDate(e.target.value)} />
+                      </div>
+                      <button onClick={handleMarkDetraccionPaid} disabled={savingDetraccion} className="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 font-medium text-sm transition-colors disabled:opacity-60">
+                        {savingDetraccion ? 'Guardando...' : 'Marcar como pagada'}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-sm text-green-700">
+                        Pagada{historial.find(h => h.tipo === 'detraccion')?.fecha_creacion ? ` el ${historial.find(h => h.tipo === 'detraccion').fecha_creacion}` : ''}
+                      </p>
+                      <button onClick={() => handleUndoDetraccion(modal.codigo_venta)} className="text-xs text-red-600 hover:text-red-700 hover:underline font-medium">
+                        Deshacer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Formulario de pago */}
               {parseFloat(modal.a_cuenta) > 0 && (
@@ -400,7 +385,7 @@ export default function SellPaymentsView() {
                       <tr><td colSpan="6" className="px-3 py-4 text-center text-gray-400 text-xs">Sin pagos registrados</td></tr>
                     )}
                     {historial.map(p => (
-                      <tr key={p.id ?? `detraccion-${p.codigo_venta}`} className="hover:bg-gray-50">
+                      <tr key={p.id ?? `detraccion-${p.codigo_venta}`} className={`hover:bg-gray-50 ${p.tipo === 'detraccion' ? 'bg-amber-50/50' : ''}`}>
                         <td className="px-3 py-2 text-gray-700">{p.fecha_creacion}</td>
                         <td className="px-3 py-2 text-right font-semibold text-green-700">S/ {parseFloat(p.pago || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-gray-600">{p.concepto || '-'}</td>
@@ -408,7 +393,7 @@ export default function SellPaymentsView() {
                         <td className="px-3 py-2 text-right text-red-600 font-medium">S/ {parseFloat(p.deuda || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-center">
                           <button
-                            onClick={() => p.tipo === 'detraccion' ? handleDeleteDetraccion(p.codigo_venta) : handleDeletePayment(p.id)}
+                            onClick={() => p.tipo === 'detraccion' ? handleUndoDetraccion(p.codigo_venta) : handleDeletePayment(p.id)}
                             title={p.tipo === 'detraccion' ? 'Quitar pago de detracción' : 'Eliminar'}
                             className="text-gray-400 hover:text-red-600 hover:bg-red-50 rounded p-1 transition-colors"
                           >
