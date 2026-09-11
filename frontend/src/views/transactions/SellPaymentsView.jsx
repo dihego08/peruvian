@@ -116,6 +116,19 @@ export default function SellPaymentsView() {
     } catch (e) { alert('Error al eliminar pago'); }
   };
 
+  const handleDeleteDetraccion = async (codigo_venta) => {
+    if (!window.confirm('¿Quitar el pago de la detracción?')) return;
+    try {
+      await api.post(`/sell-payments/${codigo_venta}/pay-detraccion`, {
+        paga: '0',
+        fecha_pago: null,
+      });
+      const r = await api.get(`/sell-payments/${codigo_venta}/history`);
+      setHistorial(r.data.Records || []);
+      fetchSells({});
+    } catch (e) { alert('Error al quitar el pago de la detracción'); }
+  };
+
   const handleDetraccionChange = (codigo, field, value) => {
     setDetraccionForm(prev => ({
       ...prev,
@@ -387,14 +400,18 @@ export default function SellPaymentsView() {
                       <tr><td colSpan="6" className="px-3 py-4 text-center text-gray-400 text-xs">Sin pagos registrados</td></tr>
                     )}
                     {historial.map(p => (
-                      <tr key={p.id} className="hover:bg-gray-50">
+                      <tr key={p.id ?? `detraccion-${p.codigo_venta}`} className="hover:bg-gray-50">
                         <td className="px-3 py-2 text-gray-700">{p.fecha_creacion}</td>
                         <td className="px-3 py-2 text-right font-semibold text-green-700">S/ {parseFloat(p.pago || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-gray-600">{p.concepto || '-'}</td>
                         <td className="px-3 py-2 text-gray-600">{p.banco || '-'}</td>
                         <td className="px-3 py-2 text-right text-red-600 font-medium">S/ {parseFloat(p.deuda || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-center">
-                          <button onClick={() => handleDeletePayment(p.id)} title="Eliminar" className="text-gray-400 hover:text-red-600 hover:bg-red-50 rounded p-1 transition-colors">
+                          <button
+                            onClick={() => p.tipo === 'detraccion' ? handleDeleteDetraccion(p.codigo_venta) : handleDeletePayment(p.id)}
+                            title={p.tipo === 'detraccion' ? 'Quitar pago de detracción' : 'Eliminar'}
+                            className="text-gray-400 hover:text-red-600 hover:bg-red-50 rounded p-1 transition-colors"
+                          >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                           </button>
                         </td>
