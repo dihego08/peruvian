@@ -230,11 +230,15 @@ Route::get('tipos-entrega', function () {
 Route::get('forma-pago', function () {
     return response()->json(\Illuminate\Support\Facades\DB::table('f')->get());
 });
+Route::get('tipos-documento-venta', function () {
+    return response()->json(\Illuminate\Support\Facades\DB::table('kind_doc')->where('numero', 1)->get());
+});
 
 Route::get('transactions/sells/correlativo', [TransactionController::class, 'getCorrelativo']);
 Route::get('transactions/sells', [TransactionController::class, 'getSells']);
 Route::post('transactions/sells', [TransactionController::class, 'storeSell']);
 Route::get('transactions/sells/{codigo}', [TransactionController::class, 'getSellDetail']);
+Route::put('transactions/sells/{codigo}', [TransactionController::class, 'updateSell']);
 Route::get('transactions/sells/{codigo}/pdf', [TransactionPdfController::class, 'downloadSellPdf']);
 Route::get('transactions/sells/{codigo}/pdf-nota', [TransactionPdfController::class, 'downloadNotaCreditoPdf']);
 Route::post('transactions/sells/{codigo}/send-sunat', [TransactionController::class, 'sendToSunat']);

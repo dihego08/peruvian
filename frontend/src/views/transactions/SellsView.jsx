@@ -241,14 +241,25 @@ export default function SellsView() {
                       )}
 
                       {sell.envio_sunat != 1 && (
-                        <button
-                          onClick={() => handleSendSunat(sell.codigo_venta)}
-                          disabled={sendingSunatId === sell.codigo_venta}
-                          className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
-                          title="Enviar a SUNAT"
-                        >
-                          <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
-                        </button>
+                        <>
+                          <Link
+                            to={`/sells/${encodeURIComponent(sell.codigo_venta)}/edit`}
+                            className="p-1 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                            title="Editar Venta"
+                          >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                            </svg>
+                          </Link>
+                          <button
+                            onClick={() => handleSendSunat(sell.codigo_venta)}
+                            disabled={sendingSunatId === sell.codigo_venta}
+                            className="p-1 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
+                            title="Enviar a SUNAT"
+                          >
+                            <ArrowDownTrayIcon className="h-4 w-4 rotate-180" />
+                          </button>
+                        </>
                       )}
 
                       {sell.envio_sunat == 1 && (
