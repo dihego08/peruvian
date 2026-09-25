@@ -7,6 +7,7 @@ import ProvidersView from './views/ProvidersView';
 import BrandsView from './views/BrandsView';
 import SellsView from './views/transactions/SellsView';
 import NewSellView from './views/transactions/NewSellView';
+import EditSellView from './views/transactions/EditSellView';
 import SellPaymentsView from './views/transactions/SellPaymentsView';
 import OrdersView from './views/transactions/OrdersView';
 import NewOrderView from './views/transactions/NewOrderView';
@@ -136,6 +137,7 @@ function MainLayout({ setAuth }) {
             <Route path="/purchases/new" element={<NewPurchaseView />} />
             <Route path="/sells" element={<SellsView />} />
             <Route path="/sells/new" element={<NewSellView />} />
+            <Route path="/sells/:codigo/edit" element={<EditSellView />} />
             <Route path="/sell-payments" element={<SellPaymentsView />} />
             <Route path="/orders" element={<OrdersView />} />
             <Route path="/orders/new" element={<NewOrderView />} />

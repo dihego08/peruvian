@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
 
-export default function NewSellView() {
+export default function EditSellView() {
   const navigate = useNavigate();
+  const { codigo } = useParams();
   const [clients, setClients] = useState([]);
   const [users, setUsers] = useState([]);
   const [unidadesSunat, setUnidadesSunat] = useState([]);
@@ -48,27 +49,64 @@ export default function NewSellView() {
     fetchUsers();
     fetchUnidadesSunat();
     fetchDictionaries();
-  }, []);
+    if (codigo) {
+      fetchSellData(codigo);
+    }
+  }, [codigo]);
+
+  const fetchSellData = async (codigoVenta) => {
+    try {
+      const res = await api.get(`/transactions/sells/${encodeURIComponent(codigoVenta)}`);
+      const { cabecera, detalle } = res.data;
+      
+      setFormData(prev => ({
+        ...prev,
+        person_id: cabecera.id_person || '',
+        invoice_code: cabecera.codigo_venta,
+        discount: cabecera.descuento || 0,
+        detraccion: cabecera.detraccion || 'no',
+        detraccion_p: cabecera.detraccion_p || 0,
+        incluye_igv: cabecera.incluye_igv || '1',
+        tipo_documento: cabecera.tipo_documento || '2',
+        fecha_emision: cabecera.fecha_emision ? cabecera.fecha_emision.slice(0, 10) : prev.fecha_emision,
+        fecha_vencimiento: cabecera.fecha_vencimiento ? cabecera.fecha_vencimiento.slice(0, 10) : prev.fecha_vencimiento,
+        tipos_pago: cabecera.id_estado_pago || '4',
+        tipos_entrega: cabecera.id_estado_entrega || '',
+        forma_pago: cabecera.id_forma_pago || '2',
+        nuevo_ruc: cabecera.ruc_add || '',
+        envio_sunat: cabecera.envio_sunat || 0
+      }));
+
+      if (detalle && detalle.length > 0) {
+        const loadedCart = detalle.map((item, index) => {
+          let price_unit = Number(item.precio_unitario);
+          if (cabecera.incluye_igv == 1) {
+            price_unit = price_unit * 1.18;
+          }
+          return {
+            id: Date.now() + index,
+            product_id: item.id_producto,
+            code: item.producto_codigo,
+            name: item.producto_nombre,
+            tipo: item.tipo,
+            unidad: item.unidad,
+            pedido: item.pedido_cod,
+            q: Number(item.cantidad),
+            price_unit: price_unit,
+            price_bordado: Number(item.precio_bordado),
+          };
+        });
+        setCart(loadedCart);
+      }
+    } catch (e) {
+      console.error(e);
+      alert('Error cargando la venta');
+    }
+  };
 
   useEffect(() => {
     calculateTotals();
   }, [cart, formData.discount, formData.incluye_igv, formData.tipo_documento, formData.detraccion]);
-
-  useEffect(() => {
-    const fetchCorrelativo = async () => {
-      try {
-        const res = await api.get(`/transactions/sells/correlativo?tipo_documento=${formData.tipo_documento}`);
-        if (res.data && res.data.correlativo) {
-          setFormData(prev => ({ ...prev, invoice_code: res.data.correlativo }));
-        }
-      } catch (error) {
-        console.warn("Could not fetch correlativo", error);
-      }
-    };
-    if (formData.tipo_documento) {
-      fetchCorrelativo();
-    }
-  }, [formData.tipo_documento]);
 
   const fetchClients = async () => {
     const res = await api.get('/clients');
@@ -222,6 +260,10 @@ export default function NewSellView() {
   };
 
   const handleSubmit = async () => {
+    if (formData.envio_sunat == 1) {
+      alert("Esta venta ya fue enviada a SUNAT y no puede ser modificada.");
+      return;
+    }
     if (cart.length === 0) {
       alert("El carrito está vacío.");
       return;
@@ -255,12 +297,12 @@ export default function NewSellView() {
     };
 
     try {
-      await api.post('/transactions/sells', payload);
-      alert("Venta registrada correctamente!");
+      await api.put(`/transactions/sells/${encodeURIComponent(codigo)}`, payload);
+      alert("Venta actualizada correctamente!");
       navigate('/sells');
     } catch (error) {
       console.error(error);
-      const msg = error.response?.data?.error || error.response?.data?.message || "Error al registrar la venta.";
+      const msg = error.response?.data?.error || error.response?.data?.message || "Error al actualizar la venta.";
       alert(msg);
     }
   };
@@ -269,8 +311,8 @@ export default function NewSellView() {
     <div className="flex flex-col gap-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Nueva Venta</h1>
-          <p className="text-sm text-gray-500 mt-0.5">Registro de comprobante y despacho de productos</p>
+          <h1 className="text-2xl font-bold text-gray-900">Editar Venta: {codigo}</h1>
+          <p className="text-sm text-gray-500 mt-0.5">Modificar registro de comprobante</p>
         </div>
         <button onClick={() => navigate('/sells')} className="text-sm text-gray-500 hover:text-gray-800 flex items-center gap-1">
           <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
@@ -278,7 +320,20 @@ export default function NewSellView() {
         </button>
       </div>
 
+      {formData.envio_sunat == 1 && (
+        <div className="bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-4 flex items-center gap-3">
+          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+          </svg>
+          <div className="text-sm">
+            <p className="font-bold">Venta en modo sólo lectura</p>
+            <p className="text-amber-700">Esta venta ya fue emitida a SUNAT, por lo que no puede ser alterada.</p>
+          </div>
+        </div>
+      )}
+
       {/* Search Bar */}
+      {formData.envio_sunat != 1 && (
       <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
         <h2 className="text-lg font-bold text-gray-800 mb-4">Buscar Producto</h2>
         <form onSubmit={handleSearch} className="flex gap-3">
@@ -292,6 +347,7 @@ export default function NewSellView() {
           <button type="submit" className="bg-gray-800 text-white px-6 py-2.5 rounded-md hover:bg-gray-700 shadow-sm font-medium transition-colors">Buscar</button>
         </form>
       </div>
+      )}
 
       {/* Search Results Grid (Editable before adding) */}
       {searchResults.length > 0 && (
@@ -398,9 +454,11 @@ export default function NewSellView() {
                       S/ {((item.price_unit + item.price_bordado) * item.q).toFixed(2)}
                     </td>
                     <td className="p-3 text-center">
+                      {formData.envio_sunat != 1 && (
                       <button onClick={() => removeFromCart(item.id)} className="text-gray-500 hover:text-red-600 hover:bg-red-50 transition-colors rounded-md p-1.5 flex items-center justify-center mx-auto">
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                       </button>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -424,7 +482,7 @@ export default function NewSellView() {
               {/* Client Selection vs New RUC */}
               <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
                 <label className="block text-xs font-bold text-blue-800 uppercase tracking-wider mb-1">Cliente Registrado</label>
-                <select className="w-full p-2 border border-blue-200 rounded-md focus:border-blue-500 focus:ring-blue-500 bg-white mb-2 text-sm" value={formData.person_id} onChange={e => setFormData({ ...formData, person_id: e.target.value, nuevo_ruc: '', rucResult: null })}>
+                <select className="w-full p-2 border border-blue-200 rounded-md focus:border-blue-500 focus:ring-blue-500 bg-white mb-2 text-sm" value={formData.person_id} onChange={e => setFormData({ ...formData, person_id: e.target.value, nuevo_ruc: '', rucResult: null })} disabled={formData.envio_sunat == 1}>
                   <option value="">Seleccione...</option>
                   {clients.map(c => <option key={c.id} value={c.id}>{c.name} {c.lastname}</option>)}
                 </select>
@@ -443,12 +501,12 @@ export default function NewSellView() {
                     placeholder="Ingrese RUC..."
                     value={formData.nuevo_ruc}
                     onChange={e => setFormData({ ...formData, nuevo_ruc: e.target.value, person_id: '' })}
-                    disabled={!!formData.person_id}
+                    disabled={!!formData.person_id || formData.envio_sunat == 1}
                   />
                   <button
                     type="button"
                     onClick={handleSearchRuc}
-                    disabled={!!formData.person_id || isSearchingRuc}
+                    disabled={!!formData.person_id || isSearchingRuc || formData.envio_sunat == 1}
                     className="bg-blue-600 text-white px-3 py-2 rounded-md hover:bg-blue-700 disabled:opacity-50 text-sm font-medium"
                   >
                     {isSearchingRuc ? 'Buscando...' : 'Buscar'}
@@ -465,18 +523,18 @@ export default function NewSellView() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">F. Emisión</label>
-                  <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_emision} onChange={e => setFormData({ ...formData, fecha_emision: e.target.value })} />
+                  <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_emision} onChange={e => setFormData({ ...formData, fecha_emision: e.target.value })} disabled={formData.envio_sunat == 1} />
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">F. Vencimiento</label>
-                  <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_vencimiento} onChange={e => setFormData({ ...formData, fecha_vencimiento: e.target.value })} />
+                  <input type="date" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.fecha_vencimiento} onChange={e => setFormData({ ...formData, fecha_vencimiento: e.target.value })} disabled={formData.envio_sunat == 1} />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Documento</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipo_documento} onChange={e => setFormData({ ...formData, tipo_documento: e.target.value })}>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipo_documento} onChange={e => setFormData({ ...formData, tipo_documento: e.target.value })} disabled={formData.envio_sunat == 1}>
                     {tiposDocumento.map(t => (
                       <option key={t.id} value={t.id}>{t.tipo_documento}</option>
                     ))}
@@ -484,20 +542,20 @@ export default function NewSellView() {
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nº Comprobante *</label>
-                  <input type="text" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 font-mono font-bold text-sm" placeholder="F001-XXXX" value={formData.invoice_code} onChange={e => setFormData({ ...formData, invoice_code: e.target.value })} />
+                  <input type="text" className="w-full p-2 border border-gray-300 rounded-md bg-gray-100 font-mono font-bold text-sm" placeholder="F001-XXXX" value={formData.invoice_code} disabled />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Pago</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipos_pago} onChange={e => setFormData({ ...formData, tipos_pago: e.target.value })}>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipos_pago} onChange={e => setFormData({ ...formData, tipos_pago: e.target.value })} disabled={formData.envio_sunat == 1}>
                     {tiposPago.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Entrega</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipos_entrega} onChange={e => setFormData({ ...formData, tipos_entrega: e.target.value })}>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipos_entrega} onChange={e => setFormData({ ...formData, tipos_entrega: e.target.value })} disabled={formData.envio_sunat == 1}>
                     {tiposEntrega.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
@@ -506,13 +564,13 @@ export default function NewSellView() {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Forma Pago</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.forma_pago} onChange={e => setFormData({ ...formData, forma_pago: e.target.value })}>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.forma_pago} onChange={e => setFormData({ ...formData, forma_pago: e.target.value })} disabled={formData.envio_sunat == 1}>
                     {formasPago.map(p => <option key={p.id} value={p.id}>{p.name}</option>)}
                   </select>
                 </div>
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">IGV Incluido</label>
-                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.incluye_igv} onChange={e => setFormData({ ...formData, incluye_igv: e.target.value })}>
+                  <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.incluye_igv} onChange={e => setFormData({ ...formData, incluye_igv: e.target.value })} disabled={formData.envio_sunat == 1}>
                     <option value="1">Sí</option>
                     <option value="0">No</option>
                   </select>
@@ -521,25 +579,25 @@ export default function NewSellView() {
 
               <div className="pt-2 border-t border-gray-100">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Descuento Global (S/)</label>
-                <input type="number" step="0.01" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.discount} onChange={e => setFormData({ ...formData, discount: e.target.value })} />
+                <input type="number" step="0.01" className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.discount} onChange={e => setFormData({ ...formData, discount: e.target.value })} disabled={formData.envio_sunat == 1} />
               </div>
 
               <div className="pt-2 border-t border-gray-100">
                 <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Aplicar Detracción</label>
                 <div className="flex gap-4">
                   <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="radio" name="detraccion" value="no" checked={formData.detraccion === 'no'} onChange={(e) => setFormData({ ...formData, detraccion: 'no' })} className="text-blue-600 focus:ring-blue-500" />
+                    <input type="radio" name="detraccion" value="no" checked={formData.detraccion === 'no'} onChange={(e) => setFormData({ ...formData, detraccion: 'no' })} className="text-blue-600 focus:ring-blue-500" disabled={formData.envio_sunat == 1} />
                     No
                   </label>
                   <label className="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
-                    <input type="radio" name="detraccion" value="yes" checked={formData.detraccion === 'yes'} onChange={(e) => setFormData({ ...formData, detraccion: 'yes' })} className="text-blue-600 focus:ring-blue-500" />
+                    <input type="radio" name="detraccion" value="yes" checked={formData.detraccion === 'yes'} onChange={(e) => setFormData({ ...formData, detraccion: 'yes' })} className="text-blue-600 focus:ring-blue-500" disabled={formData.envio_sunat == 1} />
                     Sí
                   </label>
                 </div>
                 {formData.detraccion === 'yes' && (
                   <div className="mt-2">
                     <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">Monto Detracción (S/)</label>
-                    <input type="number" step="0.01" className="w-full p-2 border border-blue-200 rounded-md bg-blue-50 text-blue-800 font-bold text-sm focus:border-blue-500 focus:ring-blue-500" value={formData.detraccion_p} onChange={e => setFormData({ ...formData, detraccion_p: e.target.value })} />
+                    <input type="number" step="0.01" className="w-full p-2 border border-blue-200 rounded-md bg-blue-50 text-blue-800 font-bold text-sm focus:border-blue-500 focus:ring-blue-500" value={formData.detraccion_p} onChange={e => setFormData({ ...formData, detraccion_p: e.target.value })} disabled={formData.envio_sunat == 1} />
                   </div>
                 )}
               </div>
@@ -576,14 +634,16 @@ export default function NewSellView() {
                   onClick={() => navigate('/sells')}
                   className="w-1/3 bg-white border border-gray-300 text-gray-700 font-medium py-2.5 rounded-md hover:bg-gray-50 transition-colors text-sm"
                 >
-                  Cancelar
+                  Volver
                 </button>
+                {formData.envio_sunat != 1 && (
                 <button
                   onClick={handleSubmit}
                   className="w-2/3 bg-blue-600 text-white font-medium py-2.5 rounded-md hover:bg-blue-700 shadow-sm transition-colors text-sm"
                 >
-                  Guardar Venta
+                  Actualizar Venta
                 </button>
+                )}
               </div>
             </div>
           </div>

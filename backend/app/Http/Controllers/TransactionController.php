@@ -355,6 +355,153 @@ class TransactionController extends Controller
         }
     }
 
+    public function updateSell(Request $request, $codigo)
+    {
+        $request->validate([
+            'person_id' => 'nullable|integer',
+            'subtotal' => 'required|numeric',
+            'igv' => 'required|numeric',
+            'total' => 'required|numeric',
+            'discount' => 'nullable|numeric',
+            'tipo_documento' => 'nullable|string',
+            'operations' => 'required|array',
+            'operations.*.product_id' => 'required|integer',
+            'operations.*.q' => 'required|numeric',
+            'operations.*.price_out' => 'required|numeric',
+            'operations.*.pedido' => 'nullable|string',
+            'operations.*.tipo' => 'nullable|string',
+            'operations.*.codigo_producto' => 'nullable|string',
+            'operations.*.unidad' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $cabecera = DB::table('ventas_cabecera')->where('codigo_venta', $codigo)->first();
+            if (!$cabecera) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'Venta no encontrada'], 404);
+            }
+
+            if ($cabecera->envio_sunat == 1) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'No se puede editar una venta enviada a SUNAT'], 400);
+            }
+
+            // ===== Resolver cliente: registrado o nuevo RUC =====
+            $person_id = $request->input('person_id') ?: 0;
+            $nuevo_ruc = $request->input('nuevo_ruc', '');
+
+            if (!$person_id && $request->has('ruc_result') && $request->input('ruc_result.nombre')) {
+                $rucData = $request->input('ruc_result');
+                $existing = DB::table('person')->where('no', $nuevo_ruc)->first();
+                if ($existing) {
+                    $person_id = $existing->id;
+                } else {
+                    $person_id = DB::table('person')->insertGetId([
+                        'no' => $nuevo_ruc,
+                        'name' => $rucData['nombre'],
+                        'address1' => $rucData['direccion'] ?? '',
+                        'kind' => 1,
+                    ]);
+                }
+                $nuevo_ruc = ''; // ya está registrado
+            }
+
+            // ===== Cálculos de pago (igual que clsVenta.php insertar_venta) =====
+            $total = (float) $request->input('total');
+            $detraccion_p = (float) $request->input('detraccion_p', 0);
+            $tipos_pago = (int) $request->input('tipos_pago', 2);
+            $valor_pagar = $total - round($detraccion_p);
+
+            switch ($tipos_pago) {
+                case 2:
+                    $pagado = $valor_pagar;
+                    break; // contado
+                case 3:
+                case 4:
+                    $pagado = 0;
+                    break; // crédito
+                default:
+                    $pagado = $valor_pagar;
+            }
+            $a_cuenta = $valor_pagar - $pagado;
+
+            // Recopilar todos los pedidos para la cabecera
+            $pedidos = [];
+            foreach ($request->input('operations') as $op) {
+                if (!empty($op['pedido'])) {
+                    $pedidos[] = $op['pedido'];
+                }
+            }
+            $pedido_cod_cabecera = !empty($pedidos) ? '0--' . implode('--', $pedidos) : '0';
+
+            DB::table('ventas_cabecera')->where('codigo_venta', $codigo)->update([
+                'tipo_documento' => (int) $request->input('tipo_documento', $cabecera->tipo_documento),
+                'id_person' => $person_id,
+                'id_forma_pago' => (int) $request->input('forma_pago', 2),
+                'id_estado_pago' => (int) $request->input('tipos_pago', 2),
+                'id_estado_entrega' => (int) $request->input('tipos_entrega', 1),
+                'descuento' => (float) $request->input('discount', 0),
+                'detraccion' => $request->input('detraccion', 'no'),
+                'detraccion_p' => round($detraccion_p),
+                'igv_p' => (float) $request->input('igv', 0) - round($detraccion_p),
+                'subtotal' => (float) $request->input('subtotal'),
+                'subtotal_2' => (float) $request->input('subtotal'),
+                'igv' => (float) $request->input('igv'),
+                'igv_2' => (float) $request->input('igv'),
+                'total' => $total,
+                'total_2' => $total,
+                'valor_pagar' => $valor_pagar,
+                'pagado' => $pagado,
+                'a_cuenta' => $a_cuenta,
+                'guia' => $request->input('guia', ''),
+                'fecha_emision' => $request->input('fecha_emision', $cabecera->fecha_emision),
+                'fecha_vencimiento' => $request->input('fecha_vencimiento', $cabecera->fecha_vencimiento),
+                'pedido_cod' => $pedido_cod_cabecera,
+                'ruc_add' => $nuevo_ruc,
+                'incluye_igv' => (int) $request->input('incluye_igv', 1),
+            ]);
+
+            // ===== Eliminar detalle actual y reinsertar =====
+            DB::table('ventas_detalle')->where('codigo_venta_cabecera', $codigo)->delete();
+
+            $incluye_igv = (int) $request->input('incluye_igv', 1);
+
+            foreach ($request->input('operations') as $op) {
+                $precio_unit = (float) $op['price_out'];
+                if ($incluye_igv === 1) {
+                    $precio_unit = round($precio_unit / 1.18, 6);
+                }
+
+                DB::table('ventas_detalle')->insert([
+                    'codigo_venta_cabecera' => $codigo,
+                    'id_producto' => (int) $op['product_id'],
+                    'cantidad' => (float) $op['q'],
+                    'pedido_cod' => $op['pedido'] ?? '',
+                    'codigo_unidad' => $op['codigo_producto'] ?? '',
+                    'unidad' => $op['unidad'] ?? '',
+                    'precio_unitario' => $precio_unit,
+                    'precio_bordado' => (float) ($op['price_bordado'] ?? 0),
+                    'tipo' => $op['tipo'] ?? 'Producto',
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'Result' => 'OK',
+                'message' => 'Venta actualizada correctamente',
+                'codigo_venta' => $codigo,
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'Result' => 'ERROR',
+                'message' => 'No se pudo actualizar en base de datos. ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function downloadSunatFiles($codigo)
     {
         $ruc = env('SUNAT_RUC', '20455175781');
