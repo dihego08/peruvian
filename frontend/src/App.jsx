@@ -34,6 +34,7 @@ import PuestosView from './views/PuestosView';
 import ColaboradoresView from './views/ColaboradoresView';
 import GuiasView from './views/GuiasView';
 import NewGuiaView from './views/NewGuiaView';
+import EditGuiaView from './views/EditGuiaView';
 import SellsSunatView from './views/reports/SellsSunatView';
 import VentasClienteView from './views/reports/VentasClienteView';
 import VentasMensualesView from './views/reports/VentasMensualesView';
@@ -149,6 +150,7 @@ function MainLayout({ setAuth }) {
             <Route path="/sig/documents" element={<DocumentsView />} />
             <Route path="/guias" element={<GuiasView />} />
             <Route path="/guias/new" element={<NewGuiaView />} />
+            <Route path="/guias/:id/edit" element={<EditGuiaView />} />
             <Route path="/insumos" element={<InsumosView />} />
             <Route path="/unidades" element={<UnidadesView />} />
             <Route path="/fam-class" element={<FamClassView />} />

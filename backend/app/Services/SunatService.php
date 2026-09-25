@@ -21,7 +21,7 @@ class SunatService
     public function createSee(): See
     {
         $see = new See();
-        $see->setCertificate(file_get_contents(storage_path('app/certs/certificate_pv_2024.pem')));
+        $see->setCertificate(file_get_contents(storage_path('app/certs/certificado_pv_2026.pem')));
         $see->setService(SunatEndpoints::FE_PRODUCCION);
         $see->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'));
 

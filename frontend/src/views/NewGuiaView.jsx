@@ -522,7 +522,16 @@ export default function NewGuiaView() {
                   ) : (
                     <tr key={idx} className="hover:bg-gray-50">
                       <td className="px-4 py-3 text-gray-600 text-xs font-mono">{it.code}</td>
-                      <td className="px-4 py-3 font-semibold text-gray-800 text-xs max-w-[260px]">{it.descripcion_producto}</td>
+                      <td className="px-4 py-3 text-gray-800 text-xs max-w-[280px]">
+                        {it.descripcion_producto && it.descripcion_producto.includes('<') ? (
+                          <div
+                            className="prose prose-xs max-w-none [&_table]:border-collapse [&_table]:border [&_table_td]:border [&_table_td]:border-gray-300 [&_table_td]:p-1 [&_table_td]:text-center [&_table_td]:text-[10px] [&_table]:mt-1 [&_table]:bg-white rounded overflow-hidden"
+                            dangerouslySetInnerHTML={{ __html: it.descripcion_producto }}
+                          />
+                        ) : (
+                          <span className="font-semibold">{it.descripcion_producto}</span>
+                        )}
+                      </td>
                       <td className="px-4 py-3 text-gray-600 text-xs">{it.pedido}</td>
                       <td className="px-4 py-3 text-right font-bold">{it.cantidad}</td>
                       <td className="px-4 py-3 text-center text-gray-600 text-xs">{it.unidad}</td>

@@ -135,6 +135,7 @@ Route::post('guias/{id}/send-sunat', [GuiaController::class, 'sendToSunat']);
 Route::delete('guias/{id}', [GuiaController::class, 'destroy']);
 Route::get('guias', [GuiaController::class, 'index']);
 Route::post('guias', [GuiaController::class, 'store']);
+Route::put('guias/{id}', [GuiaController::class, 'update']);
 
 // Library / Documents
 Route::get('/library', [DocumentController::class, 'index']);

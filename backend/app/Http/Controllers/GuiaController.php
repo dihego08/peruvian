@@ -40,9 +40,22 @@ class GuiaController extends Controller
             ->where('g.id', $id)
             ->first();
 
+        if ($cabecera) {
+            $cabecera->ubigeo_origen_obj = [
+                'departamento' => $cabecera->ubigeo ? substr($cabecera->ubigeo, 0, 2) : '',
+                'provincia'    => $cabecera->ubigeo ? substr($cabecera->ubigeo, 0, 4) : '',
+                'distrito'     => $cabecera->ubigeo ?? '',
+            ];
+            $cabecera->ubigeo_destino_obj = [
+                'departamento' => $cabecera->ubigeo_destino ? substr($cabecera->ubigeo_destino, 0, 2) : '',
+                'provincia'    => $cabecera->ubigeo_destino ? substr($cabecera->ubigeo_destino, 0, 4) : '',
+                'distrito'     => $cabecera->ubigeo_destino ?? '',
+            ];
+        }
+
         $detalle = DB::table('guia_detalle as vd')
             ->leftJoin('product as p', 'p.id', '=', 'vd.id_producto')
-            ->select('vd.*', 'vd.descripcion_producto as descripcion_producto')
+            ->select('vd.*', 'vd.descripcion_producto as descripcion_producto', 'p.code', 'p.name as producto_nombre')
             ->where('vd.id_guia', $id)
             ->get();
 
@@ -175,6 +188,77 @@ class GuiaController extends Controller
         }
 
         return response()->json($resultado, 500);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $guia = DB::table('guia_cabecera')->where('id', $id)->first();
+        if (!$guia) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Guía de remisión no encontrada'], 404);
+        }
+
+        if ($guia->estado == 1) {
+            return response()->json([
+                'Result' => 'ERROR',
+                'Message' => 'No se puede editar una guía que ya ha sido emitida o aceptada por SUNAT'
+            ], 422);
+        }
+
+        $items = $request->input('items', []);
+        if (empty($items)) {
+            return response()->json(['Result' => 'ERROR', 'Message' => 'Debe agregar al menos un ítem'], 422);
+        }
+
+        try {
+            DB::beginTransaction();
+
+            DB::table('guia_cabecera')->where('id', $id)->update([
+                'num_guia'             => $request->num_guia ?? $guia->num_guia,
+                'fecha_emision'        => $request->fecha_emision,
+                'fecha_traslado'       => $request->fecha_traslado,
+                'ruc_destinatario'     => $request->ruc_destinatario,
+                'destino'              => $request->destino,
+                'ruc_transportista'    => $request->ruc_transportista ?? '',
+                'ruc_conductor'        => $request->ruc_conductor ?? '',
+                'placa'                => $request->placa ?? '',
+                'comentario'           => $request->comentario ?? '',
+                'total_bruto'          => $request->total_bruto ?? 0,
+                'total_neto'           => $request->total_neto ?? 0,
+                'origen'               => $request->origen,
+                'ubigeo'               => $request->ubigeo ?? '',
+                'ubigeo_destino'       => $request->ubigeo_destino ?? '',
+                'modalidad_trasnporte' => str_pad($request->modalidad_trasnporte ?? '01', 2, '0', STR_PAD_LEFT),
+                'motivo_traslado'      => str_pad($request->motivo_traslado ?? '01', 2, '0', STR_PAD_LEFT),
+                'descripcion_motivo'   => $request->descripcion_motivo ?? '',
+            ]);
+
+            // Replace items in guia_detalle
+            DB::table('guia_detalle')->where('id_guia', $id)->delete();
+
+            foreach ($items as $item) {
+                DB::table('guia_detalle')->insert([
+                    'id_guia'              => $id,
+                    'id_producto'          => $item['id_producto'],
+                    'cantidad'             => $item['cantidad'] ?? 0,
+                    'pedido'               => $item['pedido'] ?? '',
+                    'unidad'               => $item['unidad'] ?? 'NIU',
+                    'descripcion_producto' => $item['descripcion_producto'] ?? '',
+                    't_neto'               => $item['t_neto'] ?? 0,
+                    't_bruto'              => $item['t_bruto'] ?? 0,
+                ]);
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'Result'  => 'OK',
+                'Message' => 'Guía de remisión actualizada correctamente',
+                'id'      => $id,
+            ]);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json(['Result' => 'ERROR', 'Message' => $e->getMessage()], 500);
+        }
     }
 
     public function destroy($id)

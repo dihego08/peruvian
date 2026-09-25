@@ -30,7 +30,7 @@ class GuiaRemisionService
             'cpe' => 'https://api-cpe.sunat.gob.pe/v1',
         ]);
 
-        $certificate = file_get_contents(storage_path('app/certs/certificate_pv_2024.pem'));
+        $certificate = file_get_contents(storage_path('app/certs/certificado_pv_2026.pem'));
 
         $api->setBuilderOptions([
             'strict_variables' => true,
@@ -38,9 +38,9 @@ class GuiaRemisionService
             'debug' => true,
             'cache' => false,
         ])
-        ->setApiCredentials(env('SUNAT_CLIENT_ID', '54833fd6-ef25-49a2-95bd-5ffc6f95a97a'), env('SUNAT_CLIENT_SECRET', 'Ff68EQcyDY9K2Q3Ox2TlyA=='))
-        ->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'))
-        ->setCertificate($certificate);
+            ->setApiCredentials(env('SUNAT_CLIENT_ID', '54833fd6-ef25-49a2-95bd-5ffc6f95a97a'), env('SUNAT_CLIENT_SECRET', 'Ff68EQcyDY9K2Q3Ox2TlyA=='))
+            ->setClaveSOL(env('SUNAT_RUC', '20455175781'), env('SUNAT_USUARIO', 'PERUVI11'), env('SUNAT_CLAVE', 'Omcipier11'))
+            ->setCertificate($certificate);
 
         return $api;
     }
@@ -50,7 +50,7 @@ class GuiaRemisionService
         try {
             DB::statement("SET SESSION wait_timeout = 120");
             DB::statement("SET SESSION interactive_timeout = 120");
-            
+
             DB::beginTransaction();
 
             $guia = $this->obtenerGuia($idGuia);
@@ -172,7 +172,7 @@ class GuiaRemisionService
         }
 
         $envio->setLlegada(new Direction($guia['ubigeo_destino'], $guia['destino']))
-              ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
+            ->setPartida(new Direction($guia['ubigeo'], $guia['origen']));
 
         if (!empty($guia['ruc_transportista'])) {
             $transportista = $this->obtenerTransportista($guia['ruc_transportista']);
@@ -182,7 +182,7 @@ class GuiaRemisionService
                     ->setNumDoc($transportista['ruc'] ?? '')
                     ->setRznSocial($transportista['razon_social'] ?? '')
                     ->setNroMtc($transportista['nro_mtc'] ?? '0001');
-                
+
                 $envio->setTransportista($transp);
             }
         }
@@ -221,8 +221,8 @@ class GuiaRemisionService
         $items = [];
         foreach ($detalles as $row) {
             $row = (array) $row;
-            $descripcion = !empty($row['descripcion_producto']) 
-                ? $row['descripcion_producto'] 
+            $descripcion = !empty($row['descripcion_producto'])
+                ? $row['descripcion_producto']
                 : $row['description'];
 
             $item = (new DespatchDetail())
