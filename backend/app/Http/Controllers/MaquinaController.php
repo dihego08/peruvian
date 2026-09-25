@@ -93,6 +93,7 @@ class MaquinaController extends Controller
             $tipo = $value->tipo_mantenimiento == '1' ? 'Preventivo' : 'Correctivo';
             $tabla_mantenimientos .= '<tr>
                 <td style="padding: 10px; border: 1px solid #000;">' . e($tipo) . '</td>
+                <td style="padding: 10px; border: 1px solid #000;">' . e($value->maq_mtto_tipo) . '</td>
                 <td style="padding: 10px; border: 1px solid #000;">' . e($value->maq_mtto_fecha) . '</td>
                 <td style="padding: 10px; border: 1px solid #000;">' . e($value->maq_mtto_reponsable) . '</td>
                 <td style="padding: 10px; border: 1px solid #000;">S/ ' . number_format((float)$value->maq_mtto_costo, 2) . '</td>
@@ -101,6 +102,7 @@ class MaquinaController extends Controller
             $tt += (float)$value->maq_mtto_costo;
         }
         $tabla_mantenimientos .= '<tr>
+                <td style="border: 1px solid #000;"></td>
                 <td style="border: 1px solid #000;"></td>
                 <td style="border: 1px solid #000;"></td>
                 <td style="border: 1px solid #000;"></td>
@@ -153,6 +155,7 @@ class MaquinaController extends Controller
             . '<p style="text-align: center; margin-top: 25px; font-size: 20px; font-weight: bold;">Lista de Mantenimientos</p>'
             . '<table style="width: 100%; border: 1px solid #000; border-collapse: collapse;">'
             . '<tr>'
+            . '<th style="width: 10%; border: 1px solid #000;">Tipo</th>'
             . '<th style="width: 20%; border: 1px solid #000;">Mantenimiento Realizado</th>'
             . '<th style="width: 10%; border: 1px solid #000;">Fecha</th>'
             . '<th style="width: 20%; border: 1px solid #000;">Responsable</th>'

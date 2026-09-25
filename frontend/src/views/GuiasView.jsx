@@ -9,6 +9,7 @@ import {
   TruckIcon,
   XMarkIcon,
   ArrowDownTrayIcon,
+  PencilSquareIcon,
 } from '@heroicons/react/24/outline';
 
 export default function GuiasView() {
@@ -35,9 +36,15 @@ export default function GuiasView() {
       const r = await api.get('/guias', {
         params: { search, desde, hasta, ...params },
       });
-      setGuias(r.data);
+      const data = Array.isArray(r.data)
+        ? r.data
+        : (Array.isArray(r.data?.data)
+          ? r.data.data
+          : (Array.isArray(r.data?.Records) ? r.data.Records : []));
+      setGuias(data);
     } catch (e) {
       console.error(e);
+      setGuias([]);
     } finally {
       setLoading(false);
     }
@@ -108,6 +115,8 @@ export default function GuiasView() {
       </span>
     );
   };
+
+  const listGuias = Array.isArray(guias) ? guias : [];
 
   return (
     <div className="flex flex-col gap-6 animate-in fade-in duration-500">
@@ -200,14 +209,14 @@ export default function GuiasView() {
                 </td>
               </tr>
             )}
-            {!loading && guias.length === 0 && (
+            {!loading && listGuias.length === 0 && (
               <tr>
                 <td colSpan="15" className="px-6 py-10 text-center text-gray-400">
                   No se encontraron guías de remisión.
                 </td>
               </tr>
             )}
-            {guias.map((g, idx) => (
+            {listGuias.map((g, idx) => (
               <tr key={g.id} className="hover:bg-gray-50 transition-colors">
                 <td className="px-4 py-3 text-gray-400 text-xs">{idx + 1}</td>
                 <td className="px-4 py-3 font-mono font-bold text-blue-700 text-xs">{g.num_guia}</td>
@@ -243,6 +252,15 @@ export default function GuiasView() {
                     </a>
                     {g.estado != 1 && (
                       <button
+                        onClick={() => navigate(`/guias/${g.id}/edit`)}
+                        className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                        title="Editar Guía"
+                      >
+                        <PencilSquareIcon className="h-4 w-4" />
+                      </button>
+                    )}
+                    {g.estado != 1 && (
+                      <button
                         onClick={() => handleSendSunat(g.id)}
                         disabled={sendingSunatId === g.id}
                         className="p-1.5 text-emerald-600 hover:bg-emerald-50 rounded-lg transition-colors"
@@ -267,9 +285,9 @@ export default function GuiasView() {
       </div>
 
       {/* Count */}
-      {!loading && guias.length > 0 && (
+      {!loading && listGuias.length > 0 && (
         <p className="text-xs text-gray-400 text-right">
-          {guias.length} guía{guias.length !== 1 ? 's' : ''} encontrada{guias.length !== 1 ? 's' : ''}
+          {listGuias.length} guía{listGuias.length !== 1 ? 's' : ''} encontrada{listGuias.length !== 1 ? 's' : ''}
         </p>
       )}
 
@@ -413,6 +431,18 @@ export default function GuiasView() {
                   <DocumentTextIcon className="h-4 w-4" />
                   Ver PDF
                 </a>
+              )}
+              {detailData?.cabecera?.estado != 1 && detailData?.cabecera?.id && (
+                <button
+                  onClick={() => {
+                    setShowDetail(false);
+                    navigate(`/guias/${detailData.cabecera.id}/edit`);
+                  }}
+                  className="px-5 py-2 bg-amber-600 text-white rounded-lg hover:bg-amber-700 font-bold text-sm transition-colors flex items-center gap-2"
+                >
+                  <PencilSquareIcon className="h-4 w-4" />
+                  Editar Guía
+                </button>
               )}
               <button
                 onClick={() => setShowDetail(false)}

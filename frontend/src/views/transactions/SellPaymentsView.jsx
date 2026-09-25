@@ -4,11 +4,11 @@ import api from '../../services/api';
 const BANCOS = ['BCP', 'SCOTIABANK', 'BBVA CONTINENTAL', 'INTERBANK'];
 
 export default function SellPaymentsView() {
-  const [sells, setSells]         = useState([]);
-  const [loading, setLoading]     = useState(false);
-  const [totales, setTotales]     = useState({ total_general: 0, total_adeuda: 0 });
-  const [clients, setClients]     = useState([]);
-  const [tiposDoc, setTiposDoc]   = useState([]);
+  const [sells, setSells] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totales, setTotales] = useState({ total_general: 0, total_adeuda: 0 });
+  const [clients, setClients] = useState([]);
+  const [tiposDoc, setTiposDoc] = useState([]);
   const [tiposPago, setTiposPago] = useState([]);
 
   // Filtros
@@ -17,14 +17,15 @@ export default function SellPaymentsView() {
   });
 
   // Modal de detalle + pago
-  const [modal, setModal]           = useState(null);   // cabecera seleccionada
-  const [historial, setHistorial]   = useState([]);
-  const [payForm, setPayForm]       = useState({ monto_pagado: '', fecha: new Date().toISOString().slice(0,10), banco: '', concepto: '' });
+  const [modal, setModal] = useState(null);   // cabecera seleccionada
+  const [historial, setHistorial] = useState([]);
+  const [payForm, setPayForm] = useState({ monto_pagado: '', fecha: new Date().toISOString().slice(0, 10), banco: '', concepto: '' });
   const [adeudaLocal, setAdeudaLocal] = useState(0);
-  const [saving, setSaving]         = useState(false);
+  const [saving, setSaving] = useState(false);
 
-  // Estado para detracción
-  const [detraccionForm, setDetraccionForm] = useState({});
+  // Estado para detracción (dentro de la modal de detalle)
+  const [detraccionDate, setDetraccionDate] = useState(new Date().toISOString().slice(0, 10));
+  const [savingDetraccion, setSavingDetraccion] = useState(false);
 
   useEffect(() => {
     fetchClients();
@@ -34,13 +35,13 @@ export default function SellPaymentsView() {
   }, []);
 
   const fetchClients = async () => {
-    try { const r = await api.get('/clients'); setClients(r.data); } catch (e) {}
+    try { const r = await api.get('/clients'); setClients(r.data); } catch (e) { }
   };
   const fetchTiposDoc = async () => {
-    try { const r = await api.get('/sell-payments/tipos-documento'); setTiposDoc(r.data.Records || []); } catch (e) {}
+    try { const r = await api.get('/sell-payments/tipos-documento'); setTiposDoc(r.data.Records || []); } catch (e) { }
   };
   const fetchTiposPago = async () => {
-    try { const r = await api.get('/tipos-pago'); setTiposPago(r.data); } catch (e) {}
+    try { const r = await api.get('/tipos-pago'); setTiposPago(r.data); } catch (e) { }
   };
 
   const fetchSells = async (params) => {
@@ -66,7 +67,8 @@ export default function SellPaymentsView() {
   const openModal = async (sell) => {
     setModal(sell);
     setAdeudaLocal(parseFloat(sell.a_cuenta || 0));
-    setPayForm({ monto_pagado: '', fecha: new Date().toISOString().slice(0,10), banco: '', concepto: '' });
+    setPayForm({ monto_pagado: '', fecha: new Date().toISOString().slice(0, 10), banco: '', concepto: '' });
+    setDetraccionDate(new Date().toISOString().slice(0, 10));
     try {
       const r = await api.get(`/sell-payments/${sell.codigo_venta}/history`);
       setHistorial(r.data.Records || []);
@@ -116,40 +118,29 @@ export default function SellPaymentsView() {
     } catch (e) { alert('Error al eliminar pago'); }
   };
 
-  const handleDetraccionChange = (codigo, field, value) => {
-    setDetraccionForm(prev => ({
-      ...prev,
-      [codigo]: {
-        ...prev[codigo],
-        [field]: value
-      }
-    }));
+  // Aplica un cambio de estado de detracción y sincroniza tabla, modal e historial
+  const updateDetraccionPayment = async (codigo_venta, paga, fecha_pago) => {
+    await api.post(`/sell-payments/${codigo_venta}/pay-detraccion`, { paga, fecha_pago });
+    const r = await api.get(`/sell-payments/${codigo_venta}/history`);
+    setHistorial(r.data.Records || []);
+    setSells(prev => prev.map(s => s.codigo_venta === codigo_venta ? { ...s, detraccion_paga: Number(paga) } : s));
+    setModal(m => (m && m.codigo_venta === codigo_venta) ? { ...m, detraccion_paga: Number(paga) } : m);
   };
 
-  const handleSaveDetraccion = async (codigo) => {
-    const form = detraccionForm[codigo];
-    if (!form || form.status !== '1' || !form.date) {
-      alert('Debes seleccionar PAGADO y establecer una fecha para guardar la detracción.');
-      return;
-    }
-
+  const handleMarkDetraccionPaid = async () => {
+    if (!detraccionDate) { alert('Selecciona la fecha de pago'); return; }
+    setSavingDetraccion(true);
     try {
-      await api.post(`/sell-payments/${codigo}/pay-detraccion`, {
-        paga: form.status,
-        fecha_pago: form.date
-      });
-      alert('Detracción guardada correctamente');
-      
-      const p = {};
-      if (filters.desde) p.desde = filters.desde;
-      if (filters.hasta) p.hasta = filters.hasta;
-      if (filters.tipos_pago) p.tipos_pago = filters.tipos_pago;
-      if (filters.tipos_documento !== '0') p.tipos_documento = filters.tipos_documento;
-      if (filters.combo_cliente !== '0') p.combo_cliente = filters.combo_cliente;
-      fetchSells(p);
-    } catch (e) {
-      alert('Error al guardar la detracción');
-    }
+      await updateDetraccionPayment(modal.codigo_venta, '1', detraccionDate);
+    } catch (e) { alert('Error al guardar la detracción'); }
+    finally { setSavingDetraccion(false); }
+  };
+
+  const handleUndoDetraccion = async (codigo_venta) => {
+    if (!window.confirm('¿Deshacer el pago de la detracción?')) return;
+    try {
+      await updateDetraccionPayment(codigo_venta, '0', null);
+    } catch (e) { alert('Error al deshacer la detracción'); }
   };
 
   return (
@@ -166,15 +157,15 @@ export default function SellPaymentsView() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Desde</label>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.desde} onChange={e => setFilters({...filters, desde: e.target.value})} />
+            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.desde} onChange={e => setFilters({ ...filters, desde: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Hasta</label>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.hasta} onChange={e => setFilters({...filters, hasta: e.target.value})} />
+            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.hasta} onChange={e => setFilters({ ...filters, hasta: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Por Pago</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_pago} onChange={e => setFilters({...filters, tipos_pago: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_pago} onChange={e => setFilters({ ...filters, tipos_pago: e.target.value })}>
               <option value="">Todos</option>
               {tiposPago.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
               <option value="-1">Pendiente de Pago</option>
@@ -182,14 +173,14 @@ export default function SellPaymentsView() {
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Documento</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_documento} onChange={e => setFilters({...filters, tipos_documento: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_documento} onChange={e => setFilters({ ...filters, tipos_documento: e.target.value })}>
               <option value="0">Todos</option>
               {tiposDoc.map(t => <option key={t.id} value={t.id}>{t.tipo_documento}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Cliente</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.combo_cliente} onChange={e => setFilters({...filters, combo_cliente: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.combo_cliente} onChange={e => setFilters({ ...filters, combo_cliente: e.target.value })}>
               <option value="0">Todos</option>
               {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
@@ -255,32 +246,9 @@ export default function SellPaymentsView() {
                         <div className="flex flex-col items-end gap-1">
                           <span className="font-semibold text-gray-800">S/ {s.detraccion_p}</span>
                           {s.detraccion_paga == 0 ? (
-                            <div className="flex flex-col gap-1 w-28 text-left mt-1">
-                              <select 
-                                className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
-                                value={detraccionForm[s.codigo_venta]?.status || '0'}
-                                onChange={e => handleDetraccionChange(s.codigo_venta, 'status', e.target.value)}
-                              >
-                                <option value="0">PENDIENTE</option>
-                                <option value="1">PAGADO</option>
-                              </select>
-                              {detraccionForm[s.codigo_venta]?.status === '1' && (
-                                <input 
-                                  type="date" 
-                                  className="w-full p-1 border border-gray-300 rounded text-xs focus:border-blue-500"
-                                  value={detraccionForm[s.codigo_venta]?.date || ''}
-                                  onChange={e => handleDetraccionChange(s.codigo_venta, 'date', e.target.value)}
-                                />
-                              )}
-                              <button 
-                                className="w-full bg-green-100 text-green-700 px-2 py-1 rounded text-xs font-bold hover:bg-green-200 transition-colors"
-                                onClick={() => handleSaveDetraccion(s.codigo_venta)}
-                              >
-                                Guardar
-                              </button>
-                            </div>
+                            <span className="text-[10px] bg-amber-100 text-amber-700 px-2 py-0.5 rounded-full font-bold">PENDIENTE</span>
                           ) : (
-                            <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-bold">PAGADO</span>
+                            <span className="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-bold">PAGADO</span>
                           )}
                         </div>
                       ) : '-'}
@@ -333,6 +301,36 @@ export default function SellPaymentsView() {
                   <p className={`font-bold text-base mt-0.5 ${parseFloat(modal.a_cuenta) > 0 ? 'text-red-600' : 'text-gray-800'}`}>S/ {parseFloat(modal.a_cuenta || 0).toFixed(2)}</p>
                 </div>
               </div>
+
+              {/* Detracción */}
+              {parseFloat(modal.detraccion_p || 0) > 0 && (
+                <div className={`rounded-xl p-4 border ${modal.detraccion_paga == 0 ? 'bg-amber-50 border-amber-200' : 'bg-green-50 border-green-200'}`}>
+                  <div className="flex items-center justify-between mb-1">
+                    <h3 className={`text-sm font-bold ${modal.detraccion_paga == 0 ? 'text-amber-800' : 'text-green-800'}`}>Detracción</h3>
+                    <span className="font-bold text-gray-800 text-sm">S/ {parseFloat(modal.detraccion_p || 0).toFixed(2)}</span>
+                  </div>
+                  {modal.detraccion_paga == 0 ? (
+                    <div className="flex flex-wrap items-end gap-3 mt-2">
+                      <div>
+                        <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Fecha de pago</label>
+                        <input type="date" className="p-2 border border-gray-300 rounded-md text-sm focus:border-amber-500" value={detraccionDate} onChange={e => setDetraccionDate(e.target.value)} />
+                      </div>
+                      <button onClick={handleMarkDetraccionPaid} disabled={savingDetraccion} className="bg-amber-500 text-white px-4 py-2 rounded-md hover:bg-amber-600 font-medium text-sm transition-colors disabled:opacity-60">
+                        {savingDetraccion ? 'Guardando...' : 'Marcar como pagada'}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-between mt-2">
+                      <p className="text-sm text-green-700">
+                        Pagada{historial.find(h => h.tipo === 'detraccion')?.fecha_creacion ? ` el ${historial.find(h => h.tipo === 'detraccion').fecha_creacion}` : ''}
+                      </p>
+                      <button onClick={() => handleUndoDetraccion(modal.codigo_venta)} className="text-xs text-red-600 hover:text-red-700 hover:underline font-medium">
+                        Deshacer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Formulario de pago */}
               {parseFloat(modal.a_cuenta) > 0 && (
@@ -387,14 +385,18 @@ export default function SellPaymentsView() {
                       <tr><td colSpan="6" className="px-3 py-4 text-center text-gray-400 text-xs">Sin pagos registrados</td></tr>
                     )}
                     {historial.map(p => (
-                      <tr key={p.id} className="hover:bg-gray-50">
+                      <tr key={p.id ?? `detraccion-${p.codigo_venta}`} className={`hover:bg-gray-50 ${p.tipo === 'detraccion' ? 'bg-amber-50/50' : ''}`}>
                         <td className="px-3 py-2 text-gray-700">{p.fecha_creacion}</td>
                         <td className="px-3 py-2 text-right font-semibold text-green-700">S/ {parseFloat(p.pago || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-gray-600">{p.concepto || '-'}</td>
                         <td className="px-3 py-2 text-gray-600">{p.banco || '-'}</td>
                         <td className="px-3 py-2 text-right text-red-600 font-medium">S/ {parseFloat(p.deuda || 0).toFixed(2)}</td>
                         <td className="px-3 py-2 text-center">
-                          <button onClick={() => handleDeletePayment(p.id)} title="Eliminar" className="text-gray-400 hover:text-red-600 hover:bg-red-50 rounded p-1 transition-colors">
+                          <button
+                            onClick={() => p.tipo === 'detraccion' ? handleUndoDetraccion(p.codigo_venta) : handleDeletePayment(p.id)}
+                            title={p.tipo === 'detraccion' ? 'Quitar pago de detracción' : 'Eliminar'}
+                            className="text-gray-400 hover:text-red-600 hover:bg-red-50 rounded p-1 transition-colors"
+                          >
                             <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
                           </button>
                         </td>
