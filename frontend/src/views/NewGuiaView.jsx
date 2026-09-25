@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
-import { PlusIcon, TrashIcon, MagnifyingGlassIcon, ArrowLeftIcon, CheckIcon, XCircleIcon, PencilIcon } from '@heroicons/react/24/outline';
+import { PlusIcon, TrashIcon, MagnifyingGlassIcon, ArrowLeftIcon, CheckIcon, XCircleIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 // ─── moved OUTSIDE to prevent remount on every render ────────────────────────
 function Field({ label, children }) {
@@ -155,6 +155,73 @@ const INIT = {
   modalidad_trasnporte: '01', comentario: '',
 };
 
+function parseDescriptionAndTallas(desc, totalCant) {
+  let baseName = desc || '';
+  let tallasArray = Array(13).fill('');
+  let manualCant = '';
+
+  if (!desc) return { baseName: '', tallasArray, manualCant: String(totalCant || '1') };
+
+  // Case 1: HTML Table
+  if (desc.includes('<table')) {
+    const parts = desc.split(/<table/i);
+    baseName = parts[0].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+    baseName = baseName.replace(/\s*TALLAS\s*$/i, '').trim();
+
+    const tablePart = '<table' + parts[1];
+    const rows = tablePart.match(/<tr[\s\S]*?<\/tr>/gi) || [];
+    if (rows.length >= 2) {
+      const getCells = (r) =>
+        (r.match(/<t[dh][\s\S]*?<\/t[dh]>/gi) || []).map((c) =>
+          c.replace(/&nbsp;/gi, ' ').replace(/<[^>]+>/g, '').trim()
+        );
+      const r1 = getCells(rows[0]);
+      const r2 = getCells(rows[1]);
+      const len = Math.max(r1.length, r2.length);
+      let matchedAny = false;
+      for (let i = 0; i < len; i++) {
+        const t = (r1[i] || '').toUpperCase();
+        const c = r2[i] || '';
+        const idx = TALLAS.findIndex((x) => x.toUpperCase() === t);
+        if (idx !== -1 && c) {
+          tallasArray[idx] = c;
+          matchedAny = true;
+        } else if (!t && c) {
+          manualCant = c;
+        }
+      }
+      if (!matchedAny && !manualCant) manualCant = String(totalCant || '1');
+    }
+    return { baseName, tallasArray, manualCant };
+  }
+
+  // Case 2: Bracket format [M:2, L:3] or [2:5]
+  const match = desc.match(/^(.*?)\[(.*?)\]\s*$/);
+  if (match) {
+    baseName = match[1].trim();
+    const pairs = match[2].split(',');
+    let matchedAny = false;
+    pairs.forEach((p) => {
+      const [t, c] = p.split(':').map((s) => s.trim());
+      if (t) {
+        const idx = TALLAS.findIndex((x) => x.toUpperCase() === t.toUpperCase());
+        if (idx !== -1 && c) {
+          tallasArray[idx] = c;
+          matchedAny = true;
+        } else if (idx !== -1 && !c) {
+          tallasArray[idx] = '1';
+          matchedAny = true;
+        }
+      }
+    });
+    if (!matchedAny) manualCant = String(totalCant || '1');
+    return { baseName, tallasArray, manualCant };
+  }
+
+  // Case 3: Plain description
+  return { baseName, tallasArray, manualCant: String(totalCant || '1') };
+}
+
 export default function NewGuiaView() {
   const navigate = useNavigate();
   const [head, setHead] = useState(INIT);
@@ -172,9 +239,17 @@ export default function NewGuiaView() {
   const [pesoNeto, setPesoNeto] = useState('');
   const [pedido, setPedido] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
-  const [editUnidad, setEditUnidad] = useState('');
   const [editingItemIndex, setEditingItemIndex] = useState(null);
-  const [editingRow, setEditingRow] = useState(null);
+  const [editItemData, setEditItemData] = useState({
+    code: '',
+    descripcion: '',
+    unidad: '',
+    tallas: Array(13).fill(''),
+    manualCant: '',
+    pedido: '',
+    pesoNeto: '',
+    pesoBruto: '',
+  });
 
   useEffect(() => {
     api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
@@ -229,22 +304,76 @@ export default function NewGuiaView() {
 
   const startEditItem = (item, index) => {
     setEditingItemIndex(index);
-    setEditingRow({ ...item });
+    const { baseName, tallasArray, manualCant } = parseDescriptionAndTallas(
+      item.descripcion_producto,
+      item.cantidad
+    );
+    const totalT = tallasArray.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0);
+    const itemCant = parseFloat(item.cantidad) || 1;
+    const unitNeto = item.t_neto && itemCant > 0 ? (parseFloat(item.t_neto) / itemCant).toFixed(3) : '';
+
+    setEditItemData({
+      id_producto: item.id_producto,
+      code: item.code || '',
+      descripcion: baseName,
+      unidad: item.unidad || '',
+      tallas: tallasArray,
+      manualCant: totalT > 0 ? '' : (manualCant || String(item.cantidad || '1')),
+      pedido: item.pedido || '',
+      pesoNeto: unitNeto,
+      pesoBruto: item.t_bruto ? String(item.t_bruto) : '',
+    });
   };
 
   const cancelEditItem = () => {
     setEditingItemIndex(null);
-    setEditingRow(null);
+    setEditItemData({
+      id_producto: null,
+      code: '',
+      descripcion: '',
+      unidad: '',
+      tallas: Array(13).fill(''),
+      manualCant: '',
+      pedido: '',
+      pesoNeto: '',
+      pesoBruto: '',
+    });
   };
 
   const saveEditedItem = () => {
-    if (editingItemIndex === null || !editingRow) return;
-    setItems(prev => prev.map((item, idx) => idx === editingItemIndex ? editingRow : item));
-    cancelEditItem();
-  };
+    if (editingItemIndex === null || !editItemData) return;
 
-  const updateEditingRow = (field, value) => {
-    setEditingRow(prev => ({ ...prev, [field]: value }));
+    const tallasTotal = editItemData.tallas.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0);
+    const hasTallas = tallasTotal > 0;
+    const finalCant = hasTallas ? tallasTotal : (parseFloat(editItemData.manualCant) || 1);
+
+    const tallaStr = TALLAS.map((t, i) =>
+      editItemData.tallas[i] && parseFloat(editItemData.tallas[i]) > 0
+        ? `${t}:${editItemData.tallas[i]}`
+        : null
+    ).filter(Boolean).join(', ');
+
+    const baseDesc = (editItemData.descripcion || '').trim();
+    const finalDescripcion = baseDesc + (tallaStr ? ` [${tallaStr}]` : '');
+
+    const unitNeto = parseFloat(editItemData.pesoNeto) || 0;
+    const calculatedNeto = (finalCant * unitNeto).toFixed(2);
+    const calculatedBruto = parseFloat(editItemData.pesoBruto || 0).toFixed(2);
+
+    setItems(prev => prev.map((item, idx) => {
+      if (idx !== editingItemIndex) return item;
+      return {
+        ...item,
+        descripcion_producto: finalDescripcion,
+        cantidad: finalCant,
+        unidad: editItemData.unidad,
+        pedido: editItemData.pedido,
+        t_neto: calculatedNeto,
+        t_bruto: calculatedBruto,
+      };
+    }));
+
+    cancelEditItem();
   };
 
   const totalBruto = items.reduce((s, i) => s + (parseFloat(i.t_bruto) || 0), 0).toFixed(2);
@@ -492,31 +621,191 @@ export default function NewGuiaView() {
               <tbody className="divide-y divide-gray-100">
                 {items.map((it, idx) => (
                   editingItemIndex === idx ? (
-                    <tr key={idx} className="bg-blue-50">
-                      <td className="px-4 py-3 text-gray-600 text-xs font-mono">
-                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.code} disabled />
-                      </td>
-                      <td className="px-4 py-3">
-                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.descripcion_producto} onChange={e => updateEditingRow('descripcion_producto', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3">
-                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs" value={editingRow.pedido || ''} onChange={e => updateEditingRow('pedido', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <input type="number" min="0" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.cantidad} onChange={e => updateEditingRow('cantidad', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3 text-center">
-                        <input className="w-full p-2 border border-gray-300 rounded-lg text-xs text-center" value={editingRow.unidad || ''} onChange={e => updateEditingRow('unidad', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <input type="number" step="0.001" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.t_neto} onChange={e => updateEditingRow('t_neto', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3 text-right">
-                        <input type="number" step="0.001" className="w-20 p-2 border border-gray-300 rounded-lg text-xs text-right" value={editingRow.t_bruto} onChange={e => updateEditingRow('t_bruto', e.target.value)} />
-                      </td>
-                      <td className="px-4 py-3 text-center space-x-1">
-                        <button type="button" onClick={saveEditedItem} className="px-2 py-1 bg-green-600 text-white rounded-lg text-[10px] font-semibold hover:bg-green-700 transition-colors">Guardar</button>
-                        <button type="button" onClick={cancelEditItem} className="px-2 py-1 bg-gray-200 text-gray-700 rounded-lg text-[10px] font-semibold hover:bg-gray-300 transition-colors">Cancelar</button>
+                    <tr key={idx} className="bg-gradient-to-r from-blue-50/90 via-sky-50/70 to-indigo-50/90 border-2 border-blue-400 shadow-sm">
+                      <td colSpan="8" className="p-4 sm:p-5">
+                        <div className="space-y-4">
+                          {/* Header bar of the edit panel */}
+                          <div className="flex items-center justify-between border-b border-blue-200 pb-3">
+                            <div className="flex items-center gap-2.5">
+                              <span className="p-1.5 bg-blue-600 text-white rounded-lg shadow-sm">
+                                <PencilIcon className="h-4 w-4" />
+                              </span>
+                              <div>
+                                <div className="flex items-center gap-2">
+                                  <h3 className="text-sm font-black text-blue-950 uppercase tracking-wide">
+                                    Editar Producto #{idx + 1}
+                                  </h3>
+                                  <span className="bg-blue-200/70 text-blue-800 text-[11px] font-bold px-2 py-0.5 rounded">
+                                    {editItemData.code || it.code || 'Sin código'}
+                                  </span>
+                                </div>
+                                <p className="text-xs text-blue-600 font-medium mt-0.5">
+                                  Modifique la descripción, unidad, tallas y cantidades
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={cancelEditItem}
+                              className="text-gray-400 hover:text-gray-700 p-1.5 rounded-lg hover:bg-white/80 transition-colors"
+                              title="Cerrar y cancelar edición"
+                            >
+                              <XMarkIcon className="h-5 w-5" />
+                            </button>
+                          </div>
+
+                          {/* Description & Unit */}
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div className="md:col-span-2 space-y-1">
+                              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                Descripción del Producto
+                              </label>
+                              <input
+                                className="w-full p-2.5 border border-gray-300 rounded-lg text-sm font-bold text-blue-900 bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm"
+                                value={editItemData.descripcion}
+                                onChange={e => setEditItemData(p => ({ ...p, descripcion: e.target.value }))}
+                                placeholder="Nombre o descripción base del producto..."
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                Unidad (SUNAT)
+                              </label>
+                              <select
+                                className="w-full p-2.5 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none shadow-sm"
+                                value={editItemData.unidad}
+                                onChange={e => setEditItemData(p => ({ ...p, unidad: e.target.value }))}
+                              >
+                                <option value="">Seleccionar unidad...</option>
+                                {unidadesSunat.map(u => (
+                                  <option key={u.id} value={u.codigo}>{u.unidad} ({u.codigo})</option>
+                                ))}
+                              </select>
+                            </div>
+                          </div>
+
+                          {/* Cantidades por Talla */}
+                          <div className="p-3.5 bg-white rounded-xl border border-blue-200 shadow-sm space-y-3">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center gap-2">
+                                <span className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse"></span>
+                                <p className="text-xs font-black text-gray-700 uppercase tracking-wider">
+                                  Cantidades por Talla
+                                </p>
+                              </div>
+                              <span className="text-xs font-bold text-blue-800 bg-blue-100 border border-blue-200 px-3 py-1 rounded-full">
+                                Total Tallas: {editItemData.tallas.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0)}
+                              </span>
+                            </div>
+
+                            <div className="flex flex-wrap gap-2 pt-1">
+                              {TALLAS.map((t, i) => (
+                                <div key={t} className="flex flex-col items-center gap-1 bg-gray-50 hover:bg-blue-50/50 p-1.5 rounded-lg border border-gray-200 hover:border-blue-300 transition-colors">
+                                  <span className="text-[11px] font-black text-gray-600 uppercase">{t}</span>
+                                  <input
+                                    type="number"
+                                    min="0"
+                                    placeholder="0"
+                                    className="w-14 p-1.5 border border-gray-300 rounded-md text-xs font-bold text-center bg-white focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                    value={editItemData.tallas[i]}
+                                    onChange={e => {
+                                      const val = e.target.value;
+                                      setEditItemData(prev => {
+                                        const n = [...prev.tallas];
+                                        n[i] = val;
+                                        return { ...prev, tallas: n };
+                                      });
+                                    }}
+                                  />
+                                </div>
+                              ))}
+                            </div>
+
+                            {/* Fallback for items without tallas */}
+                            <div className="pt-2 border-t border-gray-100 flex flex-wrap items-center gap-3">
+                              <span className="text-xs text-gray-500 font-medium">
+                                O cantidad directa (si el producto no utiliza tallas):
+                              </span>
+                              <input
+                                type="number"
+                                min="0"
+                                placeholder="1"
+                                className="w-24 p-1.5 border border-gray-300 rounded-md text-xs font-bold text-center bg-white focus:ring-2 focus:ring-blue-500 outline-none disabled:bg-gray-100 disabled:text-gray-400"
+                                value={editItemData.manualCant}
+                                onChange={e => setEditItemData(prev => ({ ...prev, manualCant: e.target.value }))}
+                                disabled={editItemData.tallas.some(t => parseFloat(t) > 0)}
+                              />
+                              {editItemData.tallas.some(t => parseFloat(t) > 0) && (
+                                <span className="text-[11px] text-gray-400 italic">
+                                  (Deshabilitado: se está sumando la cantidad de las tallas)
+                                </span>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Pedido, KG Neto, KG Bruto */}
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-gray-600 uppercase">Pedido</label>
+                              <input
+                                className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                                placeholder="Ej: PED-001"
+                                value={editItemData.pedido}
+                                onChange={e => setEditItemData(prev => ({ ...prev, pedido: e.target.value }))}
+                              />
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-gray-600 uppercase">KG. Neto (c/u)</label>
+                              <input
+                                type="number"
+                                step="0.001"
+                                className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                                placeholder="0.000"
+                                value={editItemData.pesoNeto}
+                                onChange={e => setEditItemData(prev => ({ ...prev, pesoNeto: e.target.value }))}
+                              />
+                              {(() => {
+                                const tSum = editItemData.tallas.reduce((acc, curr) => acc + (parseFloat(curr) || 0), 0) || (parseFloat(editItemData.manualCant) || 1);
+                                const uNet = parseFloat(editItemData.pesoNeto) || 0;
+                                return uNet > 0 ? (
+                                  <p className="text-[11px] text-blue-700 font-medium">
+                                    Total Neto calculado: <b>{(tSum * uNet).toFixed(2)} kg</b>
+                                  </p>
+                                ) : null;
+                              })()}
+                            </div>
+                            <div className="space-y-1">
+                              <label className="text-xs font-bold text-gray-600 uppercase">KG. Bruto total</label>
+                              <input
+                                type="number"
+                                step="0.001"
+                                className="w-full p-2 border border-gray-300 rounded-lg text-sm bg-white focus:ring-2 focus:ring-blue-500 outline-none shadow-sm"
+                                placeholder="0.000"
+                                value={editItemData.pesoBruto}
+                                onChange={e => setEditItemData(prev => ({ ...prev, pesoBruto: e.target.value }))}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Action buttons */}
+                          <div className="flex items-center justify-end gap-2 pt-3 border-t border-blue-200">
+                            <button
+                              type="button"
+                              onClick={cancelEditItem}
+                              className="px-4 py-2 border border-gray-300 text-gray-700 bg-white hover:bg-gray-100 rounded-lg text-xs font-bold transition-colors"
+                            >
+                              Cancelar
+                            </button>
+                            <button
+                              type="button"
+                              onClick={saveEditedItem}
+                              className="px-5 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-sm transition-colors"
+                            >
+                              <CheckIcon className="h-4 w-4" />
+                              Guardar Cambios del Producto
+                            </button>
+                          </div>
+                        </div>
                       </td>
                     </tr>
                   ) : (
