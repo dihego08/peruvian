@@ -362,11 +362,36 @@ class TransactionController extends Controller
         ]);
 
         try {
+            // Obtenemos el registro para saber a qué venta (cabecera) pertenece
+            $detalle = DB::table('ventas_detalle')->where('id', $id)->first();
+            if (!$detalle) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'Ítem no encontrado'], 404);
+            }
+
+            // Actualizamos el detalle
             DB::table('ventas_detalle')->where('id', $id)->update([
                 'pedido_cod' => $request->input('pedido_cod')
             ]);
             
-            return response()->json(['Result' => 'OK', 'message' => 'Pedido actualizado']);
+            // Recalculamos la cadena de pedidos para la cabecera
+            $todosLosDetalles = DB::table('ventas_detalle')
+                ->where('codigo_venta_cabecera', $detalle->codigo_venta_cabecera)
+                ->get();
+                
+            $pedidos = [];
+            foreach ($todosLosDetalles as $det) {
+                if (!empty($det->pedido_cod)) {
+                    $pedidos[] = $det->pedido_cod;
+                }
+            }
+            $pedido_cod_cabecera = !empty($pedidos) ? '0--' . implode('--', $pedidos) : '0';
+            
+            // Actualizamos la cabecera
+            DB::table('ventas_cabecera')
+                ->where('codigo_venta', $detalle->codigo_venta_cabecera)
+                ->update(['pedido_cod' => $pedido_cod_cabecera]);
+            
+            return response()->json(['Result' => 'OK', 'message' => 'Pedido actualizado y cabecera sincronizada']);
         } catch (\Exception $e) {
             return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
         }
