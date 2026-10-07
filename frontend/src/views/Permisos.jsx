@@ -94,8 +94,8 @@ export default function Permisos() {
     // Filtrado simple por fecha o estado
     const filteredData = permisos.filter(
         (item) =>
-            item.colaborador.nombres?.toLowerCase().includes(filterText.toLowerCase()) ||
-            item.tipo.tipo?.toLowerCase().includes(filterText.toLowerCase())
+            item.colaborador?.nombres?.toLowerCase().includes(filterText.toLowerCase()) ||
+            item.tipo?.tipo?.toLowerCase().includes(filterText.toLowerCase())
     );
     const subHeaderComponent = (
         <div className="w-full max-w-md">
@@ -127,7 +127,7 @@ export default function Permisos() {
         },
         {
             name: "Colaborador",
-            selector: (row) => row.colaborador.nombres + " " + row.colaborador.apellido_paterno + " " + row.colaborador.apellido_materno,
+            selector: (row) => row.colaborador?.nombres + " " + row.colaborador?.apellido_paterno + " " + row.colaborador?.apellido_materno,
             sortable: true,
         },
         {
