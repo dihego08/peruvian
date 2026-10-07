@@ -307,6 +307,7 @@ export default function EditGuiaView() {
   const [pesoNeto, setPesoNeto] = useState('');
   const [pedido, setPedido] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
+  const [editUnidad, setEditUnidad] = useState('');
   const [editingItemIndex, setEditingItemIndex] = useState(null);
   const [editItemData, setEditItemData] = useState({
     code: '',
