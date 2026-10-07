@@ -27,14 +27,14 @@ function UbigeoSelects({ prefix, value, onChange }) {
   const [distritos, setDistritos] = useState([]);
 
   useEffect(() => {
-    api.get('/guias/departamentos').then(r => setDepartamentos(r.data)).catch(() => {});
+    api.get('/guias/departamentos').then(r => setDepartamentos(r.data)).catch(() => { });
   }, []);
 
   useEffect(() => {
     if (value?.departamento) {
       api.get('/guias/provincias', { params: { departamento: value.departamento } })
         .then(r => setProvincias(r.data))
-        .catch(() => {});
+        .catch(() => { });
     } else {
       setProvincias([]);
     }
@@ -44,7 +44,7 @@ function UbigeoSelects({ prefix, value, onChange }) {
     if (value?.provincia) {
       api.get('/guias/distritos', { params: { provincia: value.provincia } })
         .then(r => setDistritos(r.data))
-        .catch(() => {});
+        .catch(() => { });
     } else {
       setDistritos([]);
     }
@@ -308,6 +308,7 @@ export default function EditGuiaView() {
   const [pedido, setPedido] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editingItemIndex, setEditingItemIndex] = useState(null);
+  const [editUnidad, setEditUnidad] = useState('');
   const [editItemData, setEditItemData] = useState({
     code: '',
     descripcion: '',
@@ -320,7 +321,7 @@ export default function EditGuiaView() {
   });
 
   useEffect(() => {
-    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
+    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => { });
     loadGuia();
   }, [id]);
 
@@ -397,7 +398,7 @@ export default function EditGuiaView() {
       const r = await api.get('/guias/search-products', { params: { nombre: searchNombre, codigo: searchCodigo } });
       setSearchResults(r.data);
       setSelProd(null);
-    } catch {}
+    } catch { }
     finally { setSearching(false); }
   };
 

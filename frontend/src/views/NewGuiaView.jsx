@@ -240,6 +240,7 @@ export default function NewGuiaView() {
   const [pedido, setPedido] = useState('');
   const [editDescripcion, setEditDescripcion] = useState('');
   const [editingItemIndex, setEditingItemIndex] = useState(null);
+  const [editUnidad, setEditUnidad] = useState('');
   const [editItemData, setEditItemData] = useState({
     code: '',
     descripcion: '',
@@ -252,7 +253,7 @@ export default function NewGuiaView() {
   });
 
   useEffect(() => {
-    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => {});
+    api.get('/codigos-sunat').then(r => setUnidadesSunat(r.data)).catch(() => { });
     api.get('/guias/next-num').then(r => setHead(h => ({ ...h, num_guia: r.data.num_guia }))).catch(() => { });
   }, []);
 
