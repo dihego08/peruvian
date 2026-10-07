@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
 import { EyeIcon, ArrowUpTrayIcon, DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 
 export default function SellsView() {
   const [sells, setSells] = useState([]);
@@ -50,6 +51,19 @@ export default function SellsView() {
   };
 
   const closeModal = () => { setModalSell(null); setModalItems([]); };
+
+  const handlePedidoChange = (id, val) => {
+    setModalItems(prev => prev.map(item => item.id === id ? { ...item, pedido_cod: val } : item));
+  };
+
+  const savePedido = async (id, val) => {
+    try {
+      await api.patch(`/transactions/sells/item/${id}/pedido`, { pedido_cod: val });
+    } catch (e) {
+      console.error(e);
+      alert('Error al actualizar el pedido');
+    }
+  };
 
   const handleSendSunat = async (codigo = null) => {
     const targetCodigo = typeof codigo === 'string' ? codigo : modalSell?.codigo_venta;
@@ -378,9 +392,9 @@ export default function SellsView() {
                             <div className="flex items-center gap-2">
                               {item.producto_imagen && (
                                 <img
-                                  src={`https://peruvian.peruviandress.com/storage/products/${item.producto_imagen}`}
+                                  src={getProductImageUrl(item.producto_imagen)}
                                   className="w-7 h-7 object-cover rounded border border-gray-200"
-                                  onError={e => { e.target.style.display = 'none'; }}
+                                  onError={(e) => handleProductImageError(e, item.producto_imagen)}
                                   alt=""
                                 />
                               )}
@@ -396,7 +410,16 @@ export default function SellsView() {
                             </span>
                           </td>
                           <td className="px-3 py-2 text-center text-gray-600 text-xs">{item.unidad || item.codigo_unidad || '-'}</td>
-                          <td className="px-3 py-2 text-center text-gray-600 text-xs">{item.pedido_cod || '-'}</td>
+                          <td className="px-3 py-2 text-center text-gray-600 text-xs">
+                            <input 
+                              type="text" 
+                              className="w-full min-w-[70px] p-1.5 border border-gray-300 rounded text-center focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none" 
+                              value={item.pedido_cod || ''} 
+                              onChange={(e) => handlePedidoChange(item.id, e.target.value)} 
+                              onBlur={(e) => savePedido(item.id, e.target.value)}
+                              placeholder="Pedido"
+                            />
+                          </td>
                           <td className="px-3 py-2 text-right font-medium">{item.cantidad}</td>
                           <td className="px-3 py-2 text-right text-gray-700">S/ {parseFloat(item.precio_unitario || 0).toFixed(4)}</td>
                           <td className="px-3 py-2 text-right text-gray-700">S/ {parseFloat(item.precio_bordado || 0).toFixed(2)}</td>
@@ -462,7 +485,7 @@ export default function SellsView() {
                 Estás a punto de anular la venta <span className="font-bold text-gray-900">{anularSellCode}</span>.
                 Esta acción enviará una Nota de Crédito a SUNAT y no se puede deshacer.
               </p>
-              
+
               <div className="mb-4">
                 <label htmlFor="cod_motivo" className="block text-sm font-medium text-gray-700 mb-1">Motivo de Anulación <span className="text-red-500">*</span></label>
                 <select

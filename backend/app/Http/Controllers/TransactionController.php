@@ -355,6 +355,23 @@ class TransactionController extends Controller
         }
     }
 
+    public function updateItemPedido(Request $request, $id)
+    {
+        $request->validate([
+            'pedido_cod' => 'nullable|string'
+        ]);
+
+        try {
+            DB::table('ventas_detalle')->where('id', $id)->update([
+                'pedido_cod' => $request->input('pedido_cod')
+            ]);
+            
+            return response()->json(['Result' => 'OK', 'message' => 'Pedido actualizado']);
+        } catch (\Exception $e) {
+            return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
+        }
+    }
+
     public function updateSell(Request $request, $codigo)
     {
         $request->validate([
