@@ -55,19 +55,21 @@ class CotizationPdfController extends Controller
             }
         }
 
-        $sinIgv = (int)$cabecera->igv_incluye !== 1;
+        $sinIgv = (int) $cabecera->igv_incluye !== 1;
 
         $detalleRows = '';
         foreach ($detalle as $i => $item) {
             $nombre = $item->nombre_producto ?: ($item->producto_nombre ?? '');
 
-            // Imagen de modelo y de bordado lado a lado (cada una solo si existe)
+            // Imagen de modelo y de bordado lado a lado (cada una solo si existe),
+            // recortadas al mismo tamaño cuadrado
+            $box = 140;
             $celdas = [];
-            foreach (['MODELO' => $item->imagen, 'BORDADO' => $item->imagen_2] as $label => $img) {
+            foreach (['MODELO' => $item->imagen, 'BORDADO/ESTAMPADO' => $item->imagen_2] as $label => $img) {
                 $src = $this->resolveImage($img);
                 if ($src) {
-                    $celdas[] = '<td style="border: none; padding: 2px; text-align: center; vertical-align: middle;">'
-                        . '<img src="' . $src . '" style="width: 130px; max-height: 160px;" />'
+                    $celdas[] = '<td style="border: none; padding: 2px 4px; text-align: center; vertical-align: top;">'
+                        . '<img src="' . $src . '" style="width: ' . $box . 'px; height: ' . $box . 'px;" />'
                         . '<div style="font-size: 8px; color: #6b7280; margin-top: 2px;">' . $label . '</div>'
                         . '</td>';
                 }
@@ -162,16 +164,51 @@ class CotizationPdfController extends Controller
     private function resolveImage($filename)
     {
         if (empty($filename)) {
-            return '';
+            return null;
         }
 
         $localPath = public_path('storage/products/' . $filename);
         if (file_exists($localPath)) {
-            $mime = mime_content_type($localPath) ?: 'image/jpeg';
-            return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($localPath));
+            $data = file_get_contents($localPath);
+        } else {
+            $context = stream_context_create(['http' => ['timeout' => 10], 'https' => ['timeout' => 10]]);
+            $data = @file_get_contents(self::LEGACY_IMAGE_BASE . rawurlencode($filename), false, $context);
         }
 
-        return self::LEGACY_IMAGE_BASE . rawurlencode($filename);
+        $info = $data ? @getimagesizefromstring($data) : false;
+        if (!$info) {
+            return null;
+        }
+
+        return $this->squareCrop($data) ?: 'data:' . $info['mime'] . ';base64,' . base64_encode($data);
+    }
+
+    /**
+     * Recorta el centro de la imagen a un cuadrado y la reduce a $size px, para que todas
+     * las imágenes del PDF tengan exactamente el mismo tamaño (equivalente a object-fit: cover,
+     * que Dompdf no soporta). También aligera el PDF cuando las fotos son muy grandes.
+     */
+    private function squareCrop($data, $size = 400)
+    {
+        $src = @imagecreatefromstring($data);
+        if (!$src) {
+            return null;
+        }
+
+        $w = imagesx($src);
+        $h = imagesy($src);
+        $lado = min($w, $h);
+
+        $dst = imagecreatetruecolor($size, $size);
+        imagefill($dst, 0, 0, imagecolorallocate($dst, 255, 255, 255)); // fondo blanco para PNG transparentes
+        imagecopyresampled($dst, $src, 0, 0, (int) (($w - $lado) / 2), (int) (($h - $lado) / 2), $size, $size, $lado, $lado);
+
+        ob_start();
+        imagejpeg($dst, null, 85);
+        $jpg = ob_get_clean();
+        unset($src, $dst); // libera la memoria de las imágenes antes de procesar la siguiente
+
+        return 'data:image/jpeg;base64,' . base64_encode($jpg);
     }
 
     /**
@@ -179,13 +216,13 @@ class CotizationPdfController extends Controller
      */
     private function cleanHtml($html)
     {
-        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', (string)$html);
+        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', (string) $html);
         return strip_tags($html, '<p><br><b><strong><i><em><u><ul><ol><li><span>');
     }
 
     private function formatPrecio($costo)
     {
-        $valor = (float)$costo;
+        $valor = (float) $costo;
         return fmod($valor, 1.0) == 0.0 ? number_format($valor, 0) : number_format($valor, 2);
     }
 
@@ -196,6 +233,6 @@ class CotizationPdfController extends Controller
         }
         $meses = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Set.', 'Oct.', 'Nov.', 'Dic.'];
         $ts = strtotime($fecha);
-        return date('j', $ts) . ' de ' . $meses[(int)date('n', $ts) - 1] . ' del ' . date('Y', $ts) . ' ' . date('H:i:s', $ts);
+        return date('j', $ts) . ' de ' . $meses[(int) date('n', $ts) - 1] . ' del ' . date('Y', $ts) . ' ' . date('H:i:s', $ts);
     }
 }
