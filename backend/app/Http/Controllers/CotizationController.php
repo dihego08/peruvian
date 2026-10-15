@@ -6,6 +6,7 @@ use App\Models\Cotizacion;
 use App\Models\CotizacionDetalle;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Exception;
 
 class CotizationController extends Controller
@@ -110,17 +111,11 @@ class CotizationController extends Controller
 
                 // Handle image uploads (las claves van por índice del item, no por producto)
                 if ($request->hasFile("imagen_$index")) {
-                    $file = $request->file("imagen_$index");
-                    $filename = time() . "_{$index}_1_" . $file->getClientOriginalName();
-                    $file->move($destinationPath, $filename);
-                    $imagen = $filename;
+                    $imagen = $this->storeImage($request->file("imagen_$index"), $destinationPath, "{$index}_1");
                 }
 
                 if ($request->hasFile("imagen_b_$index")) {
-                    $file = $request->file("imagen_b_$index");
-                    $filename = time() . "_{$index}_2_" . $file->getClientOriginalName();
-                    $file->move($destinationPath, $filename);
-                    $imagen_2 = $filename;
+                    $imagen_2 = $this->storeImage($request->file("imagen_b_$index"), $destinationPath, "{$index}_2");
                 }
 
                 CotizacionDetalle::create([
@@ -162,6 +157,18 @@ class CotizationController extends Controller
             DB::rollBack();
             return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
         }
+    }
+
+    /**
+     * Guarda la imagen con un nombre corto: cotizacion_detalle.imagen_2 es varchar(100)
+     * y el nombre original (ej. fotos de WhatsApp) puede exceder ese largo.
+     */
+    private function storeImage($file, $destinationPath, $suffix)
+    {
+        $extension = strtolower($file->getClientOriginalExtension() ?: $file->guessExtension() ?: 'jpg');
+        $filename = 'cot_' . time() . "_{$suffix}_" . Str::random(6) . '.' . $extension;
+        $file->move($destinationPath, $filename);
+        return $filename;
     }
 
     public function destroy($codigo)

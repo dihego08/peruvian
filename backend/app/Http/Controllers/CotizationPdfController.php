@@ -55,17 +55,26 @@ class CotizationPdfController extends Controller
             }
         }
 
+        $sinIgv = (int)$cabecera->igv_incluye !== 1;
+
         $detalleRows = '';
         foreach ($detalle as $i => $item) {
             $nombre = $item->nombre_producto ?: ($item->producto_nombre ?? '');
 
-            $imagenes = '';
-            foreach ([$item->imagen, $item->imagen_2] as $img) {
+            // Imagen de modelo y de bordado lado a lado (cada una solo si existe)
+            $celdas = [];
+            foreach (['MODELO' => $item->imagen, 'BORDADO' => $item->imagen_2] as $label => $img) {
                 $src = $this->resolveImage($img);
                 if ($src) {
-                    $imagenes .= '<img src="' . $src . '" style="max-width: 170px; max-height: 170px; margin: 2px;" />';
+                    $celdas[] = '<td style="border: none; padding: 2px; text-align: center; vertical-align: middle;">'
+                        . '<img src="' . $src . '" style="width: 130px; max-height: 160px;" />'
+                        . '<div style="font-size: 8px; color: #6b7280; margin-top: 2px;">' . $label . '</div>'
+                        . '</td>';
                 }
             }
+            $imagenes = $celdas
+                ? '<table style="width: auto; margin: 0 auto;"><tr>' . implode('', $celdas) . '</tr></table>'
+                : '';
 
             $detalleRows .= '<tr>'
                 . '<td style="width: 6%; text-align: center; vertical-align: middle; font-weight: bold;">' . ($i + 1) . '</td>'
@@ -74,7 +83,9 @@ class CotizationPdfController extends Controller
                 . '<div>' . $this->cleanHtml($item->descripcion) . '</div>'
                 . '</td>'
                 . '<td style="width: 44%; text-align: center; vertical-align: middle;">' . $imagenes . '</td>'
-                . '<td style="width: 12%; text-align: center; vertical-align: middle; font-weight: bold;">S/. ' . $this->formatPrecio($item->costo) . '</td>'
+                . '<td style="width: 12%; text-align: center; vertical-align: middle; font-weight: bold;">S/. ' . $this->formatPrecio($item->costo)
+                . ($sinIgv ? '<div style="font-size: 8px; font-weight: normal; margin-top: 4px;">SIN IGV</div>' : '')
+                . '</td>'
                 . '</tr>';
         }
 
@@ -101,6 +112,7 @@ class CotizationPdfController extends Controller
             . '<tr><th>ITEM</th><th>DESCRIPCION</th><th>IMAGEN</th><th>PRECIO</th></tr>'
             . $detalleRows
             . '</table>'
+            . ($sinIgv ? '<p style="margin-top: 8px; font-weight: bold;">* LOS PRECIOS NO INCLUYEN IGV.</p>' : '')
             . '<div class="condiciones" style="margin-top: 30px;">'
             . '<p><strong>SERVICIOS:</strong> ' . e(mb_strtoupper($cabecera->servicios ?? '')) . '</p>'
             . '<p><strong>TIEMPO DE ENTREGA:</strong> ' . e(mb_strtoupper($cabecera->tiempo_entrega ?? '')) . '</p>'
