@@ -259,6 +259,7 @@ Route::get('cotizations', [CotizationController::class, 'index']);
 Route::get('cotizations/{codigo}/pdf', [CotizationPdfController::class, 'downloadCotizationPdf']);
 Route::get('cotizations/{codigo}', [CotizationController::class, 'show']);
 Route::post('cotizations', [CotizationController::class, 'store']);
+Route::post('cotizations/{codigo}', [CotizationController::class, 'update']);
 Route::delete('cotizations/{codigo}', [CotizationController::class, 'destroy']);
 
 // Orders (Pedidos) — rutas específicas antes de {codigo}

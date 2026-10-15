@@ -144,7 +144,8 @@ function MainLayout({ setAuth }) {
             <Route path="/orders/:codigo/edit" element={<EditOrderView />} />
             <Route path="/orders/:codigo/production" element={<OrderProductionView />} />
             <Route path="/cotizations" element={<CotizationsView />} />
-            <Route path="/cotizations/new" element={<NewCotizationView />} />
+            <Route path="/cotizations/new" element={<NewCotizationView key="new" />} />
+            <Route path="/cotizations/:codigo/edit" element={<NewCotizationView key="edit" />} />
             <Route path="/sig/perfil-puesto" element={<PerfilPuestosView />} />
             <Route path="/sig/areas" element={<AreasView />} />
             <Route path="/sig/puestos" element={<PuestosView />} />

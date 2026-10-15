@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../services/api';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import {
@@ -14,6 +14,9 @@ import {
 
 const NewCotizationView = () => {
     const navigate = useNavigate();
+    const { codigo } = useParams();
+    const isEdit = Boolean(codigo);
+    const [loadingCotization, setLoadingCotization] = useState(isEdit);
     const [clients, setClients] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
     const [searchResults, setSearchResults] = useState([]);
@@ -35,10 +38,6 @@ const NewCotizationView = () => {
         aplica_igv: 'yes'
     });
 
-    useEffect(() => {
-        fetchClients();
-    }, []);
-
     const fetchClients = async () => {
         try {
             const response = await api.get('/clients');
@@ -47,6 +46,51 @@ const NewCotizationView = () => {
             console.error('Error fetching clients:', error);
         }
     };
+
+    const fetchCotization = async () => {
+        try {
+            const response = await api.get(`/cotizations/${encodeURIComponent(codigo)}`);
+            const { cabecera, detalle } = response.data;
+            setHeader({
+                person_id: String(cabecera.person_id ?? '0'),
+                cliente_extra: cabecera.cliente || '',
+                tiempo_entrega: cabecera.tiempo_entrega || '',
+                validez: cabecera.validez || '',
+                forma_pago: cabecera.forma_pago || '',
+                tallas_especiales: cabecera.tallas_especiales || '',
+                asesor_comercial: cabecera.asesor_comercial || '',
+                asesor_celular: cabecera.asesor_celular || '',
+                observacion: cabecera.obervacion || '',
+                servicios: cabecera.servicios || '',
+                aplica_igv: Number(cabecera.igv_incluye) === 1 ? 'yes' : 'no'
+            });
+            setSelectedProducts((detalle || []).map(d => ({
+                product_id: d.id_producto,
+                nombre_producto: d.nombre_producto || d.product?.name || '',
+                cantidad: parseFloat(d.cantidad) || 0,
+                costo: parseFloat(d.costo) || 0,
+                descripcion: d.descripcion || '',
+                img_m: d.imagen,
+                img_b: d.imagen_2,
+                file_m: null,
+                file_b: null,
+                preview_m: d.imagen ? getProductImageUrl(d.imagen) : null,
+                preview_b: d.imagen_2 ? getProductImageUrl(d.imagen_2) : null
+            })));
+        } catch (error) {
+            console.error('Error fetching cotization:', error);
+            alert('No se pudo cargar la cotización');
+            navigate('/cotizations');
+        } finally {
+            setLoadingCotization(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchClients();
+        if (isEdit) fetchCotization();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [codigo]);
 
     const handleSearch = async (e) => {
         if (e) e.preventDefault();
@@ -95,6 +139,14 @@ const NewCotizationView = () => {
         setSelectedProducts(newProducts);
     };
 
+    const clearImage = (index, field) => {
+        const newProducts = [...selectedProducts];
+        const p = newProducts[index];
+        if (field === 'm') Object.assign(p, { img_m: null, file_m: null, preview_m: null });
+        else Object.assign(p, { img_b: null, file_b: null, preview_b: null });
+        setSelectedProducts(newProducts);
+    };
+
     const removeProduct = (index) => {
         setSelectedProducts(selectedProducts.filter((_, i) => i !== index));
     };
@@ -139,12 +191,13 @@ const NewCotizationView = () => {
                 if (p.file_b) formData.append(`imagen_b_${idx}`, p.file_b);
             });
 
-            const response = await api.post('/cotizations', formData, {
+            const url = isEdit ? `/cotizations/${encodeURIComponent(codigo)}` : '/cotizations';
+            const response = await api.post(url, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' }
             });
 
             if (response.data.Result === 'OK') {
-                alert(`Cotización N° ${response.data.codigo} guardada correctamente`);
+                alert(`Cotización N° ${response.data.codigo} ${isEdit ? 'actualizada' : 'guardada'} correctamente`);
                 navigate('/cotizations');
             } else {
                 alert('Error: ' + response.data.message);
@@ -161,13 +214,17 @@ const NewCotizationView = () => {
     const igv = header.aplica_igv === 'yes' ? subtotal * 0.18 : 0;
     const total = subtotal + igv;
 
+    if (loadingCotization) {
+        return <div className="text-center py-20 text-gray-400">Cargando cotización...</div>;
+    }
+
     return (
         <div className="flex flex-col gap-6 pb-20">
             {/* Header */}
             <div className="flex items-center justify-between">
                 <div>
-                    <h1 className="text-2xl font-bold text-gray-900">Nueva Cotización</h1>
-                    <p className="text-sm text-gray-500 mt-0.5">Crea una propuesta comercial detallada</p>
+                    <h1 className="text-2xl font-bold text-gray-900">{isEdit ? `Editar Cotización N° ${codigo}` : 'Nueva Cotización'}</h1>
+                    <p className="text-sm text-gray-500 mt-0.5">{isEdit ? 'Modifica los datos y productos de la cotización' : 'Crea una propuesta comercial detallada'}</p>
                 </div>
                 <button
                     onClick={() => navigate('/cotizations')}
@@ -319,8 +376,18 @@ const NewCotizationView = () => {
                                             type="file"
                                             accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer"
-                                            onChange={(e) => handleFileChange(idx, 'm', e.target.files[0])}
+                                            onChange={(e) => { handleFileChange(idx, 'm', e.target.files[0]); e.target.value = ''; }}
                                         />
+                                        {product.preview_m && (
+                                            <button
+                                                type="button"
+                                                onClick={() => clearImage(idx, 'm')}
+                                                className="absolute top-1 right-1 z-10 bg-white/90 text-gray-500 hover:text-red-500 rounded-full p-1 shadow"
+                                                title="Quitar imagen"
+                                            >
+                                                <TrashIcon className="h-4 w-4" />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                                 <div className="space-y-2">
@@ -338,8 +405,18 @@ const NewCotizationView = () => {
                                             type="file"
                                             accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer"
-                                            onChange={(e) => handleFileChange(idx, 'b', e.target.files[0])}
+                                            onChange={(e) => { handleFileChange(idx, 'b', e.target.files[0]); e.target.value = ''; }}
                                         />
+                                        {product.preview_b && (
+                                            <button
+                                                type="button"
+                                                onClick={() => clearImage(idx, 'b')}
+                                                className="absolute top-1 right-1 z-10 bg-white/90 text-gray-500 hover:text-red-500 rounded-full p-1 shadow"
+                                                title="Quitar imagen"
+                                            >
+                                                <TrashIcon className="h-4 w-4" />
+                                            </button>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -478,7 +555,7 @@ const NewCotizationView = () => {
                     disabled={saving}
                     className="bg-blue-600 text-white font-bold px-12 py-2.5 rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all text-sm disabled:opacity-50"
                 >
-                    {saving ? 'Guardando...' : 'Generar Cotización'}
+                    {saving ? 'Guardando...' : (isEdit ? 'Guardar Cambios' : 'Generar Cotización')}
                 </button>
             </div>
         </div>

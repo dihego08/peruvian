@@ -4,6 +4,7 @@ import api from '../../services/api';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import {
     EyeIcon,
+    PencilSquareIcon,
     TrashIcon,
     PlusIcon,
     DocumentTextIcon,
@@ -137,6 +138,13 @@ const CotizationsView = () => {
                                             >
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
+                                            <Link
+                                                to={`/cotizations/${encodeURIComponent(cot.codigo)}/edit`}
+                                                className="inline-block p-2 text-green-600 hover:bg-green-50 rounded-lg transition-colors cursor-pointer"
+                                                title="Editar"
+                                            >
+                                                <PencilSquareIcon className="w-5 h-5" />
+                                            </Link>
                                             <a
                                                 href={`${(import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api').replace(/\/+$/, '')}/cotizations/${encodeURIComponent(cot.codigo)}/pdf`}
                                                 target="_blank"
