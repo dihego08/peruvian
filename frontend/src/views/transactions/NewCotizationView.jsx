@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 import {
     MagnifyingGlassIcon,
     PlusIcon,
@@ -10,9 +11,6 @@ import {
     ChevronDownIcon,
     ChevronUpIcon
 } from '@heroicons/react/24/outline';
-
-const IMAGE_BASE_URL = 'https://peruvian.peruviandress.com/storage/products';
-const LOCAL_IMAGE_BASE_URL = 'http://localhost/peruvian/storage/products';
 
 const NewCotizationView = () => {
     const navigate = useNavigate();
@@ -76,8 +74,8 @@ const NewCotizationView = () => {
             img_b: product.imgbordado,
             file_m: null,
             file_b: null,
-            preview_m: product.image ? `${IMAGE_BASE_URL}/${product.image}` : null,
-            preview_b: product.imgbordado ? `${IMAGE_BASE_URL}/${product.imgbordado}` : null
+            preview_m: product.image ? getProductImageUrl(product.image) : null,
+            preview_b: product.imgbordado ? getProductImageUrl(product.imgbordado) : null
         }]);
         setSearchResults([]);
         setSearchQuery('');
@@ -90,6 +88,7 @@ const NewCotizationView = () => {
     };
 
     const handleFileChange = (index, field, file) => {
+        if (!file) return;
         const newProducts = [...selectedProducts];
         newProducts[index][field === 'm' ? 'file_m' : 'file_b'] = file;
         newProducts[index][field === 'm' ? 'preview_m' : 'preview_b'] = URL.createObjectURL(file);
@@ -134,10 +133,10 @@ const NewCotizationView = () => {
                 img_b: p.img_b
             }))));
 
-            // Append files
-            selectedProducts.forEach(p => {
-                if (p.file_m) formData.append(`imagen_${p.product_id}`, p.file_m);
-                if (p.file_b) formData.append(`imagen_b_${p.product_id}`, p.file_b);
+            // Append files (por índice, para que el mismo producto agregado dos veces no se pise)
+            selectedProducts.forEach((p, idx) => {
+                if (p.file_m) formData.append(`imagen_${idx}`, p.file_m);
+                if (p.file_b) formData.append(`imagen_b_${idx}`, p.file_b);
             });
 
             const response = await api.post('/cotizations', formData, {
@@ -145,14 +144,14 @@ const NewCotizationView = () => {
             });
 
             if (response.data.Result === 'OK') {
-                alert('Cotización guardada correctamente');
+                alert(`Cotización N° ${response.data.codigo} guardada correctamente`);
                 navigate('/cotizations');
             } else {
                 alert('Error: ' + response.data.message);
             }
         } catch (error) {
             console.error('Error saving cotization:', error);
-            alert('Error al guardar la cotización');
+            alert('Error al guardar la cotización: ' + (error.response?.data?.message || error.message));
         } finally {
             setSaving(false);
         }
@@ -220,7 +219,7 @@ const NewCotizationView = () => {
                                         <td className="px-4 py-2">
                                             <div className="w-10 h-10 bg-gray-100 rounded flex items-center justify-center overflow-hidden">
                                                 {product.image ? (
-                                                    <img src={`${IMAGE_BASE_URL}/${product.image}`} className="w-full h-full object-cover" />
+                                                    <img src={getProductImageUrl(product.image)} onError={(e) => handleProductImageError(e, product.image)} className="w-full h-full object-cover" />
                                                 ) : (
                                                     <PhotoIcon className="w-5 h-5 text-gray-400" />
                                                 )}
@@ -281,14 +280,14 @@ const NewCotizationView = () => {
                                         <input
                                             type="number"
                                             className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
-                                            value={product.price_in}
-                                            onChange={(e) => updateProduct(idx, 'price_in', parseFloat(e.target.value) || 0)}
+                                            value={product.costo}
+                                            onChange={(e) => updateProduct(idx, 'costo', parseFloat(e.target.value) || 0)}
                                         />
                                     </div>
                                     <div className="col-span-2 md:col-span-1">
                                         <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Total Item</label>
                                         <div className="p-2 bg-gray-50 rounded-md text-sm font-bold text-blue-600 border border-gray-200">
-                                            S/ {(product.cantidad * product.price_in).toFixed(2)}
+                                            S/ {(product.cantidad * product.costo).toFixed(2)}
                                         </div>
                                     </div>
                                 </div>
@@ -309,7 +308,7 @@ const NewCotizationView = () => {
                                     <label className="block text-xs font-bold text-gray-500 uppercase">Imagen Modelo</label>
                                     <div className="relative h-32 rounded-lg border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors group">
                                         {product.preview_m ? (
-                                            <img src={product.preview_m} className="w-full h-full object-cover rounded-lg" />
+                                            <img src={product.preview_m} onError={(e) => !product.file_m && handleProductImageError(e, product.img_m)} className="w-full h-full object-cover rounded-lg" />
                                         ) : (
                                             <div className="flex flex-col items-center justify-center h-full">
                                                 <PhotoIcon className="h-8 w-8 text-gray-300" />
@@ -318,6 +317,7 @@ const NewCotizationView = () => {
                                         )}
                                         <input
                                             type="file"
+                                            accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer"
                                             onChange={(e) => handleFileChange(idx, 'm', e.target.files[0])}
                                         />
@@ -327,7 +327,7 @@ const NewCotizationView = () => {
                                     <label className="block text-xs font-bold text-gray-500 uppercase">Imagen Bordado</label>
                                     <div className="relative h-32 rounded-lg border-2 border-dashed border-gray-200 hover:border-blue-300 transition-colors group">
                                         {product.preview_b ? (
-                                            <img src={product.preview_b} className="w-full h-full object-cover rounded-lg" />
+                                            <img src={product.preview_b} onError={(e) => !product.file_b && handleProductImageError(e, product.img_b)} className="w-full h-full object-cover rounded-lg" />
                                         ) : (
                                             <div className="flex flex-col items-center justify-center h-full">
                                                 <PhotoIcon className="h-8 w-8 text-gray-300" />
@@ -336,6 +336,7 @@ const NewCotizationView = () => {
                                         )}
                                         <input
                                             type="file"
+                                            accept="image/*"
                                             className="absolute inset-0 opacity-0 cursor-pointer"
                                             onChange={(e) => handleFileChange(idx, 'b', e.target.files[0])}
                                         />

@@ -5,9 +5,8 @@ const LEGACY_COLABORADORES_BASE = 'https://peruvian.peruviandress.com/core/app/v
 
 function getNewBaseUrl() {
   const apiBase = import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api';
-  return apiBase
-    .replace(/\/api$/, '')
-    .replace(/\/backend\/public$/, '');
+  // La API guarda los archivos en su propio public/storage, así que solo se quita el sufijo /api
+  return apiBase.replace(/\/api\/?$/, '');
 }
 
 export function getProductImageUrl(filename) {

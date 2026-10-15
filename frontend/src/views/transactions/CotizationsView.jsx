@@ -113,7 +113,8 @@ const CotizationsView = () => {
                                                 <img
                                                     src={getProductImageUrl(cot.imagen)}
                                                     alt="Thumbnail"
-                                                    onClick={() => setExpandedImage(getProductImageUrl(cot.imagen))}
+                                                    onError={(e) => handleProductImageError(e, cot.imagen)}
+                                                    onClick={(e) => setExpandedImage(e.currentTarget.src)}
                                                     className="w-15 h-15 object-cover rounded border border-gray-200 cursor-pointer hover:opacity-80 transition-opacity"
                                                 />
                                             ) : (
@@ -137,7 +138,7 @@ const CotizationsView = () => {
                                                 <EyeIcon className="w-5 h-5" />
                                             </button>
                                             <a
-                                                href={`https://peruvian.peruviandress.com/core/app/view/pdf-cotizacion.php?codigo=${cot.codigo}`}
+                                                href={`${(import.meta.env.VITE_API_BASE_URL || 'https://apiperuvian.dbusinessaqp.com/api').replace(/\/+$/, '')}/cotizations/${encodeURIComponent(cot.codigo)}/pdf`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="inline-block p-2 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors cursor-pointer"
@@ -236,6 +237,7 @@ const CotizationsView = () => {
                                                                 {item.imagen && (
                                                                     <img
                                                                         src={getProductImageUrl(item.imagen)}
+                                                                        onError={(e) => handleProductImageError(e, item.imagen)}
                                                                         className="w-16 h-16 object-cover rounded border"
                                                                         alt="Modelo"
                                                                     />
@@ -243,6 +245,7 @@ const CotizationsView = () => {
                                                                 {item.imagen_2 && (
                                                                     <img
                                                                         src={getProductImageUrl(item.imagen_2)}
+                                                                        onError={(e) => handleProductImageError(e, item.imagen_2)}
                                                                         className="w-16 h-16 object-cover rounded border"
                                                                         alt="Bordado"
                                                                     />

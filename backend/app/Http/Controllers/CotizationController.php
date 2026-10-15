@@ -58,11 +58,24 @@ class CotizationController extends Controller
 
     public function store(Request $request)
     {
+        $items = json_decode($request->input('items', '[]'), true);
+        if (!is_array($items) || count($items) === 0) {
+            return response()->json(['Result' => 'ERROR', 'message' => 'Debe agregar al menos un producto'], 422);
+        }
+
         DB::beginTransaction();
         try {
-            // Get correlative from kind_doc id=4
-            $correlativo_doc = DB::table('kind_doc')->where('id', 4)->first();
-            $codigo = (string)$correlativo_doc->numero;
+            // Get correlative from kind_doc id=4 (bloqueado para evitar códigos duplicados en guardados simultáneos)
+            $correlativo_doc = DB::table('kind_doc')->where('id', 4)->lockForUpdate()->first();
+            if (!$correlativo_doc) {
+                throw new Exception('No está configurado el correlativo de cotizaciones (kind_doc id=4)');
+            }
+            $numero = (int)$correlativo_doc->numero;
+            // Saltar números ya usados (por si el correlativo quedó desfasado)
+            while (Cotizacion::where('codigo', (string)$numero)->exists()) {
+                $numero++;
+            }
+            $codigo = (string)$numero;
 
             // Create header using model
             $cotizacion = Cotizacion::create([
@@ -85,35 +98,29 @@ class CotizationController extends Controller
             ]);
 
             $total_monto = 0;
-            $items = json_decode($request->input('items'), true);
+            $destinationPath = public_path('storage/products');
 
-            foreach ($items as $item) {
+            foreach ($items as $index => $item) {
                 $productId = $item['product_id'];
                 $cantidad = (float)($item['cantidad'] ?? 0);
                 $costo = (float)($item['costo'] ?? 0);
-                
-                $imagen = null;
-                $imagen_2 = null;
 
-                // Handle image uploads
-                if ($request->hasFile("imagen_$productId")) {
-                    $file = $request->file("imagen_$productId");
-                    $filename = time() . "_1_" . $file->getClientOriginalName();
-                    $destinationPath = base_path('../storage/products');
+                $imagen = !empty($item['img_m']) ? $item['img_m'] : null;
+                $imagen_2 = !empty($item['img_b']) ? $item['img_b'] : null;
+
+                // Handle image uploads (las claves van por índice del item, no por producto)
+                if ($request->hasFile("imagen_$index")) {
+                    $file = $request->file("imagen_$index");
+                    $filename = time() . "_{$index}_1_" . $file->getClientOriginalName();
                     $file->move($destinationPath, $filename);
                     $imagen = $filename;
-                } elseif (!empty($item['img_m'])) {
-                    $imagen = $item['img_m'];
                 }
 
-                if ($request->hasFile("imagen_b_$productId")) {
-                    $file = $request->file("imagen_b_$productId");
-                    $filename = time() . "_2_" . $file->getClientOriginalName();
-                    $destinationPath = base_path('../storage/products');
+                if ($request->hasFile("imagen_b_$index")) {
+                    $file = $request->file("imagen_b_$index");
+                    $filename = time() . "_{$index}_2_" . $file->getClientOriginalName();
                     $file->move($destinationPath, $filename);
                     $imagen_2 = $filename;
-                } elseif (!empty($item['img_b'])) {
-                    $imagen_2 = $item['img_b'];
                 }
 
                 CotizacionDetalle::create([
@@ -147,7 +154,7 @@ class CotizationController extends Controller
             ]);
 
             // Update correlative in kind_doc
-            DB::table('kind_doc')->where('id', 4)->increment('numero');
+            DB::table('kind_doc')->where('id', 4)->update(['numero' => $numero + 1]);
 
             DB::commit();
             return response()->json(['Result' => 'OK', 'codigo' => $codigo]);

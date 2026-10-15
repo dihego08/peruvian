@@ -15,6 +15,7 @@ use App\Http\Controllers\SellPaymentController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderPdfController;
 use App\Http\Controllers\CotizationController;
+use App\Http\Controllers\CotizationPdfController;
 use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\InsumoConfigController;
 use App\Http\Controllers\AuthController;
@@ -255,6 +256,7 @@ Route::delete('sell-payments/payment/{id}', [SellPaymentController::class, 'dele
 
 // Cotizations
 Route::get('cotizations', [CotizationController::class, 'index']);
+Route::get('cotizations/{codigo}/pdf', [CotizationPdfController::class, 'downloadCotizationPdf']);
 Route::get('cotizations/{codigo}', [CotizationController::class, 'show']);
 Route::post('cotizations', [CotizationController::class, 'store']);
 Route::delete('cotizations/{codigo}', [CotizationController::class, 'destroy']);

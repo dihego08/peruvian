@@ -1,0 +1,189 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Support\Facades\DB;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+
+class CotizationPdfController extends Controller
+{
+    private const LEGACY_IMAGE_BASE = 'https://peruvian.peruviandress.com/storage/products/';
+
+    public function downloadCotizationPdf($codigo)
+    {
+        $cabecera = DB::table('cotizacion as c')
+            ->leftJoin('person as pe', 'pe.id', '=', 'c.person_id')
+            ->where('c.codigo', $codigo)
+            ->select([
+                'c.*',
+                'pe.name as person_name',
+                'pe.lastname as person_lastname',
+                'pe.address1 as direccion',
+            ])
+            ->first();
+
+        if (!$cabecera) {
+            return response('Cotización no encontrada', 404);
+        }
+
+        $detalle = DB::table('cotizacion_detalle as cd')
+            ->leftJoin('product as pr', 'pr.id', '=', 'cd.id_producto')
+            ->where('cd.codigo_cotizacion', $codigo)
+            ->select([
+                'cd.*',
+                'pr.name as producto_nombre',
+            ])
+            ->get();
+
+        $cliente = $cabecera->person_id == 0
+            ? ($cabecera->cliente ?? '')
+            : trim(($cabecera->person_name ?? '') . ' ' . ($cabecera->person_lastname ?? ''));
+        $direccion = $cabecera->direccion ?: 'Arequipa';
+
+        $logoPath = public_path('img/logo.png');
+        $logoDataUri = file_exists($logoPath)
+            ? 'data:image/png;base64,' . base64_encode(file_get_contents($logoPath))
+            : 'https://peruvian.dbusinessaqp.com/assets/logo_2-DmLP2iC3.png';
+
+        // Logos de certificaciones ISO (opcionales): se muestran los que existan en backend/public/img
+        $certImgs = '';
+        foreach (['iso9.png', 'iso45.png'] as $cert) {
+            $certPath = public_path('img/' . $cert);
+            if (file_exists($certPath)) {
+                $certImgs .= '<img src="data:image/png;base64,' . base64_encode(file_get_contents($certPath)) . '" style="width: 85px; margin-left: 8px;" />';
+            }
+        }
+
+        $detalleRows = '';
+        foreach ($detalle as $i => $item) {
+            $nombre = $item->nombre_producto ?: ($item->producto_nombre ?? '');
+
+            $imagenes = '';
+            foreach ([$item->imagen, $item->imagen_2] as $img) {
+                $src = $this->resolveImage($img);
+                if ($src) {
+                    $imagenes .= '<img src="' . $src . '" style="max-width: 170px; max-height: 170px; margin: 2px;" />';
+                }
+            }
+
+            $detalleRows .= '<tr>'
+                . '<td style="width: 6%; text-align: center; vertical-align: middle; font-weight: bold;">' . ($i + 1) . '</td>'
+                . '<td style="width: 38%; vertical-align: middle;">'
+                . '<p style="font-weight: bold; margin: 0 0 12px 0;">' . e(mb_strtoupper($nombre)) . '</p>'
+                . '<div>' . $this->cleanHtml($item->descripcion) . '</div>'
+                . '</td>'
+                . '<td style="width: 44%; text-align: center; vertical-align: middle;">' . $imagenes . '</td>'
+                . '<td style="width: 12%; text-align: center; vertical-align: middle; font-weight: bold;">S/. ' . $this->formatPrecio($item->costo) . '</td>'
+                . '</tr>';
+        }
+
+        $celulares = implode(' | ', array_filter([$cabecera->asesor_celular, '958133948']));
+
+        $html = '<!DOCTYPE html><html><head><meta charset="UTF-8" /><style>'
+            . '@page{margin: 40px 50px;}'
+            . 'body{font-family: DejaVu Sans, sans-serif; font-size: 11px; color: #1f2937; margin: 0; padding: 0;}'
+            . 'p{margin: 0 0 10px 0;}'
+            . 'table{border-collapse: collapse; width: 100%;}'
+            . '#tabla_detalles th, #tabla_detalles td{border: 1px solid #9ca3af; padding: 8px;}'
+            . '#tabla_detalles th{font-weight: bold; text-align: center;}'
+            . '.condiciones p{margin: 0 0 12px 0;}'
+            . '</style></head><body>'
+            . '<div style="width: 100%;">'
+            . '<img src="' . $logoDataUri . '" style="width: 200px;" />'
+            . '<h2 style="text-align: center; margin: 25px 0 30px 0; font-size: 18px;">Cotización: ' . e($cabecera->codigo) . '</h2>'
+            . '<p><strong>Fecha:</strong> Arequipa, ' . $this->formatFecha($cabecera->fecha_creacion) . '</p>'
+            . '<p><strong>Señor(es):</strong> ' . e(mb_strtoupper($cliente)) . '</p>'
+            . '<p><strong>Direccion:</strong> ' . e($direccion) . '</p>'
+            . '<p style="margin-top: 18px;">Estimado Señor(a):</p>'
+            . '<p>Nos es grato saludarlo por medio de la presente y hacerle llegar la siguiente cotizacion.</p>'
+            . '<table id="tabla_detalles" style="margin-top: 20px;">'
+            . '<tr><th>ITEM</th><th>DESCRIPCION</th><th>IMAGEN</th><th>PRECIO</th></tr>'
+            . $detalleRows
+            . '</table>'
+            . '<div class="condiciones" style="margin-top: 30px;">'
+            . '<p><strong>SERVICIOS:</strong> ' . e(mb_strtoupper($cabecera->servicios ?? '')) . '</p>'
+            . '<p><strong>TIEMPO DE ENTREGA:</strong> ' . e(mb_strtoupper($cabecera->tiempo_entrega ?? '')) . '</p>'
+            . '<p><strong>VALIDEZ DE LA OFERTA:</strong> ' . e(mb_strtoupper($cabecera->validez ?? '')) . '.</p>'
+            . '<p><strong>FORMA DE PAGO:</strong> ' . e(mb_strtoupper($cabecera->forma_pago ?? '')) . '.</p>'
+            . '<p><strong>TALLAS ESPECIALES:</strong> ' . e(mb_strtoupper($cabecera->tallas_especiales ?? '')) . '.</p>'
+            . '<p><strong>OBSERVACIONES:</strong> ' . e(mb_strtoupper($cabecera->obervacion ?? '')) . '</p>'
+            . '</div>'
+            . '<p style="margin-top: 25px;">Sin otro particular, nos despedimos de Ud. a la espera de sus gratas indicaciones.</p>'
+            . '<table style="margin-top: 20px;"><tr>'
+            . '<td style="width: 65%; vertical-align: bottom;">'
+            . '<p>Gustoso de atenderte...</p>'
+            . '<p>Asesor Comercial</p>'
+            . '<p><strong>' . e(mb_strtoupper($cabecera->asesor_comercial ?? '')) . '</strong></p>'
+            . '<p>Celular: ' . e($celulares) . '</p>'
+            . '<p style="margin: 0;">Correo: <span style="color: #1d4ed8;">ventas@peruviandress.com</span> | <span style="color: #1d4ed8;">omendoza@peruviandress.com</span></p>'
+            . '</td>'
+            . '<td style="width: 35%; text-align: right; vertical-align: bottom;">'
+            . $certImgs
+            . '</td>'
+            . '</tr></table>'
+            . '</div>'
+            . '</body></html>';
+
+        $options = new Options();
+        $options->set('isRemoteEnabled', true);
+        $options->set('isHtml5ParserEnabled', true);
+
+        $dompdf = new Dompdf($options);
+        $dompdf->setPaper('A4', 'portrait');
+        $dompdf->loadHtml($html);
+        $dompdf->render();
+
+        $canvas = $dompdf->getCanvas();
+        $font = $dompdf->getFontMetrics()->getFont('DejaVu Sans', 'italic');
+        $canvas->page_text($canvas->get_width() - 110, $canvas->get_height() - 30, 'Página {PAGE_NUM}/{PAGE_COUNT}', $font, 8, [0, 0, 0]);
+
+        return response($dompdf->output(), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'inline; filename="cotizacion-' . $codigo . '.pdf"',
+        ]);
+    }
+
+    /**
+     * Las imágenes nuevas están en public/storage/products de esta API; las antiguas siguen en el legacy.
+     */
+    private function resolveImage($filename)
+    {
+        if (empty($filename)) {
+            return '';
+        }
+
+        $localPath = public_path('storage/products/' . $filename);
+        if (file_exists($localPath)) {
+            $mime = mime_content_type($localPath) ?: 'image/jpeg';
+            return 'data:' . $mime . ';base64,' . base64_encode(file_get_contents($localPath));
+        }
+
+        return self::LEGACY_IMAGE_BASE . rawurlencode($filename);
+    }
+
+    /**
+     * La descripción se guarda como HTML desde el editor; se conservan solo etiquetas de formato.
+     */
+    private function cleanHtml($html)
+    {
+        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', (string)$html);
+        return strip_tags($html, '<p><br><b><strong><i><em><u><ul><ol><li><span>');
+    }
+
+    private function formatPrecio($costo)
+    {
+        $valor = (float)$costo;
+        return fmod($valor, 1.0) == 0.0 ? number_format($valor, 0) : number_format($valor, 2);
+    }
+
+    private function formatFecha($fecha)
+    {
+        if (empty($fecha)) {
+            return '';
+        }
+        $meses = ['Ene.', 'Feb.', 'Mar.', 'Abr.', 'May.', 'Jun.', 'Jul.', 'Ago.', 'Set.', 'Oct.', 'Nov.', 'Dic.'];
+        $ts = strtotime($fecha);
+        return date('j', $ts) . ' de ' . $meses[(int)date('n', $ts) - 1] . ' del ' . date('Y', $ts) . ' ' . date('H:i:s', $ts);
+    }
+}
