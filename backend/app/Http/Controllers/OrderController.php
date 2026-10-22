@@ -39,7 +39,7 @@ class OrderController extends Controller
                 'oc.total',
                 'oc.imagen_alt',
                 'p.name',
-                DB::raw('DATEDIFF(oc.fecha_entrega, CURDATE()) AS dias_restantes'),
+                DB::raw("DATEDIFF(oc.fecha_entrega, '" . now()->toDateString() . "') AS dias_restantes"), // fecha de hoy en Lima (app.timezone), no la del servidor MySQL
                 'det.modelo AS codigo_modelo',
                 'det.producto',
                 'det.imagen',

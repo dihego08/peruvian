@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { todayLocal } from '../../utils/date';
 
 export default function NewSellView() {
   const navigate = useNavigate();
@@ -30,8 +31,8 @@ export default function NewSellView() {
     incluye_igv: '0',
     tipo_documento: '2',
     // Novedades:
-    fecha_emision: new Date().toISOString().slice(0, 10),
-    fecha_vencimiento: new Date().toISOString().slice(0, 10),
+    fecha_emision: todayLocal(),
+    fecha_vencimiento: todayLocal(),
     tipos_pago: '4',
     tipos_entrega: '',
     forma_pago: '2',
