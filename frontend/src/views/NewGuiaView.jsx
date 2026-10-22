@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../services/api';
+import { todayLocal } from '../utils/date';
 import { PlusIcon, TrashIcon, MagnifyingGlassIcon, ArrowLeftIcon, CheckIcon, XCircleIcon, PencilIcon, XMarkIcon } from '@heroicons/react/24/outline';
 
 // ─── moved OUTSIDE to prevent remount on every render ────────────────────────
@@ -127,7 +128,7 @@ function RucSearch({ label, value, onChange, onFound }) {
 }
 // ─────────────────────────────────────────────────────────────────────────────
 
-const today = new Date().toISOString().split('T')[0];
+const today = todayLocal();
 
 const MOTIVOS = [
   { value: '01', label: 'VTA | Venta' },
