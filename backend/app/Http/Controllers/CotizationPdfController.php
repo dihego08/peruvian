@@ -212,11 +212,17 @@ class CotizationPdfController extends Controller
     }
 
     /**
-     * La descripción se guarda como HTML desde el editor; se conservan solo etiquetas de formato.
+     * Las cotizaciones del legacy guardan la descripción como HTML (se conservan solo etiquetas de formato);
+     * las nuevas la guardan como texto plano desde un textarea, así que se respetan sus saltos de línea.
      */
     private function cleanHtml($html)
     {
-        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', (string) $html);
+        $html = (string) $html;
+        if (!preg_match('#</?(p|br|div|span|b|strong|i|em|u|ul|ol|li|h[1-6]|table|tr|td)\b[^>]*>#i', $html)) {
+            return nl2br(e(trim($html)));
+        }
+
+        $html = preg_replace('#<(script|style)\b[^>]*>.*?</\1>#is', '', $html);
         return strip_tags($html, '<p><br><b><strong><i><em><u><ul><ol><li><span>');
     }
 

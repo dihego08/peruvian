@@ -233,7 +233,12 @@ const CotizationsView = () => {
                                                     <tr key={idx} className="hover:bg-gray-50">
                                                         <td className="px-4 py-4">
                                                             <div className="font-medium text-gray-800">{item.nombre_producto}</div>
-                                                            <div className="text-xs text-gray-500 italic" dangerouslySetInnerHTML={{ __html: item.descripcion }}></div>
+                                                            {/<\/?(p|br|div|span|b|strong|i|em|u|ul|ol|li|h[1-6]|table|tr|td)\b[^>]*>/i.test(item.descripcion || '') ? (
+                                                                // Cotizaciones del legacy: descripción guardada como HTML
+                                                                <div className="text-xs text-gray-500 italic" dangerouslySetInnerHTML={{ __html: item.descripcion }}></div>
+                                                            ) : (
+                                                                <div className="text-xs text-gray-500 italic whitespace-pre-line">{item.descripcion}</div>
+                                                            )}
                                                         </td>
                                                         <td className="px-4 py-4">S/. {parseFloat(item.costo).toFixed(2)}</td>
                                                         <td className="px-4 py-4">{item.cantidad}</td>
