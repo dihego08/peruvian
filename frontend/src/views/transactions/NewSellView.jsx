@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../../services/api';
+import { todayLocal } from '../../utils/date';
 
 export default function NewSellView() {
   const navigate = useNavigate();
@@ -11,6 +12,7 @@ export default function NewSellView() {
   const [tiposPago, setTiposPago] = useState([]);
   const [tiposEntrega, setTiposEntrega] = useState([]);
   const [formasPago, setFormasPago] = useState([]);
+  const [tiposDocumento, setTiposDocumento] = useState([]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
@@ -29,8 +31,8 @@ export default function NewSellView() {
     incluye_igv: '0',
     tipo_documento: '2',
     // Novedades:
-    fecha_emision: new Date().toISOString().slice(0, 10),
-    fecha_vencimiento: new Date().toISOString().slice(0, 10),
+    fecha_emision: todayLocal(),
+    fecha_vencimiento: todayLocal(),
     tipos_pago: '4',
     tipos_entrega: '',
     forma_pago: '2',
@@ -90,18 +92,21 @@ export default function NewSellView() {
 
   const fetchDictionaries = async () => {
     try {
-      const [pRes, dRes, fRes] = await Promise.all([
+      const [pRes, dRes, fRes, tRes] = await Promise.all([
         api.get('/tipos-pago'),
         api.get('/tipos-entrega'),
-        api.get('/forma-pago')
+        api.get('/forma-pago'),
+        api.get('/tipos-documento-venta')
       ]);
       setTiposPago(pRes.data);
       setTiposEntrega(dRes.data);
       setFormasPago(fRes.data);
+      setTiposDocumento(tRes.data);
 
       // Auto select first option if available
       if (pRes.data.length > 0 && !formData.tipos_pago) setFormData(prev => ({ ...prev, tipos_pago: pRes.data[0].id }));
       if (dRes.data.length > 0 && !formData.tipos_entrega) setFormData(prev => ({ ...prev, tipos_entrega: dRes.data[0].id }));
+      if (tRes.data.length > 0 && !formData.tipo_documento) setFormData(prev => ({ ...prev, tipo_documento: tRes.data[0].id }));
     } catch (e) {
       console.warn("Error cargando diccionarios de pago/entrega", e);
     }
@@ -192,8 +197,8 @@ export default function NewSellView() {
     let base = rawSubtotal - discount;
     let sub = 0; let igv = 0; let tot = 0;
 
-    if (formData.tipo_documento === '2') {
-      if (formData.incluye_igv === '1') {
+    if (formData.tipo_documento == '2' || formData.tipo_documento == 2) {
+      if (formData.incluye_igv == '1' || formData.incluye_igv == 1) {
         tot = base;
         sub = tot / 1.18;
         igv = tot - sub;
@@ -473,8 +478,9 @@ export default function NewSellView() {
                 <div>
                   <label className="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Documento</label>
                   <select className="w-full p-2 border border-gray-300 rounded-md focus:border-blue-500 text-sm" value={formData.tipo_documento} onChange={e => setFormData({ ...formData, tipo_documento: e.target.value })}>
-                    <option value="2">Factura/Boleta</option>
-                    <option value="1">Ticket</option>
+                    {tiposDocumento.map(t => (
+                      <option key={t.id} value={t.id}>{t.tipo_documento}</option>
+                    ))}
                   </select>
                 </div>
                 <div>

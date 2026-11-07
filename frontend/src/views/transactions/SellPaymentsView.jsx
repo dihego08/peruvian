@@ -4,11 +4,11 @@ import api from '../../services/api';
 const BANCOS = ['BCP', 'SCOTIABANK', 'BBVA CONTINENTAL', 'INTERBANK'];
 
 export default function SellPaymentsView() {
-  const [sells, setSells]         = useState([]);
-  const [loading, setLoading]     = useState(false);
-  const [totales, setTotales]     = useState({ total_general: 0, total_adeuda: 0 });
-  const [clients, setClients]     = useState([]);
-  const [tiposDoc, setTiposDoc]   = useState([]);
+  const [sells, setSells] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totales, setTotales] = useState({ total_general: 0, total_adeuda: 0 });
+  const [clients, setClients] = useState([]);
+  const [tiposDoc, setTiposDoc] = useState([]);
   const [tiposPago, setTiposPago] = useState([]);
 
   // Filtros
@@ -17,14 +17,14 @@ export default function SellPaymentsView() {
   });
 
   // Modal de detalle + pago
-  const [modal, setModal]           = useState(null);   // cabecera seleccionada
-  const [historial, setHistorial]   = useState([]);
-  const [payForm, setPayForm]       = useState({ monto_pagado: '', fecha: new Date().toISOString().slice(0,10), banco: '', concepto: '' });
+  const [modal, setModal] = useState(null);   // cabecera seleccionada
+  const [historial, setHistorial] = useState([]);
+  const [payForm, setPayForm] = useState({ monto_pagado: '', fecha: new Date().toISOString().slice(0, 10), banco: '', concepto: '' });
   const [adeudaLocal, setAdeudaLocal] = useState(0);
-  const [saving, setSaving]         = useState(false);
+  const [saving, setSaving] = useState(false);
 
   // Estado para detracción (dentro de la modal de detalle)
-  const [detraccionDate, setDetraccionDate] = useState(new Date().toISOString().slice(0,10));
+  const [detraccionDate, setDetraccionDate] = useState(new Date().toISOString().slice(0, 10));
   const [savingDetraccion, setSavingDetraccion] = useState(false);
 
   useEffect(() => {
@@ -35,13 +35,13 @@ export default function SellPaymentsView() {
   }, []);
 
   const fetchClients = async () => {
-    try { const r = await api.get('/clients'); setClients(r.data); } catch (e) {}
+    try { const r = await api.get('/clients'); setClients(r.data); } catch (e) { }
   };
   const fetchTiposDoc = async () => {
-    try { const r = await api.get('/sell-payments/tipos-documento'); setTiposDoc(r.data.Records || []); } catch (e) {}
+    try { const r = await api.get('/sell-payments/tipos-documento'); setTiposDoc(r.data.Records || []); } catch (e) { }
   };
   const fetchTiposPago = async () => {
-    try { const r = await api.get('/tipos-pago'); setTiposPago(r.data); } catch (e) {}
+    try { const r = await api.get('/tipos-pago'); setTiposPago(r.data); } catch (e) { }
   };
 
   const fetchSells = async (params) => {
@@ -67,8 +67,8 @@ export default function SellPaymentsView() {
   const openModal = async (sell) => {
     setModal(sell);
     setAdeudaLocal(parseFloat(sell.a_cuenta || 0));
-    setPayForm({ monto_pagado: '', fecha: new Date().toISOString().slice(0,10), banco: '', concepto: '' });
-    setDetraccionDate(new Date().toISOString().slice(0,10));
+    setPayForm({ monto_pagado: '', fecha: new Date().toISOString().slice(0, 10), banco: '', concepto: '' });
+    setDetraccionDate(new Date().toISOString().slice(0, 10));
     try {
       const r = await api.get(`/sell-payments/${sell.codigo_venta}/history`);
       setHistorial(r.data.Records || []);
@@ -157,15 +157,15 @@ export default function SellPaymentsView() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Desde</label>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.desde} onChange={e => setFilters({...filters, desde: e.target.value})} />
+            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.desde} onChange={e => setFilters({ ...filters, desde: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Hasta</label>
-            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.hasta} onChange={e => setFilters({...filters, hasta: e.target.value})} />
+            <input type="date" className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.hasta} onChange={e => setFilters({ ...filters, hasta: e.target.value })} />
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Por Pago</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_pago} onChange={e => setFilters({...filters, tipos_pago: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_pago} onChange={e => setFilters({ ...filters, tipos_pago: e.target.value })}>
               <option value="">Todos</option>
               {tiposPago.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
               <option value="-1">Pendiente de Pago</option>
@@ -173,14 +173,14 @@ export default function SellPaymentsView() {
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Documento</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_documento} onChange={e => setFilters({...filters, tipos_documento: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.tipos_documento} onChange={e => setFilters({ ...filters, tipos_documento: e.target.value })}>
               <option value="0">Todos</option>
               {tiposDoc.map(t => <option key={t.id} value={t.id}>{t.tipo_documento}</option>)}
             </select>
           </div>
           <div>
             <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Cliente</label>
-            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.combo_cliente} onChange={e => setFilters({...filters, combo_cliente: e.target.value})}>
+            <select className="w-full p-2 border border-gray-300 rounded-md text-sm focus:border-blue-500" value={filters.combo_cliente} onChange={e => setFilters({ ...filters, combo_cliente: e.target.value })}>
               <option value="0">Todos</option>
               {clients.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
             </select>
