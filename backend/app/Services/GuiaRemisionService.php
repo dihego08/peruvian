@@ -21,7 +21,9 @@ class GuiaRemisionService
 {
     private const RUC_EMPRESA = '20455175781';
     private const RAZON_SOCIAL_EMPRESA = 'PERUVIAN DRESS TPX S.A.C.';
-    private const SLEEP_TIME = 60;
+    // Consulta del ticket: cada 3 s hasta 20 s, para que la petición termine bien antes del timeout del hosting
+    private const POLL_INTERVAL = 3;
+    private const POLL_MAX_SECONDS = 20;
 
     public function createSee(): \Greenter\Api
     {
@@ -45,69 +47,45 @@ class GuiaRemisionService
         return $api;
     }
 
+    /**
+     * Envía la guía y consulta su ticket por un tiempo corto (POLL_MAX_SECONDS).
+     * Antes se esperaba un sleep fijo de 60 s y el proxy de Hostinger cortaba la petición con 504
+     * aunque el envío terminaba bien. Si SUNAT sigue procesando se devuelve Result = PENDIENTE y el
+     * ticket queda guardado: al volver a llamar se consulta ese ticket en lugar de reenviar la guía.
+     */
     public function procesarGuia(int $idGuia): array
     {
         try {
-            DB::statement("SET SESSION wait_timeout = 120");
-            DB::statement("SET SESSION interactive_timeout = 120");
-
-            DB::beginTransaction();
-
             $guia = $this->obtenerGuia($idGuia);
             if (!$guia) {
-                DB::rollBack();
                 return ['Result' => 'ERROR', 'Message' => 'Guía no encontrada'];
             }
 
+            if ((int) $guia['estado'] === 1) {
+                return ['Result' => 'OK', 'Message' => 'La guía ya fue aceptada por SUNAT'];
+            }
+
             $despatch = $this->construirDespatch($guia, $idGuia);
-
             $api = $this->createSee();
-            $res = $api->send($despatch);
-            $this->saveXml($despatch, $api->getLastXml());
+            $ticket = $guia['ticket'] ?? null;
 
-            if (!$res->isSuccess()) {
-                $errorMsg = $res->getError()->getMessage();
-                $this->guardarRespuestaSunat($idGuia, $errorMsg);
-                DB::commit();
-                return ['Result' => 'ERROR', 'Message' => $errorMsg];
+            if (empty($ticket)) {
+                $res = $api->send($despatch);
+                $this->saveXml($despatch, $api->getLastXml());
+
+                if (!$res->isSuccess()) {
+                    $errorMsg = $res->getError()->getMessage();
+                    $this->guardarRespuestaSunat($idGuia, $errorMsg);
+                    return ['Result' => 'ERROR', 'Message' => $errorMsg];
+                }
+
+                $ticket = $res->getTicket();
+                // Se guarda de inmediato para no reenviar la guía si esta petición se corta
+                $this->guardarTicket($idGuia, $ticket);
             }
 
-            $ticket = $res->getTicket();
-
-            sleep(self::SLEEP_TIME);
-            $res = $api->getStatus($ticket);
-
-            if (!$res->isSuccess()) {
-                $errorMsg = $res->getError()->getMessage();
-                $this->guardarRespuestaSunat($idGuia, $errorMsg);
-                DB::commit();
-                return ['Result' => 'ERROR', 'Message' => $errorMsg];
-            }
-
-            $cdr = $res->getCdrResponse();
-            $this->saveCdr($despatch, $res->getCdrZip());
-
-            if ($cdr->isAccepted()) {
-                $this->actualizarGuiaAceptada($idGuia, $ticket);
-                $respuesta = $this->formatearRespuestaCdr($cdr);
-                $this->guardarRespuestaSunat($idGuia, $respuesta);
-
-                DB::commit();
-
-                return ['Result' => 'OK', 'Message' => $cdr->getDescription()];
-            } else {
-                $errorMsg = $this->formatearRespuestaCdr($cdr);
-                $this->guardarRespuestaSunat($idGuia, $errorMsg);
-
-                DB::commit();
-
-                return ['Result' => 'ERROR', 'Message' => $errorMsg];
-            }
+            return $this->consultarTicket($idGuia, $ticket, $despatch, $api);
         } catch (\Exception $e) {
-            if (DB::transactionLevel() > 0) {
-                DB::rollBack();
-            }
-
             $errorMsg = "Excepción: " . $e->getMessage() . " | Línea: " . $e->getLine();
 
             try {
@@ -253,6 +231,55 @@ class GuiaRemisionService
     {
         $cond = DB::table('conductores')->where('ruc', $ruc)->first();
         return $cond ? (array) $cond : null;
+    }
+
+    /**
+     * Consulta el ticket cada POLL_INTERVAL segundos mientras SUNAT responda 98 (en proceso).
+     */
+    private function consultarTicket(int $idGuia, string $ticket, Despatch $despatch, \Greenter\Api $api): array
+    {
+        $inicio = time();
+
+        do {
+            sleep(self::POLL_INTERVAL);
+            $res = $api->getStatus($ticket);
+            $enProceso = !$res->isSuccess() && $res->getCode() === '98';
+        } while ($enProceso && (time() - $inicio) < self::POLL_MAX_SECONDS);
+
+        if ($enProceso) {
+            return [
+                'Result' => 'PENDIENTE',
+                'Message' => 'SUNAT aún está procesando la guía. Se volverá a consultar en unos segundos.',
+            ];
+        }
+
+        if (!$res->isSuccess()) {
+            $errorMsg = $res->getError()->getMessage();
+            $this->guardarRespuestaSunat($idGuia, $errorMsg);
+            // Sin CDR no hay respuesta definitiva de SUNAT: se limpia el ticket para poder reenviar
+            if (!$res->getCdrZip()) {
+                $this->guardarTicket($idGuia, null);
+            }
+            return ['Result' => 'ERROR', 'Message' => $errorMsg];
+        }
+
+        $cdr = $res->getCdrResponse();
+        $this->saveCdr($despatch, $res->getCdrZip());
+        $respuesta = $this->formatearRespuestaCdr($cdr);
+        $this->guardarRespuestaSunat($idGuia, $respuesta);
+
+        if ($cdr->isAccepted()) {
+            $this->actualizarGuiaAceptada($idGuia, $ticket);
+            return ['Result' => 'OK', 'Message' => $cdr->getDescription()];
+        }
+
+        $this->guardarTicket($idGuia, null);
+        return ['Result' => 'ERROR', 'Message' => $respuesta];
+    }
+
+    private function guardarTicket(int $idGuia, ?string $ticket): void
+    {
+        DB::table('guia_cabecera')->where('id', $idGuia)->update(['ticket' => $ticket]);
     }
 
     private function actualizarGuiaAceptada(int $idGuia, string $ticket): void
