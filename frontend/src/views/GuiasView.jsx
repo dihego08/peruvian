@@ -83,8 +83,18 @@ export default function GuiasView() {
     if (!window.confirm('¿Enviar esta guía a SUNAT?')) return;
     setSendingSunatId(id);
     try {
-      const response = await api.post(`/guias/${id}/send-sunat`);
-      if (response.data.Result === 'ERROR') {
+      // Cada llamada dura como máximo ~25 s. Si SUNAT sigue procesando (PENDIENTE) se vuelve a
+      // llamar: el backend consulta el ticket guardado, no reenvía la guía.
+      let response = await api.post(`/guias/${id}/send-sunat`);
+      for (let intento = 0; response.data.Result === 'PENDIENTE' && intento < 4; intento++) {
+        await new Promise((resolve) => setTimeout(resolve, 5000));
+        response = await api.post(`/guias/${id}/send-sunat`);
+      }
+
+      if (response.data.Result === 'PENDIENTE') {
+        alert('SUNAT aún está procesando la guía. Vuelva a presionar "Enviar a SUNAT" en unos minutos para consultar su estado (no se reenviará).');
+        fetchGuias();
+      } else if (response.data.Result === 'ERROR') {
         alert(`Error de SUNAT:\n${response.data.Message || 'Error desconocido.'}`);
       } else {
         alert(response.data.Message || 'Guía enviada a SUNAT exitosamente.');
@@ -101,11 +111,18 @@ export default function GuiasView() {
     }
   };
 
-  const estadoBadge = (estado) => {
+  const estadoBadge = (estado, ticket) => {
     if (estado == 1) {
       return (
         <span className="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-[10px] font-bold uppercase tracking-wide">
           Emitida
+        </span>
+      );
+    }
+    if (ticket) {
+      return (
+        <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-[10px] font-bold uppercase tracking-wide" title="Enviada; SUNAT aún no responde">
+          En proceso SUNAT
         </span>
       );
     }
@@ -231,7 +248,7 @@ export default function GuiasView() {
                 <td className="px-4 py-3 text-gray-600 text-xs">{g.ruc_conductor}</td>
                 <td className="px-4 py-3 text-right font-semibold text-gray-800 text-xs">{g.total_bruto}</td>
                 <td className="px-4 py-3 text-right font-semibold text-gray-800 text-xs">{g.total_neto}</td>
-                <td className="px-4 py-3">{estadoBadge(g.estado)}</td>
+                <td className="px-4 py-3">{estadoBadge(g.estado, g.ticket)}</td>
                 <td className="px-4 py-3">
                   <div className="flex items-center justify-center gap-1">
                     <button
@@ -250,7 +267,7 @@ export default function GuiasView() {
                     >
                       <DocumentTextIcon className="h-4 w-4" />
                     </a>
-                    {g.estado != 1 && (
+                    {g.estado != 1 && !g.ticket && (
                       <button
                         onClick={() => navigate(`/guias/${g.id}/edit`)}
                         className="p-1.5 text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
@@ -298,7 +315,7 @@ export default function GuiasView() {
             <div className="mx-auto w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mb-4"></div>
             <h3 className="text-lg font-bold text-gray-900 mb-2">Enviando a SUNAT</h3>
             <p className="text-sm text-gray-500">
-              Por favor, espere. Este proceso demora aproximadamente 60 segundos debido a la generación del ticket y respuesta de SUNAT.
+              Por favor, espere. SUNAT genera un ticket y su respuesta puede tardar desde unos segundos hasta un par de minutos.
             </p>
           </div>
         </div>

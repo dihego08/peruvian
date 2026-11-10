@@ -187,6 +187,11 @@ class GuiaController extends Controller
             return response()->json($resultado);
         }
 
+        // SUNAT aún procesa el ticket: el frontend vuelve a llamar a este endpoint para consultarlo
+        if (isset($resultado['Result']) && $resultado['Result'] === 'PENDIENTE') {
+            return response()->json($resultado, 202);
+        }
+
         return response()->json($resultado, 500);
     }
 
@@ -201,6 +206,13 @@ class GuiaController extends Controller
             return response()->json([
                 'Result' => 'ERROR',
                 'Message' => 'No se puede editar una guía que ya ha sido emitida o aceptada por SUNAT'
+            ], 422);
+        }
+
+        if (!empty($guia->ticket)) {
+            return response()->json([
+                'Result' => 'ERROR',
+                'Message' => 'La guía fue enviada y SUNAT aún la está procesando; no se puede editar hasta tener su respuesta'
             ], 422);
         }
 
