@@ -120,10 +120,14 @@ class TransactionController extends Controller
             return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
         }
     }
-    public function getSells()
+    public function getSells(Request $request)
     {
+        $desde = $request->query('desde');
+        $hasta = $request->query('hasta');
+        $hasDateFilter = $desde || $hasta;
+
         // Consulta la tabla legacy ventas_cabecera con los mismos joins que clsVenta.php lista_ventas()
-        $sells = DB::table('ventas_cabecera as vc')
+        $query = DB::table('ventas_cabecera as vc')
             ->leftJoin('person as pe', 'pe.id', '=', 'vc.id_person')
             ->leftJoin('p', 'p.id', '=', 'vc.id_estado_pago')
             ->leftJoin('d', 'd.id', '=', 'vc.id_estado_entrega')
@@ -138,9 +142,16 @@ class TransactionController extends Controller
                 'f.name as tipo_pago',
                 'k.tipo_documento as tipo_doc_nombre',
             ])
-            ->orderBy('vc.fecha_emision', 'desc')
-            ->limit(500)
-            ->get();
+            ->when($desde, fn ($q) => $q->whereDate('vc.fecha_emision', '>=', $desde))
+            ->when($hasta, fn ($q) => $q->whereDate('vc.fecha_emision', '<=', $hasta))
+            ->orderBy('vc.fecha_emision', 'desc');
+
+        // Sin filtro de fechas se mantiene el límite para no cargar todo el historial
+        if (!$hasDateFilter) {
+            $query->limit(500);
+        }
+
+        $sells = $query->get();
 
         return response()->json([
             'Result' => 'OK',

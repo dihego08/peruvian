@@ -66,6 +66,31 @@ class GuiaController extends Controller
     }
 
     /**
+     * Actualiza el pedido de un ítem de la guía (desde el modal de detalle)
+     */
+    public function updateItemPedido(Request $request, $id)
+    {
+        $request->validate([
+            'pedido' => 'nullable|string|max:25',
+        ]);
+
+        try {
+            $exists = DB::table('guia_detalle')->where('id', $id)->exists();
+            if (!$exists) {
+                return response()->json(['Result' => 'ERROR', 'message' => 'Ítem no encontrado'], 404);
+            }
+
+            DB::table('guia_detalle')->where('id', $id)->update([
+                'pedido' => $request->input('pedido') ?? '',
+            ]);
+
+            return response()->json(['Result' => 'OK', 'message' => 'Pedido actualizado']);
+        } catch (\Exception $e) {
+            return response()->json(['Result' => 'ERROR', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    /**
      * Get the next guide number (T001-XXXX) based on the aux table
      */
     public function nextNumGuia()
