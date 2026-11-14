@@ -68,11 +68,11 @@ class SellPaymentController extends Controller
         $records = $query->limit(500)->get();
 
         return response()->json([
-            'Result'  => 'OK',
+            'Result' => 'OK',
             'Records' => $records,
             'totales' => [
                 'total_general' => $records->sum('valor_pagar'),
-                'total_adeuda'  => $records->sum('a_cuenta'),
+                'total_adeuda' => $records->sum('a_cuenta'),
             ]
         ]);
     }
@@ -85,7 +85,6 @@ class SellPaymentController extends Controller
     {
         $pagos = DB::table('pagos')
             ->where('codigo_venta', $codigo_venta)
-            ->orderBy('fecha_creacion', 'asc')
             ->select([
                 'id',
                 'codigo_venta',
@@ -96,11 +95,34 @@ class SellPaymentController extends Controller
                 'pago',
                 'deuda',
                 DB::raw("DATE(fecha_creacion) as fecha_creacion"),
+                DB::raw("'pago' as tipo"),
             ])
             ->get();
 
+        $venta = DB::table('ventas_cabecera')
+            ->where('codigo_venta', $codigo_venta)
+            ->select('id_person', 'detraccion_p', 'detraccion_paga', 'fecha_pago_detraccion')
+            ->first();
+
+        if ($venta && $venta->detraccion_p > 0) {
+            $pagos->push((object) [
+                'id' => null,
+                'codigo_venta' => $codigo_venta,
+                'id_person' => $venta->id_person,
+                'banco' => "BN",
+                'concepto' => $venta->detraccion_paga ? 'Detracción' : 'Detracción (pendiente)',
+                'total' => $venta->detraccion_p,
+                'pago' => $venta->detraccion_paga ? $venta->detraccion_p : 0,
+                'deuda' => $venta->detraccion_paga ? 0 : $venta->detraccion_p,
+                'fecha_creacion' => $venta->fecha_pago_detraccion,
+                'tipo' => 'detraccion',
+            ]);
+        }
+
+        $pagos = $pagos->sortBy('fecha_creacion')->values();
+
         return response()->json([
-            'Result'  => 'OK',
+            'Result' => 'OK',
             'Records' => $pagos,
         ]);
     }
@@ -113,9 +135,9 @@ class SellPaymentController extends Controller
     {
         $request->validate([
             'monto_pagado' => 'required|numeric|min:0.01',
-            'fecha'        => 'required|date',
-            'banco'        => 'nullable|string|max:100',
-            'concepto'     => 'nullable|string|max:255',
+            'fecha' => 'required|date',
+            'banco' => 'nullable|string|max:100',
+            'concepto' => 'nullable|string|max:255',
         ]);
 
         DB::beginTransaction();
@@ -131,17 +153,17 @@ class SellPaymentController extends Controller
 
             $montoPagado = (float) $request->monto_pagado;
             $adeudaActual = (float) $venta->a_cuenta;
-            $nuevaDeuda   = max(0, $adeudaActual - $montoPagado);
+            $nuevaDeuda = max(0, $adeudaActual - $montoPagado);
 
             // Insertar registro en tabla pagos
             DB::table('pagos')->insert([
-                'codigo_venta'   => $codigo_venta,
-                'id_person'      => $venta->id_person,
-                'total'          => $venta->valor_pagar,
-                'pago'           => $montoPagado,
-                'deuda'          => $nuevaDeuda,
-                'banco'          => $request->banco ?? '',
-                'concepto'       => $request->concepto ?? '',
+                'codigo_venta' => $codigo_venta,
+                'id_person' => $venta->id_person,
+                'total' => $venta->valor_pagar,
+                'pago' => $montoPagado,
+                'deuda' => $nuevaDeuda,
+                'banco' => $request->banco ?? '',
+                'concepto' => $request->concepto ?? '',
                 'fecha_creacion' => $request->fecha,
             ]);
 
@@ -150,16 +172,16 @@ class SellPaymentController extends Controller
             DB::table('ventas_cabecera')
                 ->where('codigo_venta', $codigo_venta)
                 ->update([
-                    'pagado'  => $nuevoPagado,
+                    'pagado' => $nuevoPagado,
                     'a_cuenta' => $nuevaDeuda,
                 ]);
 
             DB::commit();
 
             return response()->json([
-                'Result'     => 'OK',
+                'Result' => 'OK',
                 'nueva_deuda' => $nuevaDeuda,
-                'pagado'     => $nuevoPagado,
+                'pagado' => $nuevoPagado,
             ]);
 
         } catch (\Exception $e) {
@@ -184,7 +206,7 @@ class SellPaymentController extends Controller
             DB::table('ventas_cabecera')
                 ->where('codigo_venta', $pago->codigo_venta)
                 ->update([
-                    'pagado'   => DB::raw("GREATEST(0, pagado - {$pago->pago})"),
+                    'pagado' => DB::raw("GREATEST(0, pagado - {$pago->pago})"),
                     'a_cuenta' => DB::raw("a_cuenta + {$pago->pago}"),
                 ]);
 
@@ -206,7 +228,6 @@ class SellPaymentController extends Controller
         $tipos = DB::table('kind_doc')->select('id', 'tipo_documento')->get();
         return response()->json(['Result' => 'OK', 'Records' => $tipos]);
     }
-
     /**
      * Registrar el pago de la detracción
      */
@@ -214,7 +235,7 @@ class SellPaymentController extends Controller
     {
         $request->validate([
             'paga' => 'required|in:0,1',
-            'fecha_pago' => 'required|date'
+            'fecha_pago' => 'required_if:paga,1|nullable|date'
         ]);
 
         try {
@@ -222,7 +243,7 @@ class SellPaymentController extends Controller
                 ->where('codigo_venta', $codigo_venta)
                 ->update([
                     'detraccion_paga' => $request->paga,
-                    'fecha_pago_detraccion' => $request->fecha_pago,
+                    'fecha_pago_detraccion' => $request->paga == 1 ? $request->fecha_pago : null,
                 ]);
 
             return response()->json(['Result' => 'OK']);

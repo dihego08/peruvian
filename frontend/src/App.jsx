@@ -7,6 +7,7 @@ import ProvidersView from './views/ProvidersView';
 import BrandsView from './views/BrandsView';
 import SellsView from './views/transactions/SellsView';
 import NewSellView from './views/transactions/NewSellView';
+import EditSellView from './views/transactions/EditSellView';
 import SellPaymentsView from './views/transactions/SellPaymentsView';
 import OrdersView from './views/transactions/OrdersView';
 import NewOrderView from './views/transactions/NewOrderView';
@@ -34,6 +35,7 @@ import PuestosView from './views/PuestosView';
 import ColaboradoresView from './views/ColaboradoresView';
 import GuiasView from './views/GuiasView';
 import NewGuiaView from './views/NewGuiaView';
+import EditGuiaView from './views/EditGuiaView';
 import SellsSunatView from './views/reports/SellsSunatView';
 import VentasClienteView from './views/reports/VentasClienteView';
 import VentasMensualesView from './views/reports/VentasMensualesView';
@@ -135,6 +137,7 @@ function MainLayout({ setAuth }) {
             <Route path="/purchases/new" element={<NewPurchaseView />} />
             <Route path="/sells" element={<SellsView />} />
             <Route path="/sells/new" element={<NewSellView />} />
+            <Route path="/sells/:codigo/edit" element={<EditSellView />} />
             <Route path="/sell-payments" element={<SellPaymentsView />} />
             <Route path="/orders" element={<OrdersView />} />
             <Route path="/orders/new" element={<NewOrderView />} />
@@ -149,6 +152,7 @@ function MainLayout({ setAuth }) {
             <Route path="/sig/documents" element={<DocumentsView />} />
             <Route path="/guias" element={<GuiasView />} />
             <Route path="/guias/new" element={<NewGuiaView />} />
+            <Route path="/guias/:id/edit" element={<EditGuiaView />} />
             <Route path="/insumos" element={<InsumosView />} />
             <Route path="/unidades" element={<UnidadesView />} />
             <Route path="/fam-class" element={<FamClassView />} />

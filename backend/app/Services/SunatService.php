@@ -18,6 +18,8 @@ use Greenter\Ws\Services\SunatEndpoints;
 
 class SunatService
 {
+    private const TIMEZONE = 'America/Lima';
+
     public function createSee(): See
     {
         $see = new See();
@@ -110,6 +112,30 @@ class SunatService
 
         return $items;
     }
+    /**
+     * Fecha de emisión que va a SUNAT: la que el usuario eligió en la venta (fecha_emision),
+     * no el momento en que se registró (fecha_creacion). Si es hoy se usa la hora actual de Lima;
+     * si es otro día, 00:00:00. Greenter la formatea con la zona horaria por defecto de PHP,
+     * por eso config('app.timezone') debe ser America/Lima.
+     */
+    private function fechaEmision(array $cabecera): \DateTime
+    {
+        $tz = new \DateTimeZone(self::TIMEZONE);
+        $ahora = new \DateTime('now', $tz);
+        $fecha = trim((string) ($cabecera['fecha_emision'] ?? ''));
+
+        if ($fecha === '') {
+            return $ahora;
+        }
+
+        $emision = new \DateTime(substr($fecha, 0, 10), $tz);
+        if ($emision->format('Y-m-d') === $ahora->format('Y-m-d')) {
+            return $ahora;
+        }
+
+        return $emision;
+    }
+
     public function buildInvoice(array $cabecera, array $items, Client $client, Company $company): Invoice
     {
         $num_factura = explode('-', $cabecera['codigo_venta']);
@@ -121,7 +147,7 @@ class SunatService
             ->setTipoDoc('01')
             ->setSerie($num_factura[0])
             ->setCorrelativo($num_factura[1])
-            ->setFechaEmision(new \DateTime($cabecera['fecha_creacion']))
+            ->setFechaEmision($this->fechaEmision($cabecera))
             ->setTipoMoneda('PEN')
             ->setCompany($company)
             ->setClient($client)
@@ -209,7 +235,7 @@ class SunatService
             ->setDesMotivo($motivo)
             ->setTipoDoc('07') // Nota de Crédito
             ->setSerie('FF01')
-            ->setFechaEmision(new \DateTime())
+            ->setFechaEmision(new \DateTime('now', new \DateTimeZone(self::TIMEZONE)))
             ->setCorrelativo($correlativoNc)
             ->setTipoMoneda('PEN')
             ->setCompany($company)

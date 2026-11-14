@@ -24,7 +24,7 @@ class OrderPdfController extends Controller
                 'oc.fecha_entrega',
                 'oc.estado',
                 'p.name',
-                DB::raw('DATEDIFF(oc.fecha_entrega, CURDATE()) as trans'),
+                DB::raw("DATEDIFF(oc.fecha_entrega, '" . now()->toDateString() . "') as trans"), // fecha de hoy en Lima (app.timezone), no la del servidor MySQL
                 'oc.total',
                 DB::raw('(SELECT p.image FROM order_detalle_2 d INNER JOIN product p ON d.modelo = p.code WHERE d.codigo_cabecera = oc.codigo ORDER BY d.id ASC LIMIT 1) as imagen'),
                 DB::raw('(SELECT sum(d.ptotal) FROM order_detalle_2 d WHERE d.codigo_cabecera = oc.codigo) as totalp')
