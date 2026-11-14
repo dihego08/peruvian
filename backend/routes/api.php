@@ -131,6 +131,7 @@ Route::get('guias/departamentos', [GuiaController::class, 'getDepartamentos']);
 Route::get('guias/provincias', [GuiaController::class, 'getProvincias']);
 Route::get('guias/distritos', [GuiaController::class, 'getDistritos']);
 Route::get('guias/{id}/detalle', [GuiaController::class, 'show']);
+Route::patch('guias/item/{id}/pedido', [GuiaController::class, 'updateItemPedido']);
 Route::get('guias/{id}/pdf', [GuiaPdfController::class, 'downloadGuiaPdf']);
 Route::post('guias/{id}/send-sunat', [GuiaController::class, 'sendToSunat']);
 Route::delete('guias/{id}', [GuiaController::class, 'destroy']);

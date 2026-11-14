@@ -26,10 +26,6 @@ export default function GuiasView() {
   const [detailLoading, setDetailLoading] = useState(false);
   const [detailData, setDetailData] = useState(null);
 
-  useEffect(() => {
-    fetchGuias();
-  }, []);
-
   const fetchGuias = async (params = {}) => {
     setLoading(true);
     try {
@@ -50,6 +46,11 @@ export default function GuiasView() {
     }
   };
 
+  // Solo al abrir la pantalla; las búsquedas posteriores llaman a fetchGuias desde handleSearch
+  useEffect(() => {
+    fetchGuias();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
   const handleSearch = (e) => {
     e.preventDefault();
     fetchGuias();
@@ -69,12 +70,28 @@ export default function GuiasView() {
     }
   };
 
+  const handlePedidoChange = (itemId, val) => {
+    setDetailData(prev => ({
+      ...prev,
+      detalle: prev.detalle.map(item => item.id === itemId ? { ...item, pedido: val } : item),
+    }));
+  };
+
+  const savePedido = async (itemId, val) => {
+    try {
+      await api.patch(`/guias/item/${itemId}/pedido`, { pedido: val });
+    } catch (e) {
+      console.error(e);
+      alert(e.response?.data?.message || 'Error al actualizar el pedido');
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('¿Seguro de eliminar esta guía de remisión?')) return;
     try {
       await api.delete(`/guias/${id}`);
       fetchGuias();
-    } catch (e) {
+    } catch {
       alert('Error al eliminar la guía');
     }
   };
@@ -409,7 +426,17 @@ export default function GuiasView() {
                                 }}
                               />
                             </td>
-                            <td className="px-4 py-3 text-gray-600 text-xs">{item.pedido}</td>
+                            <td className="px-4 py-3 text-gray-600 text-xs">
+                              <input
+                                type="text"
+                                maxLength={25}
+                                className="w-full min-w-[70px] p-1.5 border border-gray-300 rounded text-center focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+                                value={item.pedido || ''}
+                                onChange={(e) => handlePedidoChange(item.id, e.target.value)}
+                                onBlur={(e) => savePedido(item.id, e.target.value)}
+                                placeholder="Pedido"
+                              />
+                            </td>
                             <td className="px-4 py-3 text-right font-bold text-gray-800">{item.cantidad}</td>
                             <td className="px-4 py-3 text-center text-gray-600 text-xs">{item.unidad}</td>
                             <td className="px-4 py-3 text-right text-gray-700">{item.t_neto}</td>

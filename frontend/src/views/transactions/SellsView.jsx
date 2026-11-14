@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../services/api';
-import { EyeIcon, ArrowUpTrayIcon, DocumentTextIcon, ArrowDownTrayIcon } from '@heroicons/react/24/outline';
+import { EyeIcon, DocumentTextIcon, ArrowDownTrayIcon, TableCellsIcon } from '@heroicons/react/24/outline';
+import * as XLSX from 'xlsx';
 import { getProductImageUrl, handleProductImageError } from '../../utils/image';
 
 export default function SellsView() {
   const [sells, setSells] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
-  const [sendSunatLoading, setSendSunatLoading] = useState(false);
+  const [desde, setDesde] = useState('');
+  const [hasta, setHasta] = useState('');
   const [sendingSunatId, setSendingSunatId] = useState(null);
 
   // Modal state
@@ -21,11 +23,12 @@ export default function SellsView() {
   const [anularReason, setAnularReason] = useState('-1');
   const [anularLoading, setAnularLoading] = useState(false);
 
-  useEffect(() => { fetchSells(); }, []);
-
   const fetchSells = async () => {
     try {
-      const response = await api.get('/transactions/sells');
+      const params = {};
+      if (desde) params.desde = desde;
+      if (hasta) params.hasta = hasta;
+      const response = await api.get('/transactions/sells', { params });
       setSells(response.data.Records || []);
     } catch (error) {
       console.error('Error fetching sells:', error);
@@ -33,6 +36,8 @@ export default function SellsView() {
       setLoading(false);
     }
   };
+
+  useEffect(() => { fetchSells(); }, [desde, hasta]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const openModal = async (codigoVenta) => {
     setModalSell(null);
@@ -70,7 +75,6 @@ export default function SellsView() {
     if (!targetCodigo) return;
     if (!window.confirm('¿Enviar este comprobante a SUNAT?')) return;
 
-    setSendSunatLoading(true);
     setSendingSunatId(targetCodigo);
     try {
       const response = await api.post(`/transactions/sells/${encodeURIComponent(targetCodigo)}/send-sunat`);
@@ -87,7 +91,6 @@ export default function SellsView() {
       console.error(error);
       alert(error.response?.data?.message || 'Error de red o servidor enviando el comprobante a SUNAT.');
     } finally {
-      setSendSunatLoading(false);
       setSendingSunatId(null);
     }
   };
@@ -148,6 +151,35 @@ export default function SellsView() {
     (s.tipo_doc_nombre || '').toLowerCase().includes(search.toLowerCase())
   );
 
+  const exportToExcel = () => {
+    const num = (v) => Number(parseFloat(v || 0).toFixed(2));
+    const rows = filtered.map(s => ({
+      'Comprobante': s.codigo_venta || '',
+      'Tipo': s.tipo_doc_nombre || '',
+      'Fecha Emisión': s.fecha_creacion || '',
+      'Cliente': s.person || 'Público General',
+      'Subtotal': num(s.subtotal),
+      'IGV': num(s.igv),
+      'Total': num(s.total),
+      'Pago': s.pago || '',
+      'Forma de Pago': s.tipo_pago || '',
+      'Entrega': s.entrega || '',
+      'Enviado SUNAT': s.envio_sunat == 1 ? 'Sí' : 'No',
+      'Anulado': s.estado_anulado != null && s.estado_anulado != '' && s.estado_anulado != 0 ? 'Sí' : 'No',
+    }));
+
+    const worksheet = XLSX.utils.json_to_sheet(rows);
+    worksheet['!cols'] = [
+      { wch: 16 }, { wch: 14 }, { wch: 13 }, { wch: 40 }, { wch: 12 }, { wch: 12 },
+      { wch: 12 }, { wch: 14 }, { wch: 16 }, { wch: 14 }, { wch: 14 }, { wch: 10 },
+    ];
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Ventas');
+
+    const rango = desde || hasta ? `_${desde || 'inicio'}_a_${hasta || 'hoy'}` : '';
+    XLSX.writeFile(workbook, `ventas${rango}.xlsx`);
+  };
+
   return (
     <div className="flex flex-col gap-6">
       {/* Header */}
@@ -165,15 +197,54 @@ export default function SellsView() {
         </Link>
       </div>
 
-      {/* Search */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
-        <input
-          type="text"
-          className="w-full p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
-          placeholder="Buscar por comprobante, cliente o tipo de documento..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-        />
+      {/* Filtros */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 flex flex-col lg:flex-row lg:items-end gap-3">
+        <div className="flex-1">
+          <label className="block text-xs font-medium text-gray-500 mb-1">Buscar</label>
+          <input
+            type="text"
+            className="w-full p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
+            placeholder="Buscar por comprobante, cliente o tipo de documento..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Desde</label>
+          <input
+            type="date"
+            className="p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
+            value={desde}
+            max={hasta || undefined}
+            onChange={e => { setLoading(true); setDesde(e.target.value); }}
+          />
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-gray-500 mb-1">Hasta</label>
+          <input
+            type="date"
+            className="p-2.5 border border-gray-300 rounded-md focus:border-blue-500 text-sm"
+            value={hasta}
+            min={desde || undefined}
+            onChange={e => { setLoading(true); setHasta(e.target.value); }}
+          />
+        </div>
+        {(desde || hasta) && (
+          <button
+            onClick={() => { setLoading(true); setDesde(''); setHasta(''); }}
+            className="px-4 py-2.5 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors"
+          >
+            Limpiar
+          </button>
+        )}
+        <button
+          onClick={exportToExcel}
+          disabled={loading || filtered.length === 0}
+          className="px-4 py-2.5 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <TableCellsIcon className="h-4 w-4" />
+          Exportar Excel
+        </button>
       </div>
 
       {/* Table */}
