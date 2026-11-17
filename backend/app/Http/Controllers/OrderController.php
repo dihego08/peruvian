@@ -44,8 +44,8 @@ class OrderController extends Controller
                 'det.producto',
                 'det.imagen',
                 'det.totalp',
-                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT g.num_guia SEPARATOR \' - \') FROM guia_detalle gd JOIN guia_cabecera g ON g.id = gd.id_guia WHERE gd.pedido LIKE CONCAT(\'%\', oc.codigo, \'%\')), oc.guia_remision) AS guia_remision'),
-                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%\', oc.codigo, \'%\')), \'\') AS codigo_venta'),
+                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT g.num_guia SEPARATOR \' - \') FROM guia_detalle gd JOIN guia_cabecera g ON g.id = gd.id_guia WHERE gd.pedido = oc.codigo /*LIKE CONCAT(\'%\', oc.codigo, \'%\')*/), oc.guia_remision) AS guia_remision'),
+                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%--\', oc.codigo, \'--%\')), \'\') AS codigo_venta'),
             ])
             ->orderByRaw('CAST(oc.codigo AS UNSIGNED) DESC')
             //->limit(200)
@@ -83,22 +83,22 @@ class OrderController extends Controller
     public function storeOrder(Request $request)
     {
         $request->validate([
-            'person_id'       => 'required|integer',
-            'fecha_desde'     => 'required|date',
-            'tiempo_entrega'  => 'required|integer|min:1',
-            'imagen_alt'      => 'nullable|string',
-            'rows'            => 'required|array|min:1',
-            'rows.*.modelo'   => 'required|string',
-            'rows.*.color'    => 'nullable|string',
-            'rows.*.sizes'    => 'required|array',
-            'rows.*.headers'  => 'required|array',
+            'person_id' => 'required|integer',
+            'fecha_desde' => 'required|date',
+            'tiempo_entrega' => 'required|integer|min:1',
+            'imagen_alt' => 'nullable|string',
+            'rows' => 'required|array|min:1',
+            'rows.*.modelo' => 'required|string',
+            'rows.*.color' => 'nullable|string',
+            'rows.*.sizes' => 'required|array',
+            'rows.*.headers' => 'required|array',
         ]);
 
         DB::beginTransaction();
         try {
             // ===== Generar código de orden (lógica legacy usando tabla aux) =====
             $auxRow = DB::table('aux')->where('tabla', 'order')->first();
-            $auxId  = $auxRow ? $auxRow->id : 1;
+            $auxId = $auxRow ? $auxRow->id : 1;
             $codigo = date('y') . str_pad($auxId, 2, '0', STR_PAD_LEFT);
 
             // Calcular fecha de entrega estimada (días hábiles, sin domingos)
@@ -109,16 +109,16 @@ class OrderController extends Controller
 
             // ===== Insertar cabecera =====
             $order = new Order();
-            $order->codigo          = $codigo;
-            $order->person_id       = $request->input('person_id');
-            $order->fecha_creacion  = $request->input('fecha_desde');
-            $order->tiempo_entrega  = $request->input('tiempo_entrega');
-            $order->fecha_entrega   = $fechaEntrega;
-            $order->estado          = 0;
-            $order->num_contrato    = $request->input('num_contrato');
-            $order->nombre_modelo   = $request->input('nombre_producto');
-            $order->comentario      = $request->input('comentario');
-            $order->imagen_alt      = $request->input('imagen_alt');
+            $order->codigo = $codigo;
+            $order->person_id = $request->input('person_id');
+            $order->fecha_creacion = $request->input('fecha_desde');
+            $order->tiempo_entrega = $request->input('tiempo_entrega');
+            $order->fecha_entrega = $fechaEntrega;
+            $order->estado = 0;
+            $order->num_contrato = $request->input('num_contrato');
+            $order->nombre_modelo = $request->input('nombre_producto');
+            $order->comentario = $request->input('comentario');
+            $order->imagen_alt = $request->input('imagen_alt');
             $order->save();
 
             $totalGeneral = $this->insertOrderDetails($codigo, $request->input('rows'));
@@ -134,17 +134,17 @@ class OrderController extends Controller
             DB::commit();
 
             return response()->json([
-                'Result'  => 'OK',
-                'codigo'  => $codigo,
+                'Result' => 'OK',
+                'codigo' => $codigo,
                 'message' => 'Orden de pedido registrada correctamente'
             ], 201);
 
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'Result'  => 'ERROR',
+                'Result' => 'ERROR',
                 'message' => 'Error al guardar la orden',
-                'error'   => $e->getMessage()
+                'error' => $e->getMessage()
             ], 500);
         }
     }
@@ -154,7 +154,9 @@ class OrderController extends Controller
         $cabecera = DB::table('order_cabecera as oc')
             ->join('person as p', 'p.id', '=', 'oc.person_id')
             ->where('oc.codigo', $codigo)
-            ->select('oc.*', 'p.name as cliente',
+            ->select(
+                'oc.*',
+                'p.name as cliente',
                 DB::raw('(SELECT p.image FROM order_detalle_2 d JOIN product p ON p.code = d.modelo WHERE d.codigo_cabecera = oc.codigo ORDER BY d.id ASC LIMIT 1) as product_image')
             )
             ->first();
@@ -168,7 +170,7 @@ class OrderController extends Controller
             ->get();
 
         return response()->json([
-            'Result'   => 'OK',
+            'Result' => 'OK',
             'cabecera' => $cabecera,
             'detalles' => $detalles
         ]);
@@ -207,15 +209,15 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'person_id'       => 'required|integer',
-            'fecha_desde'     => 'required|date',
-            'tiempo_entrega'  => 'required|integer|min:1',
-            'imagen_alt'      => 'nullable|string',
-            'rows'            => 'required|array|min:1',
-            'rows.*.modelo'   => 'required|string',
-            'rows.*.color'    => 'nullable|string',
-            'rows.*.sizes'    => 'required|array',
-            'rows.*.headers'  => 'required|array',
+            'person_id' => 'required|integer',
+            'fecha_desde' => 'required|date',
+            'tiempo_entrega' => 'required|integer|min:1',
+            'imagen_alt' => 'nullable|string',
+            'rows' => 'required|array|min:1',
+            'rows.*.modelo' => 'required|string',
+            'rows.*.color' => 'nullable|string',
+            'rows.*.sizes' => 'required|array',
+            'rows.*.headers' => 'required|array',
         ]);
 
         DB::beginTransaction();
@@ -226,14 +228,14 @@ class OrderController extends Controller
             );
 
             DB::table('order_cabecera')->where('codigo', $codigo)->update([
-                'num_contrato'   => $request->input('num_contrato'),
+                'num_contrato' => $request->input('num_contrato'),
                 'tiempo_entrega' => $request->input('tiempo_entrega'),
-                'person_id'      => $request->input('person_id'),
+                'person_id' => $request->input('person_id'),
                 'fecha_creacion' => $request->input('fecha_desde'),
-                'fecha_entrega'  => $fechaEntrega,
-                'comentario'     => $request->input('comentario'),
-                'imagen_alt'     => $request->input('imagen_alt'),
-                'nombre_modelo'  => $request->input('nombre_producto'),
+                'fecha_entrega' => $fechaEntrega,
+                'comentario' => $request->input('comentario'),
+                'imagen_alt' => $request->input('imagen_alt'),
+                'nombre_modelo' => $request->input('nombre_producto'),
             ]);
 
             DB::table('order_detalle_2')->where('codigo_cabecera', $codigo)->delete();
@@ -246,16 +248,16 @@ class OrderController extends Controller
             DB::commit();
 
             return response()->json([
-                'Result'  => 'OK',
-                'codigo'  => $codigo,
+                'Result' => 'OK',
+                'codigo' => $codigo,
                 'message' => 'Orden modificada correctamente',
             ]);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'Result'  => 'ERROR',
+                'Result' => 'ERROR',
                 'message' => 'Error al modificar la orden',
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -273,14 +275,14 @@ class OrderController extends Controller
             ->get();
 
         return response()->json([
-            'Result'             => 'OK',
-            'Records'            => $detalles,
-            'fecha_entrega'      => $cabecera->fecha_entrega,
+            'Result' => 'OK',
+            'Records' => $detalles,
+            'fecha_entrega' => $cabecera->fecha_entrega,
             'fecha_entrega_real' => $cabecera->fecha_entrega_real,
-            'guia_remision'      => $cabecera->guia_remision,
-            'num_contrato'       => $cabecera->num_contrato,
-            'nombre_modelo'      => $cabecera->nombre_modelo,
-            'fecha_creacion'     => $cabecera->fecha_creacion,
+            'guia_remision' => $cabecera->guia_remision,
+            'num_contrato' => $cabecera->num_contrato,
+            'nombre_modelo' => $cabecera->nombre_modelo,
+            'fecha_creacion' => $cabecera->fecha_creacion,
         ]);
     }
 
@@ -293,29 +295,29 @@ class OrderController extends Controller
         }
 
         $request->validate([
-            'fecha_desde'    => 'nullable|date',
+            'fecha_desde' => 'nullable|date',
             'fecha_estimada' => 'nullable|date',
-            'fecha_entrega'  => 'nullable|date',
-            'n_contrato'     => 'nullable|string',
-            'guia'           => 'nullable|string',
-            'nombre_modelo'  => 'nullable|string',
-            'rows'           => 'required|array|min:1',
-            'rows.*.id'      => 'required|integer',
+            'fecha_entrega' => 'nullable|date',
+            'n_contrato' => 'nullable|string',
+            'guia' => 'nullable|string',
+            'nombre_modelo' => 'nullable|string',
+            'rows' => 'required|array|min:1',
+            'rows.*.id' => 'required|integer',
             'rows.*.produced' => 'required|array',
         ]);
 
         DB::beginTransaction();
         try {
             DB::table('order_cabecera')->where('codigo', $codigo)->update([
-                'fecha_creacion'     => $request->input('fecha_desde'),
-                'num_contrato'       => $request->input('n_contrato'),
+                'fecha_creacion' => $request->input('fecha_desde'),
+                'num_contrato' => $request->input('n_contrato'),
                 'fecha_entrega_real' => $request->input('fecha_entrega'),
-                'fecha_entrega'      => $request->input('fecha_estimada'),
-                'guia_remision'      => $request->input('guia'),
-                'nombre_modelo'      => $request->input('nombre_modelo'),
+                'fecha_entrega' => $request->input('fecha_estimada'),
+                'guia_remision' => $request->input('guia'),
+                'nombre_modelo' => $request->input('nombre_modelo'),
             ]);
 
-            $prodCols = ['p2','p4','p6','p8','p10','p12','p14','p16','ps','pm','pl','pxl','pxxl'];
+            $prodCols = ['p2', 'p4', 'p6', 'p8', 'p10', 'p12', 'p14', 'p16', 'ps', 'pm', 'pl', 'pxl', 'pxxl'];
 
             foreach ($request->input('rows') as $row) {
                 $produced = $row['produced'];
@@ -337,9 +339,9 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
-                'Result'  => 'ERROR',
+                'Result' => 'ERROR',
                 'message' => 'Error al guardar producción',
-                'error'   => $e->getMessage(),
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
@@ -368,19 +370,19 @@ class OrderController extends Controller
 
     private function insertOrderDetails(string $codigo, array $rows): int
     {
-        $colNames = ['_2','_4','_6','_8','_10','_12','_14','_16','s','m','l','xl','xxl'];
+        $colNames = ['_2', '_4', '_6', '_8', '_10', '_12', '_14', '_16', 's', 'm', 'l', 'xl', 'xxl'];
         $totalGeneral = 0;
 
         foreach ($rows as $row) {
-            $sizes   = $row['sizes'];
+            $sizes = $row['sizes'];
             $headers = $row['headers'];
-            $rowTotal = array_sum(array_map(fn ($v) => (int) ($v ?: 0), $sizes));
+            $rowTotal = array_sum(array_map(fn($v) => (int) ($v ?: 0), $sizes));
 
             $detail = new OrderDetail();
             $detail->codigo_cabecera = $codigo;
-            $detail->modelo  = $row['modelo'];
-            $detail->color   = $row['color'] ?? null;
-            $detail->total   = $rowTotal;
+            $detail->modelo = $row['modelo'];
+            $detail->color = $row['color'] ?? null;
+            $detail->total = $rowTotal;
 
             for ($i = 0; $i < 13; $i++) {
                 $col = $colNames[$i];
@@ -403,12 +405,12 @@ class OrderController extends Controller
     private function calcularFechaEntrega(string $fechaInicio, int $dias): string
     {
         $feriados = $this->feriadosPeru();
-        $fecha    = new \DateTime($fechaInicio);
+        $fecha = new \DateTime($fechaInicio);
 
         $contados = 0;
         while ($contados < $dias) {
             $fecha->modify('+1 day');
-            $dow     = (int)$fecha->format('N'); // 7 = domingo
+            $dow = (int) $fecha->format('N'); // 7 = domingo
             $fechaStr = $fecha->format('Y-m-d');
             if ($dow !== 7 && !in_array($fechaStr, $feriados)) {
                 $contados++;
@@ -422,9 +424,18 @@ class OrderController extends Controller
     {
         $anio = date('Y');
         return [
-            "$anio-01-01", "$anio-05-01", "$anio-06-24", "$anio-06-29",
-            "$anio-06-30", "$anio-07-28", "$anio-07-29", "$anio-08-15",
-            "$anio-08-30", "$anio-10-08", "$anio-11-01", "$anio-12-25",
+            "$anio-01-01",
+            "$anio-05-01",
+            "$anio-06-24",
+            "$anio-06-29",
+            "$anio-06-30",
+            "$anio-07-28",
+            "$anio-07-29",
+            "$anio-08-15",
+            "$anio-08-30",
+            "$anio-10-08",
+            "$anio-11-01",
+            "$anio-12-25",
         ];
     }
 }
