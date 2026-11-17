@@ -45,7 +45,8 @@ class OrderController extends Controller
                 'det.imagen',
                 'det.totalp',
                 DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT g.num_guia SEPARATOR \' - \') FROM guia_detalle gd JOIN guia_cabecera g ON g.id = gd.id_guia WHERE gd.pedido = oc.codigo /*LIKE CONCAT(\'%\', oc.codigo, \'%\')*/), oc.guia_remision) AS guia_remision'),
-                DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%--\', oc.codigo, \'--%\')), \'\') AS codigo_venta'),
+                //DB::raw('IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR \' - \') FROM ventas_cabecera v WHERE v.pedido_cod LIKE CONCAT(\'%--\', oc.codigo, \'--%\')), \'\') AS codigo_venta'),
+                DB::raw("IFNULL((SELECT GROUP_CONCAT(DISTINCT v.codigo_venta SEPARATOR ' - ') FROM ventas_cabecera v WHERE CONCAT('--', v.pedido_cod, '--') LIKE CONCAT('%--', oc.codigo, '--%')), '') AS codigo_venta"),
             ])
             ->orderByRaw('CAST(oc.codigo AS UNSIGNED) DESC')
             //->limit(200)
